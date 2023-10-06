@@ -1,0 +1,21 @@
+ambiente:
+  aws:
+    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+    credentials:
+     # Prod - Uso em Produção
+        user: 'root'
+        password: ''
+        host: 127.0.0.1
+        port: 3306
+        database: dicev3
+
+  nat:
+    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+    credentials:
+
+      # NAT - Uso inteiro/Ambiente de Desenvolvimento
+      user: 'root'
+      password: ''
+      host: 127.0.0.1
+      port: 3306
+      database: dicev3

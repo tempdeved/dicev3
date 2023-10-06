@@ -1,0 +1,167 @@
+layout:
+
+  sort: # True = Ascendente False = Descendente
+    id_submercado: False
+    data_apuracao: True
+    tipo_energia: True
+    tipo_preco: True
+    submercado: False
+
+  sort_px_express:
+    id_submercado:
+      - SE
+      - S
+      - NE
+      - N
+    tipo_energia:
+      - CONV
+      - I0
+      - I1
+      - I5
+
+    tipo_preco:
+      - FIXO
+      - SPREAD
+
+  renaming:
+    exposicao_energetica_vigente_net: Exposição [MWh]
+    exposicao_energetica_media_vigente_net: Exposição [MW médio]
+    total_financeiro_mtm_net: Resultado Financeiro
+    total_financeiro_mtm_net_vpl: Resultado Financeiro VPL
+    id_submercado: Submercado
+    tipo_energia: Fonte
+    tipo_preco: Tipo de Preço
+    data_apuracao: Tempo
+    preco_final: Curva Forward [R$/MWh]
+    premio_submercado: Prêmio Submercado [R$/MWh]
+    premio_energia: Prêmio Energia [R$/MWh]
+    dat_medicao: Tempo
+    submercado: Submercado
+    dif: '&#8710;'
+    data_apuracao_ini: Tempo
+    dat_ref: Data Referência
+    SE: SE
+    S: S
+    NE: NE
+    N: N
+    I5: I5
+    I1: I1
+    I0: I0
+    CQ5: CQ5
+    tipo_operacao: TIPO
+
+  fig_format:
+    hovermode: x unified
+    height: 600
+    template: plotly_white
+    separators: ',.'
+    showlegend: True
+
+    yaxis:
+      side: left
+
+    yaxis2:
+      side: right
+      overlaying: y
+      tickmode: auto
+
+    legend:
+      orientation: h
+      yanchor: bottom
+      xanchor: right
+      x: 1
+      y: -0.25
+
+  graph:
+    locale: pt
+    showLink: False
+    displaylogo: False
+    responsive: True
+
+  table:
+    defaults:
+      locale_format:
+        decimal: ','
+        group: '.'
+
+      style_cell:
+        textAlign: center
+
+      style_header:
+        fontWeight: bold
+
+    SE:
+      type: numeric
+      format:
+        specifier: '.2f'
+    S:
+      type: numeric
+      format:
+        specifier: '.2f'
+    NE:
+      type: numeric
+      format:
+        specifier: '.2f'
+    N:
+      type: numeric
+      format:
+        specifier: '.2f'
+
+    preco_final:
+      type: numeric
+      format:
+        specifier: '.2f'
+
+    I5:
+      type: numeric
+      format:
+        specifier: '.2f'
+    I1:
+      type: numeric
+      format:
+        specifier: '.2f'
+    I0:
+      type: numeric
+      format:
+        specifier: '.2f'
+    CQ5:
+      type: numeric
+      format:
+        specifier: '.2f'
+
+    index:
+      type: string
+
+
+    exposicao_energetica_vigente_net:
+      type: numeric
+      format:
+        specifier: '.4s'
+
+    exposicao_energetica_media_vigente_net:
+      type: numeric
+      format:
+        specifier: '.4s'
+
+    total_financeiro_mtm_net:
+      type: numeric
+      format:
+        specifier: '.4s'
+
+    total_financeiro_mtm_net_vpl:
+      type: numeric
+      format:
+        specifier: '.4s'
+
+  trace_types:
+    line:
+      textposition: top center
+      texttemplate: '%{y:.2f}'
+#    bar:
+#      uniformtext_minsize: 12
+#      textfont_size: 18
+
+  formats:
+    tempo:
+      Y: '%Y'
+      M: '%b/%y'

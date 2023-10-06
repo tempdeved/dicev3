@@ -1,0 +1,21 @@
+ambiente:
+  aws:
+    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+    credentials:
+     # Prod - Uso em Produção
+        user: 'root'
+        password: 'VPuZKK4xh5#0'
+        host: 'portfolio-sp.c2p8zw3iinxp.sa-east-1.rds.amazonaws.com'
+        port: 3306
+        database: 'newcom_sp'
+
+  nat:
+    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+    credentials:
+
+      # NAT - Uso inteiro/Ambiente de Desenvolvimento
+      user: 'root'
+      password: 'VPuZKK4xh5#0'
+      host: 52.1.179.105
+      port: 20220
+      database: 'newcom_sp'

@@ -1,0 +1,30 @@
+/*@media screen and (min-width: 1200px) {*/
+/*h1 {*/
+/*    font-size: 5vw !important;*/
+/*}*/
+/*h2 {*/
+/*    font-size: 4vw !important;*/
+/*}*/
+/*h3 {*/
+/*    font-size: 3vw !important;*/
+/*}*/
+/*h4 {*/
+/*    font-size: 2vw !important;*/
+/*}*/
+/*h5 {*/
+/*    font-size: 1vw !important;*/
+/*}*/
+/*h6 {*/
+/*    font-size: 0.5vw !important;*/
+/*}*/
+/*body, p, button, .button, .topnav a, label, input, textarea, .socialmediaprofiles a, .social-media {*/
+/*    !*font-size: 3.0vw !important;*!*/
+/*    font-size: calc(0.75vw + 0.75vh) !important;*/
+/*}*/
+/*.topnav a {*/
+/*    padding: 16% 32%;*/
+/*}*/
+/*button, .button {*/
+/*    padding: 0.5em 1em !important;*/
+/*    border-width: 0.2vw !important;*/
+/*}*/
