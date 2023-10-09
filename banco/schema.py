@@ -182,7 +182,7 @@ class HistoricoAluno(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     created_at = Column(DATE)
 
-    id_turma = Column(ForeignKey('turma.id'))
+    id_turma = Column(ForeignKey('turma2.id'))
     id_aluno = Column(ForeignKey('aluno.id'))
 
     numero_aulas = Column(Integer)
@@ -196,16 +196,23 @@ class HistoricoAluno(Base):
     listening_01 = Column(Integer)
     readind_inter_01 = Column(Integer)
     writing_process_01 = Column(Integer)
+
+
     descricao = Column(TEXT)
 
 config = {
     'string_engine': r'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}',
     'credentials': dict(
-        user='root',
-        password='',
-        host='127.0.0.1',
-        database='dicev3',
+        user='dice3',
+        password='D1c9-3#ngl&6sh1a',
+        host='3.80.101.37',
         port='3306',
+        database='dicev3',
+        # user='root',
+        # password='',
+        # host='127.0.0.1',
+        # database='dicev3',
+        # port='3306',
     ),
 }
 
