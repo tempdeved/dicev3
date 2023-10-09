@@ -119,16 +119,6 @@ def layout():
     Input(component_id=f'main-container-{page_name}', component_property='children'),
 )
 def update_datepicker(datepicker):
-    # result = dcc.DatePickerSingle(
-    #     id=f'inp-date-inicio-aluno-{page_name}',
-    #     min_date_allowed=datetime.date(1992, 8, 12),
-    #     # max_date_allowed=datetime.,
-    #     initial_visible_month=datetime.datetime.today(),
-    #     # date=datetime.datetime.today(),
-    #     month_format='MMMM Y',
-    #     display_format='DD-MM-YYYY',
-    #     # placeholder='YY-MM-DD',
-    # )
 
     config = Config().config
     dados = Dados(config['ambiente'])
@@ -137,6 +127,9 @@ def update_datepicker(datepicker):
     df_user = dados.query_table(table_name='user')
     df_funcionario = dados.query_table(table_name='funcionario')
     df_aluno = dados.query_table(table_name='aluno')
+
+    df_aluno_filted = df_aluno[['id', 'nome', 'status']]
+    df_aluno_filted.fillna('', inplace=True)
 
     df_funcionario.rename(columns={'email_func': 'email'}, inplace=True)
 
@@ -158,8 +151,6 @@ def update_datepicker(datepicker):
         }
         for i, row in df_horario.iterrows()
     ]
-
-    df_professor['nome_completo']
 
     professor_lista = [
         {
@@ -193,12 +184,308 @@ def update_datepicker(datepicker):
                 # style={'background-color': '#ffffff'}
             )
         ],
-        className='m-0 p-0',
+        className='m-0 p-1',
     )
+
+    row_professor = dbc.Row(
+        children=[
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Checklist(
+                                id=f'imp-create-turma-professor-{page_name}',
+                                options=professor_lista,
+                                className='m-0 p-0',
+                            )
+                        ],
+                        className='m-0 p-0',
+                        # style={'background-color': '#ffffff'},
+                        title="SELECIONAR PROFESSOR",
+                    ),
+                ],
+                className='m-0 p-0',
+                start_collapsed=True,
+                flush=True,
+                # style={'background-color': '#ffffff'}
+            )
+        ],
+        className='m-0 p-1',
+    )
+
+    row_coordenaor = dbc.Row(
+        children=[
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dbc.Checklist(
+                                id=f'imp-create-turma-coordenaor-{page_name}',
+                                options=professor_lista,
+                                className='m-0 p-0',
+                            )
+                        ],
+                        className='m-0 p-0',
+                        # style={'background-color': '#ffffff'},
+                        title="SELECIONAR COORDENADOR",
+                    ),
+                ],
+                className='m-0 p-0',
+                start_collapsed=True,
+                flush=True,
+                # style={'background-color': '#ffffff'}
+            )
+        ],
+        className='m-0 p-1',
+    )
+    row_aluno = dbc.Row(
+        children=[
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=[
+                            dash_table.DataTable(
+                                id=f'data-table-alunos-turma-{page_name}',
+                                data=df_aluno_filted.to_dict('records'),
+                                columns=[{"name": i.upper(), "id": i} for i in df_aluno_filted.columns],
+                                page_current=0,
+                                page_size=10,
+                                style_cell={'textAlign': 'center'},
+                                editable=False,
+                                filter_action='native',
+                                sort_mode="multi",
+                                sort_action="native",
+                                page_action="native",
+                                row_selectable="multi",
+                                style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+
+                            )
+                        ],
+                        className='m-0 p-0',
+                        # style={'background-color': '#ffffff'},
+                        title="SELECIONAR ALUNOS",
+                    ),
+                ],
+                className='m-0 p-0',
+                start_collapsed=True,
+                flush=True,
+                # style={'background-color': '#ffffff'}
+            )
+        ],
+        className='m-0 p-1',
+    )
+
+    row_id_turma = dbc.Row(
+        children=[
+            dbc.Row('COD TURMA', className='m-0 p-0',),
+            dbc.Row(
+                children=[
+                    dbc.Input(
+                        id=f'inp-create-id-turma-{page_name}',
+                        type="number",
+                        min=0,
+                        max=9999,
+                        step=1,
+                        className='m-0 pb-2',
+                        placeholder="digite aqui o cod da turma... Ex: 2301",
+
+                    ),
+                    ],
+                className='m-0 p-0',
+            ),
+
+            dbc.Row('SEMESTRE', className='m-0 pt-2', ),
+            dbc.Row(
+                children=[
+                    dbc.RadioItems(
+                        id=f'inp-create-semestre-{page_name}',
+                        options={
+                            '01': f'01'.upper(),
+                            '02': f'02'.upper(),
+                        },
+                        value=f'02' if datetime.datetime.now().month < 6 else '01',
+                        inline=True,
+                    )
+                    ],
+                className='m-0 p-0',
+            )
+        ],
+        className='m-0 p-1',
+    )
+
+    row_status = dbc.Row(
+        children=[
+            dbc.Row('STATUS', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Select(
+                        id=f'inp-create-status-turma-{page_name}',
+                        options=[
+                            {'label': 'Ativa'.upper(),'value': f'Ativa'.upper()},
+                            {'label': 'Inativa'.upper(),'value': f'Inativa'.upper()},
+                            {'label': 'Em espera'.upper(),'value': f'Em espera'.upper()},
+                            {'label': 'Finalizadas'.upper(),'value': f'Finalizadas'.upper()},
+                        ],
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+
+    row_escola = dbc.Row(
+        children=[
+            dbc.Row('ESCOLA', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Select(
+                        id=f'inp-create-escola-turma-{page_name}',
+                        options=[
+                            {'label': 'dice - lagoa'.upper(),'value': f'dice - lagoa'.upper()},
+                        ],
+                        value='dice - lagoa'.upper()
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+    row_nivel = dbc.Row(
+        children=[
+            dbc.Row('NIVEL', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Select(
+                        id=f'inp-create-nivel-turma-{page_name}',
+                        options=[
+                            {'label': '0'.upper(),'value': f'0'.upper()},
+                            {'label': '1'.upper(),'value': f'1'.upper()},
+                            {'label': '2'.upper(),'value': f'2'.upper()},
+                            {'label': '3'.upper(),'value': f'3'.upper()},
+                            {'label': '4'.upper(),'value': f'4'.upper()},
+                        ],
+                        value='0'.upper()
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+    row_idioma = dbc.Row(
+        children=[
+            dbc.Row('IDIOMA', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Select(
+                        id=f'inp-create-idioma-turma-{page_name}',
+                        options=[
+                            {'label': 'inglês'.upper(),'value': f'inglês'.upper()},
+                        ],
+                        value='inglês'.upper()
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+    row_map= dbc.Row(
+        children=[
+            dbc.Row('MAP', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Input(
+                        id=f'inp-create-map-turma-{page_name}',
+                        placeholder='digite aqui...'
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+    row_dates = dbc.Row(
+        children=[
+            dbc.Col(
+                children=[
+                    dbc.Row('DATA INICIO', className='m-0 p-0'),
+                    dbc.Row(
+                        children=[
+                            dcc.DatePickerSingle(
+                                id=f'inp-date-inicio-turma-{page_name}',
+                                min_date_allowed=datetime.date(1992, 8, 12),
+                                # max_date_allowed=datetime.,
+                                initial_visible_month=datetime.datetime.today(),
+                                # date=datetime.datetime.today(),
+                                month_format='MMMM Y',
+                                display_format='DD-MM-YYYY',
+                                # placeholder='YY-MM-DD',
+                            )
+                        ],
+                        className='m-0 p-0'
+                    ),
+                ],
+            ),
+            dbc.Col(
+                children=[
+                    dbc.Row('DATA FIM', className='m-0 p-0'),
+                    dbc.Row(
+                        children=[
+                            dcc.DatePickerSingle(
+                                id=f'inp-date-fim-turma-{page_name}',
+                                min_date_allowed=datetime.date(1992, 8, 12),
+                                # max_date_allowed=datetime.,
+                                initial_visible_month=datetime.datetime.today(),
+                                # date=datetime.datetime.today(),
+                                month_format='MMMM Y',
+                                display_format='DD-MM-YYYY',
+                                # placeholder='YY-MM-DD',
+                            )
+                        ],
+                        className='m-0 p-0'
+                    ),
+                ],
+            ),
+        ],
+        className='m-0 p-1'
+    )
+    row_descricao= dbc.Row(
+        children=[
+            dbc.Row('DESCRIÇÃO', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Textarea(
+                        id=f'inp-create-descricao-turma-{page_name}',
+                        # invalid=True,
+                        size="lg",
+                        placeholder="Digite aqui a descrição",
+                    ),
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+
 
     result = dbc.Row(
         children=[
-            row_horario
+            row_dates,
+            row_id_turma,
+            row_status,
+            row_escola,
+            row_nivel,
+            row_idioma,
+            row_map,
+            row_descricao,
+
+            row_horario,
+            row_professor,
+            row_coordenaor,
+            row_aluno,
         ],
         className='m-0 p-0',
     )
@@ -209,30 +496,105 @@ def update_datepicker(datepicker):
 @callback(
     Output(component_id=f'out-alert-user-{page_name}', component_property='children'),
 
-    # State(component_id=f'inp-create-min-fim-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-id-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-semestre-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-status-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-escola-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-nivel-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-idioma-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-map-turma-{page_name}', component_property='value'),
+    State(component_id=f'inp-date-inicio-turma-{page_name}', component_property='date'),
+    State(component_id=f'inp-date-fim-turma-{page_name}', component_property='date'),
+    State(component_id=f'inp-create-descricao-turma-{page_name}', component_property='value'),
+
+    State(component_id=f'imp-create-turma-horarios-{page_name}', component_property='value'),
+    State(component_id=f'imp-create-turma-professor-{page_name}', component_property='value'),
+    State(component_id=f'imp-create-turma-coordenaor-{page_name}', component_property='value'),
+
+    State(component_id=f'data-table-alunos-turma-{page_name}', component_property='data'),
+    State(component_id=f'data-table-alunos-turma-{page_name}', component_property='selected_rows'),
 
     Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
 )
-def create_horario(n_clicks):
+def create_horario(
+        id_turma,
+        semestre_turma,
+        status_turma,
+        escola_turma,
+        nivel_turma,
+        idioma_turma,
+        map,
+        inicio_turma,
+        fim_turma,
+        descricao_turma,
+        horarios_turma,
+        preofessores_turma,
+        coordenador_turma,
+        alunos_data,
+        alunos_rows,
+        n_clicks,
+):
 
-    if n_clicks:
+    if n_clicks and id_turma and status_turma and inicio_turma and fim_turma:
     # if user_type and user_name and user_email and user_passdw:
         config = Config().config
         dados = Dados(config['ambiente'])
 
-        df_new_horario= pd.DataFrame(
+        df_alunos = pd.DataFrame(alunos_data)
+
+        ids_prod = ''
+        for x in preofessores_turma:
+            aux = x
+            ids_prod = f'{aux},{ids_prod}'
+
+        ids_coord = ''
+        for x in coordenador_turma:
+            aux = x
+            ids_coord = f'{aux},{ids_coord}'
+
+        ids_horarios = ''
+        for x in horarios_turma:
+            aux = x
+            ids_horarios = f'{aux},{ids_horarios}'
+
+        df_new_turma= pd.DataFrame(
             data={
-                'dia_semana': [dia_semana],
-                'hora_inicio': [hora_inicio],
-                'min_inicio': [min_inicio],
-                'hora_fim': [hora_fim],
-                'min_fim': [min_fim],
+                'id_turma': [id_turma],
+                'created_at': [datetime.datetime.now()],
+
+                'id_professor': [ids_prod],
+                'id_coordenador': [ids_coord],
+                'id_hr_turma': [ids_horarios],
+
+                'semestre': [semestre_turma],
+                # 'numero_turma': [numero_turma], # ?????????
+                'status': [status_turma],
+                'escola': [escola_turma],
+                'descricao': [descricao_turma],
+                'nivel': [nivel_turma],
+                'inicio': [inicio_turma],
+                'fim': [fim_turma],
+                'map': [map],
+                'idioma': [idioma_turma],
+
             }
         )
+
+
+        if alunos_rows:
+            df_alunos_filted = pd.DataFrame()
+            df_alunos_filted = df_alunos.iloc[alunos_rows]
+            msg = ''
+            for x in df_alunos_filted['id']:
+                aux = x
+                msg = f'{aux},{msg}'
+
+            df_new_turma['id_aluno'] = msg
+
         try:
-            df_new_horario.dropna(inplace=True)
-            dados.insert_into_table(df=df_new_horario, table_name='horario')
-            msg = 'Usuário Criado'
+            df_new_turma.dropna(inplace=True)
+            dados.insert_into_table(df=df_new_turma, table_name='turma2')
+            msg = 'Turma Criada'
         except Exception as err:
             msg = f'Erro: {err}'
 
@@ -241,11 +603,15 @@ def create_horario(n_clicks):
     if n_clicks:
         msg = []
 
-        if not user_name:
-            msg.append('Nome')
+        if not id_turma:
+            msg.append('COD TURMA')
+        if not status_turma:
+            msg.append('STATUS')
+        if not inicio_turma:
+            msg.append('DATA INICIO')
+        if not fim_turma:
+            msg.append('DATA FIM')
 
-        if not data_inicio:
-            msg.append('Data de Inicio')
 
         return f'Verifique se os campos estão corretos: {msg}'
 

@@ -97,8 +97,8 @@ app = Dash(
         # dbc.themes.SANDSTONE,
         # dbc.themes.LITERA,
         # dbc.themes.YETI,
-        # dbc.themes.ZEPHYR,
-        dbc.themes.SIMPLEX,
+        dbc.themes.ZEPHYR,
+        # dbc.themes.SIMPLEX,
         dbc.icons.BOOTSTRAP,
         # dbc.icons.FONT_AWESOME
     ],

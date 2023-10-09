@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     create_engine, Column, Integer, Float, VARCHAR, DATETIME, ForeignKey, Text, UniqueConstraint,
-    DATE, BOOLEAN, TEXT,
+    DATE, BOOLEAN, TEXT,ARRAY
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
@@ -127,17 +127,41 @@ class Horario(Base):
     children = relationship('Turma')
 
 
+# class Turma(Base):
+#     __tablename__ = 'turma'
+#
+#     id = Column(Integer, autoincrement=True, primary_key=True)
+#     id_turma = Column(Integer)
+#     created_at = Column(DATE)
+#
+#     id_professor = Column(Integer, ForeignKey('user.id'))
+#     id_coordenador = Column(Integer, ForeignKey('user.id'))
+#     id_hr_turma = Column(Integer, ForeignKey('horario.id')) # menu check box
+#     id_aluno = Column(Integer, ForeignKey('aluno.id'))
+#
+#     semestre = Column(VARCHAR(250))
+#     numero_turma = Column(VARCHAR(250))
+#     status = Column(VARCHAR(250))
+#     escola = Column(VARCHAR(250))
+#     observacao = Column(VARCHAR(250))
+#     descricao = Column(VARCHAR(250))
+#     nivel = Column(VARCHAR(250))
+#     inicio = Column(DATE)
+#     fim = Column(DATE)
+#     map = Column(VARCHAR(250))
+#     idioma = Column(VARCHAR(250))
+
 class Turma(Base):
-    __tablename__ = 'turma'
+    __tablename__ = 'turma2'
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     id_turma = Column(Integer)
     created_at = Column(DATE)
 
-    id_professor = Column(Integer, ForeignKey('user.id'))
-    id_coordenador = Column(Integer, ForeignKey('user.id'))
-    id_hr_turma = Column(Integer, ForeignKey('horario.id')) # menu check box
-    id_aluno = Column(Integer, ForeignKey('aluno.id'))
+    id_professor = Column(TEXT)
+    id_coordenador = Column(TEXT)
+    id_hr_turma = Column(TEXT) # menu check box
+    id_aluno = Column(TEXT)
 
     semestre = Column(VARCHAR(250))
     numero_turma = Column(VARCHAR(250))

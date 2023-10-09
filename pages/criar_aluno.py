@@ -120,17 +120,8 @@ content_layout = dbc.Row(
                                                         ]
                                                     ),
 
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('TURMA', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Input(
-                                                                id=f'inp-associete-turma-aluno-{page_name}',
-                                                                placeholder="digite aqui...",
-                                                                size="md",
-                                                                className="mb-3"
-                                                            )
-                                                        ]
-                                                    ),
+                                                    dbc.Row(id=f'out-associete-turma-{page_name}',children=[], class_name='m-0 p-1'),
+
                                                     dbc.Row(
                                                         children=[
                                                             dbc.Row(
@@ -196,10 +187,15 @@ def layout():
 
 @callback(
     Output(component_id=f'update-datepicker-{page_name}', component_property='children'),
+    Output(component_id=f'out-associete-turma-{page_name}', component_property='children'),
     Input(component_id=f'main-container-{page_name}', component_property='children'),
 )
 def update_datepicker(datepicker):
-    result = dcc.DatePickerSingle(
+
+    config = Config().config
+    dados = Dados(config['ambiente'])
+
+    dt_picker = dcc.DatePickerSingle(
         id=f'inp-date-inicio-aluno-{page_name}',
         min_date_allowed=datetime.date(1992, 8, 12),
         # max_date_allowed=datetime.,
@@ -210,7 +206,47 @@ def update_datepicker(datepicker):
         # placeholder='YY-MM-DD',
     )
     print('update-date')
-    return result
+
+    df_turmas = dados.query_table(
+        table_name='turma2',
+        # field_list=[
+        #     {'name': 'email'},
+        #     {'name': 'status'},
+        # ]
+    )
+
+    row_turmas = dbc.Row(
+        children=[
+            dbc.Row('TURMA', className='m-0 p-0'),
+            dbc.Row(
+                children=[
+                    dbc.Select(
+                        id=f'inp-associete-turma-aluno-{page_name}',
+                        options=[
+                            {
+                                'label': f'Turma: {row["id_turma"]} - '
+                                         f'{row["status"]} '
+                                         f'semestre: {row["semestre"]} '
+                                         f'inicio: {row["inicio"]} '
+                                         f'fim: {row["fim"]} '
+                                         f'map: {row["map"]} '
+                                         f'idioma: {row["idioma"]} '
+                                         f''.upper(),
+
+                                'value': row['id']
+                            }
+                            for x, row in df_turmas.iterrows()
+                        ],
+                    )
+                ],
+                className='m-0 p-0'
+            ),
+        ],
+        className='m-0 p-1'
+    )
+
+
+    return dt_picker, row_turmas
 
 
 @callback(
