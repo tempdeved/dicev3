@@ -19,7 +19,9 @@ class Titulo(object):
                 dbc.Row(
                     id=f'{id}_title_row',
                     children=[
-                        html.H1(title_name, className='py-3 px-0 mx-0')
+                        html.H1(
+                            children=[title_name],
+                            className='py-3 px-0 mx-0')
                     ]
                 )
             ],

@@ -17,7 +17,7 @@ from banco.dados import Dados
 from config.config import Config
 
 page_name = __name__[6:].replace('.', '_')
-dash.register_page(__name__, path=f'/GerenciarUsuario')
+dash.register_page(__name__, path=f'/CriarHorario')
 # require_login(__name__)
 
 
@@ -42,112 +42,179 @@ content_layout = dbc.Row(
                                             dbc.Row(
                                                 class_name='col-lg-12 col-sm-12',
                                                 children=[
-                                                    # dbc.Row(
-                                                    #     children=[
-                                                    #         dbc.Row(
-                                                    #             'DATA DE REFERÊNCIA',
-                                                    #             class_name='col-lg-4 col-sm-12 '
-                                                    #         ),
-                                                    #         dbc.Row(
-                                                    #             dcc.DatePickerSingle(
-                                                    #                 id=f'inp-date-ref-{page_name}',
-                                                    #                 min_date_allowed=datetime.date(1992, 8, 12),
-                                                    #                 max_date_allowed=datetime.,
-                                                    #                 initial_visible_month=NOW,
-                                                    #                 date=NOW,
-                                                    #                 month_format='MMMM Y',
-                                                    #                 display_format='DD-MM-YYYY',
-                                                    #                 # placeholder='YY-MM-DD',
-                                                    #             ),
-                                                    #             class_name='col-lg-12 col-sm-12 '
-                                                    #         ),
-                                                    #     ]
-                                                    # ),
+
                                                     dbc.Row(
                                                         children=[
-                                                            dbc.Row('Tipo Usuário', class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row('DIA DA SEMANA', class_name='col-lg-12 col-sm-12 '),
                                                             dbc.Row(
-                                                                id=f'out-seletor-tipo-{page_name}',
                                                                 children=[
-                                                                    dbc.RadioItems(
-                                                                        id=f'inp-create-user-type-{page_name}',
-                                                                        options={
-                                                                            'Gerente': f'Gerente'.upper(),
-                                                                            'Administrativo': f'Administrativo'.upper(),
-                                                                            'Coordenador': f'Coordenador'.upper(),
-                                                                            'Professor': f'Professor'.upper(),
-                                                                        },
+                                                                    dbc.Select(
+                                                                        id=f'inp-create-dia-semana-{page_name}',
+                                                                        options=[
+                                                                            {'label': 'Segunda-feira'.upper(),'value': f'Segunda-feira'.upper()},
+                                                                            {'label': 'Terça-feira'.upper(),'value': f'Terça-feira'.upper()},
+                                                                            {'label': 'Quarta-feira'.upper(),'value': f'Quarta-feira'.upper()},
+                                                                            {'label': 'Quinta-feira'.upper(),'value': f'Quinta-feira'.upper()},
+                                                                            {'label': 'Sexta-feira'.upper(),'value': f'Sexta-feira'.upper()},
+                                                                            {'label': 'Sábado'.upper(),'value': f'Sábado'.upper()},
+                                                                            {'label': 'Domino'.upper(),'value': f'Domino'.upper()},
+                                                                        ],
                                                                     )
                                                                 ],
-                                                                class_name='col-lg-12 col-sm-12 my-2'
+                                                                class_name='col-lg-12 col-sm-12 mb-2'
                                                             ),
                                                         ]
                                                     ),
                                                     dbc.Row(
                                                         children=[
-                                                            dbc.Row('Nome Completo', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Input(
-                                                                id=f'inp-create-name-{page_name}',
-                                                                placeholder="digite aqui...",
-                                                                size="md",
-                                                                className="mb-3"
-                                                            )
-                                                        ]
-                                                    ),
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('Email', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Input(
-                                                                id=f'inp-create-email-{page_name}',
-                                                                placeholder="digite aqui...",
-                                                                size="md",
-                                                                className="mb-3"
-                                                            ),
-                                                        ]
-                                                    ),
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('Senha', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Input(
-                                                                id=f'inp-create-password-{page_name}',
-                                                                placeholder="digite aqui...",
-                                                                type='password',
-                                                                size="md",
-                                                                className="mb-3"
-                                                            ),
-                                                        ]
-                                                    ),
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('Status', class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row('HORA DE INICIO', class_name='col-lg-12 col-sm-12 '),
                                                             dbc.Row(
-                                                                id=f'out-seletor-status-{page_name}',
                                                                 children=[
-                                                                    dbc.RadioItems(
-                                                                        id=f'inp-create-user-status-{page_name}',
-                                                                        options={
-                                                                            'Ativo': f'Ativo'.upper(),
-                                                                            'Inativo': f'Inativo'.upper(),
-                                                                        },
+                                                                    dbc.Select(
+                                                                        id=f'inp-create-hora-inicio-{page_name}',
+                                                                        options=[
+                                                                            {'label': '0'.upper(),'value': f'0'.upper()},
+                                                                            {'label': '1'.upper(),'value': f'1'.upper()},
+                                                                            {'label': '2'.upper(),'value': f'2'.upper()},
+                                                                            {'label': '3'.upper(),'value': f'3'.upper()},
+                                                                            {'label': '4'.upper(),'value': f'4'.upper()},
+                                                                            {'label': '5'.upper(),'value': f'5'.upper()},
+                                                                            {'label': '6'.upper(),'value': f'6'.upper()},
+                                                                            {'label': '7'.upper(),'value': f'7'.upper()},
+                                                                            {'label': '8'.upper(),'value': f'8'.upper()},
+                                                                            {'label': '9'.upper(),'value': f'9'.upper()},
+                                                                            {'label': '10'.upper(),'value': f'10'.upper()},
+                                                                            {'label': '11'.upper(),'value': f'11'.upper()},
+                                                                            {'label': '12'.upper(),'value': f'12'.upper()},
+                                                                            {'label': '13'.upper(),'value': f'13'.upper()},
+                                                                            {'label': '14'.upper(),'value': f'14'.upper()},
+                                                                            {'label': '15'.upper(),'value': f'15'.upper()},
+                                                                            {'label': '16'.upper(),'value': f'16'.upper()},
+                                                                            {'label': '17'.upper(),'value': f'17'.upper()},
+                                                                            {'label': '18'.upper(),'value': f'18'.upper()},
+                                                                            {'label': '19'.upper(),'value': f'19'.upper()},
+                                                                            {'label': '20'.upper(),'value': f'20'.upper()},
+                                                                            {'label': '21'.upper(),'value': f'21'.upper()},
+                                                                            {'label': '22'.upper(),'value': f'22'.upper()},
+                                                                            {'label': '23'.upper(),'value': f'23'.upper()},
+                                                                        ],
                                                                     )
                                                                 ],
-                                                                class_name='col-lg-12 col-sm-12 my-2'
+                                                                class_name='col-lg-12 col-sm-12 mb-2'
                                                             ),
                                                         ]
                                                     ),
                                                     dbc.Row(
+                                                        children=[
+                                                            dbc.Row('MIN INICIO', class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row(
+                                                                children=[
+                                                                    dbc.Input(
+                                                                        id=f'inp-create-min-inicio-{page_name}',
+                                                                        type="number",
+                                                                        min=0,
+                                                                        max=59,
+                                                                        step=1,
+                                                                    ),
+                                                                ],
+                                                                class_name='col-lg-12 col-sm-12 '),
+                                                            ],
+                                                    ),
+
+                                                    dbc.Row(
+                                                        children=[
+                                                            dbc.Row('HORA FIM',
+                                                                    class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row(
+                                                                children=[
+                                                                    dbc.Select(
+                                                                        id=f'inp-create-hora-fim-{page_name}',
+                                                                        options=[
+                                                                            {'label': '0'.upper(),
+                                                                             'value': f'0'.upper()},
+                                                                            {'label': '1'.upper(),
+                                                                             'value': f'1'.upper()},
+                                                                            {'label': '2'.upper(),
+                                                                             'value': f'2'.upper()},
+                                                                            {'label': '3'.upper(),
+                                                                             'value': f'3'.upper()},
+                                                                            {'label': '4'.upper(),
+                                                                             'value': f'4'.upper()},
+                                                                            {'label': '5'.upper(),
+                                                                             'value': f'5'.upper()},
+                                                                            {'label': '6'.upper(),
+                                                                             'value': f'6'.upper()},
+                                                                            {'label': '7'.upper(),
+                                                                             'value': f'7'.upper()},
+                                                                            {'label': '8'.upper(),
+                                                                             'value': f'8'.upper()},
+                                                                            {'label': '9'.upper(),
+                                                                             'value': f'9'.upper()},
+                                                                            {'label': '10'.upper(),
+                                                                             'value': f'10'.upper()},
+                                                                            {'label': '11'.upper(),
+                                                                             'value': f'11'.upper()},
+                                                                            {'label': '12'.upper(),
+                                                                             'value': f'12'.upper()},
+                                                                            {'label': '13'.upper(),
+                                                                             'value': f'13'.upper()},
+                                                                            {'label': '14'.upper(),
+                                                                             'value': f'14'.upper()},
+                                                                            {'label': '15'.upper(),
+                                                                             'value': f'15'.upper()},
+                                                                            {'label': '16'.upper(),
+                                                                             'value': f'16'.upper()},
+                                                                            {'label': '17'.upper(),
+                                                                             'value': f'17'.upper()},
+                                                                            {'label': '18'.upper(),
+                                                                             'value': f'18'.upper()},
+                                                                            {'label': '19'.upper(),
+                                                                             'value': f'19'.upper()},
+                                                                            {'label': '20'.upper(),
+                                                                             'value': f'20'.upper()},
+                                                                            {'label': '21'.upper(),
+                                                                             'value': f'21'.upper()},
+                                                                            {'label': '22'.upper(),
+                                                                             'value': f'22'.upper()},
+                                                                            {'label': '23'.upper(),
+                                                                             'value': f'23'.upper()},
+                                                                        ],
+                                                                    )
+                                                                ],
+                                                                class_name='col-lg-12 col-sm-12 mb-2'
+                                                            ),
+                                                        ]
+                                                    ),
+
+                                                    dbc.Row(
+                                                        children=[
+                                                            dbc.Row('MIN FIM', class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row(
+                                                                children=[
+                                                                    dbc.Input(
+                                                                        id=f'inp-create-min-fim-{page_name}',
+                                                                        type="number",
+                                                                        min=0,
+                                                                        max=59,
+                                                                        step=1,
+                                                                    ),
+                                                                ],
+                                                                class_name='col-lg-12 col-sm-12 '),
+                                                        ],
+                                                    ),
+                                                            dbc.Row(
                                                         children=[
                                                             dbc.Row(
                                                                 id='button_area',
-                                                                class_name='d-grid d-md-block',  # gap-2
+                                                                # class_name='d-grid d-md-block',  # gap-2
                                                                 children=[
                                                                     dbc.Col(
                                                                         # width=2,
                                                                         children=[
                                                                             dbc.Button(
                                                                                 id=f'btn-create-user-{page_name}',
-                                                                                children=['Salvar novo usuário'],
-                                                                                class_name='me-2',
+                                                                                children=['SALVAR HORARIO'],
+                                                                                class_name='me-0',
                                                                                 color='primary',
                                                                                 n_clicks=0,
                                                                             ),
@@ -164,131 +231,7 @@ content_layout = dbc.Row(
 
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Criar Funcionário"
-                                    )
-                                ], start_collapsed=True, flush=True, style={'background-color': '#ffffff'}
-                            ),
-                        ], class_name=''
-                    )
-                ]
-            ),
-        # PLot area 1
-        dbc.Card(
-            # color='secondary',
-            class_name='py-2 my-2 mx-0 ',
-            # class_name='border shadow-lg py-2 my-2 mx-0 ',
-            # children=[
-
-            # dbc.Card(
-                # color='secondary',
-                # class_name='border shadow-lg py-2 my-2 mx-0 ',
-                children=[
-                    dbc.Row(
-                        children=[
-                            dbc.Accordion(
-                                children=[
-                                    dbc.AccordionItem(
-                                        children=[
-                                            dbc.Card(
-                                                class_name='d-flex justify-content-center justify-content-middle text-center py-0 my-2 mx-0 shadow',
-                                                children=[
-                                                    dbc.Tabs(
-                                                        children=[
-                                                            dbc.Tab(
-                                                                children=[
-                                                                    dbc.Row(
-                                                                        id=f'out-edit-funcionario-{page_name}',
-                                                                        children=[
-                                                                            dash_table.DataTable(
-                                                                                id=f'data-table-edit-user-{page_name}',
-                                                                            ),
-                                                                        ]
-                                                                    ),
-                                                                    # dbc.Row(
-                                                                    # children=[
-                                                                        # dbc.Row(
-                                                                        #     children=[
-                                                                        #         dbc.Button(
-                                                                        #             id=f'btn-buscar-usuarios-{page_name}',
-                                                                        #             children=['Buscar Funcionários'],
-                                                                        #             class_name='me-2',
-                                                                        #             color='primary',
-                                                                        #             n_clicks=0,
-                                                                        #         ),
-                                                                        #     ]
-                                                                        # )
-
-                                                                    dbc.Row(
-                                                                    children=[
-                                                                            dbc.Row(
-                                                                            children=[
-                                                                                dbc.Row(
-                                                                                    id='button_area',
-                                                                                    # class_name='d-grid d-md-block',  # gap-2
-                                                                                    children=[
-                                                                                        dbc.Col(
-                                                                                            # width=2,
-                                                                                            children=[
-                                                                                                dbc.Button(
-                                                                                                    id=f'btn-buscar-usuarios-{page_name}',
-                                                                                                    children=['Buscar Funcionários'],
-                                                                                                    class_name='me-2',
-                                                                                                    color='primary',
-                                                                                                    n_clicks=0,
-                                                                                                ),
-                                                                                            ]
-                                                                                        )
-                                                                                    ]
-                                                                                ),
-                                                                            ]
-                                                                        ),
-                                                                        ]
-                                                                    ),
-                                                                ],
-                                                                label="Funcionário"
-                                                            ),
-
-                                                        ]
-                                                    ),
-
-                                                    dbc.Tabs(
-                                                        children=[
-                                                            dbc.Tab(
-                                                                label="Campos",
-                                                                children=[
-                                                                    dbc.Row(id=f'out-edit-func-{page_name}'),
-                                                                    dbc.Row(
-                                                                        children=[
-                                                                            dbc.Row(
-                                                                                # id='button_area',
-                                                                                # class_name='d-grid d-md-block',  # gap-2
-                                                                                class_name='p-5',
-                                                                                children=[
-                                                                                    dbc.Col(
-                                                                                        # width=2,
-                                                                                        children=[
-                                                                                            dbc.Button(
-                                                                                                id=f'btn-salvar-func-edited-{page_name}',
-                                                                                                children=[
-                                                                                                    'Salvar Funcionário'],
-                                                                                                # class_name='p-5',
-                                                                                                color='primary',
-                                                                                                n_clicks=0,
-                                                                                            ),
-                                                                                        ]
-                                                                                    )
-                                                                                ]
-                                                                            ),
-                                                                        ]
-                                                                    ),
-                                                                ]),
-                                                        ])
-                                                    ,
-                                                ],
-                                            ),
-                                        ],
-                                        style={'background-color': '#ffffff'},
-                                        title="Editar Funcinário"
+                                        title="CRIAR HORARIO"
                                     )
                                 ], start_collapsed=True, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -323,63 +266,73 @@ def layout():
 
 
 @callback(
+    Output(component_id=f'update-datepicker-{page_name}', component_property='children'),
+    Input(component_id=f'main-container-{page_name}', component_property='children'),
+)
+def update_datepicker(datepicker):
+    result = dcc.DatePickerSingle(
+        id=f'inp-date-inicio-aluno-{page_name}',
+        min_date_allowed=datetime.date(1992, 8, 12),
+        # max_date_allowed=datetime.,
+        initial_visible_month=datetime.datetime.today(),
+        # date=datetime.datetime.today(),
+        month_format='MMMM Y',
+        display_format='DD-MM-YYYY',
+        # placeholder='YY-MM-DD',
+    )
+    print('update-date')
+    return result
+
+
+@callback(
     Output(component_id=f'out-alert-user-{page_name}', component_property='children'),
 
-    State(component_id=f'inp-create-user-type-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-name-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-email-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-password-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-user-status-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-dia-semana-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-hora-inicio-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-min-inicio-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-hora-fim-{page_name}', component_property='value'),
+    State(component_id=f'inp-create-min-fim-{page_name}', component_property='value'),
+
     Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
     # config_prevent_initial_callbacks=True,
 )
-def create_user(user_type, user_name, user_email, user_passdw, user_status, n_clicks):
+def create_horario(dia_semana, hora_inicio, min_inicio, hora_fim, min_fim, n_clicks):
+# def create_horario(user_name, email_pai, celular_pai, email_mae, celular_mae, data_inicio, n_clicks):
 
-    if user_type and user_name and user_email and user_passdw:
+    if dia_semana and hora_inicio and min_inicio and hora_fim and min_fim:
+    # if user_type and user_name and user_email and user_passdw:
         config = Config().config
         dados = Dados(config['ambiente'])
-        df_new_user = pd.DataFrame(
+
+        df_new_horario= pd.DataFrame(
             data={
-                'email': [user_email],
-                'password': [user_passdw],
-                'status': [user_status],
+                'dia_semana': [dia_semana],
+                'hora_inicio': [hora_inicio],
+                'min_inicio': [min_inicio],
+                'hora_fim': [hora_fim],
+                'min_fim': [min_fim],
             }
         )
-        df_new_func = pd.DataFrame(
-            data={
-                'email_func': [user_email],
-
-                'nome_completo': [user_name],
-                'created_at': [datetime.datetime.now()],
-                'tipo': [user_type],
-            }
-        )
-
         try:
-            dados.insert_into_table(df=df_new_user, table_name='user')
-            dados.insert_into_table(df=df_new_func, table_name='funcionario')
+            df_new_horario.dropna(inplace=True)
+            dados.insert_into_table(df=df_new_horario, table_name='horario')
             msg = 'Usuário Criado'
         except Exception as err:
-            msg = f'Usuário já existe: {user_email}'
+            msg = f'Erro: {err}'
 
         return msg
 
     if n_clicks:
         msg = []
 
-        if not user_type:
-            msg.append('Tipo')
-
-        if not user_email:
-            msg.append('Email')
-
-        if not user_passdw:
-            msg.append('Senha')
-
         if not user_name:
             msg.append('Nome')
 
+        if not data_inicio:
+            msg.append('Data de Inicio')
+
         return f'Verifique se os campos estão corretos: {msg}'
+
     return ''
 
 

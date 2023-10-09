@@ -13,13 +13,13 @@ dados = Dados(config['ambiente'])
 def user_is_authenticated():
     return current_user.is_authenticated
 
-def user_is_admin_or_gerente(email):
+def verify_active_user(email):
     admin = dados.query_table(
         table_name='user',
         # operation='distinct',
         field_list=[
             {'name': 'email'},
-            {'name': 'tipo'},
+            # {'name': 'tipo'},
             {'name': 'status'},
         ],
         filter_list=[
@@ -29,9 +29,7 @@ def user_is_admin_or_gerente(email):
         ]
     )
 
-    if (admin['tipo'][0] == 'Admin') or \
-            (admin['tipo'][0] == 'Gerente') or \
-            (admin['status'][0] == 1):
+    if admin['status'][0] == 'Ativo':
         return True
     else:
         return False

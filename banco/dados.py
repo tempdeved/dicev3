@@ -3,7 +3,7 @@ import datetime
 import logging
 from sqlalchemy import (create_engine, column, delete, select, distinct, func)
 from sqlalchemy.orm.session import Session
-from sqlalchemy import insert
+from sqlalchemy import insert, update
 from omegaconf import OmegaConf
 
 
@@ -180,7 +180,34 @@ class Dados(object):
                 raise error
 
 
+    def update_table(self, values: dict, table_name: str, pk_value, pk_name) -> None:
 
+        # operation_list = list()
+        # [operation_list.append(TradesEhub(**row.to_dict())) for i, row in df_trades.iterrows()]
+
+        table = self.tables[table_name]
+
+        with Session(bind=self.engine) as session:
+
+            up = update(table)
+
+            up = up.values(
+               values
+            )
+            up = up.where(
+                getattr(table, pk_name) == pk_value
+            )
+
+            try:
+                session.execute(up)
+                session.commit()
+                print(f'Realizado update {pk_value}')
+
+            except Exception as err:
+                session.rollback()
+                print(f'Erro no update do Produto {pk_value}')
+                print(f'Tabela: {table.__table__}')
+                print(f'{err}')
 
 
 

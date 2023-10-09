@@ -161,26 +161,27 @@ side_bar = Sidebar().layout(
             group_elements=[
                 # Div para fazer login e encerrar sessão
                 html.Div(id="user-status-header"),
-                dcc.Link(children='Login', href='/login'),
+                dcc.Link(children='Login', href='/login', ),
                 dcc.Link(children='Logout', href='/logout'),
             ]
         ),
         ListGroup().layout(
             group_title='Aluno',
             group_elements=[
-                dcc.Link(children='criar aluno', href='/criar_aluno'),
+                dcc.Link(children='criar aluno', href='/CriarALuno'),
 
                 # editar aluno e exportar aluno
-                dcc.Link(children='editar aluno', href='/editar_aluno'),
+                # dcc.Link(children='editar aluno', href='/editar_aluno'),
 
                 # lançar REMARKS junto com nota
-                dcc.Link(children='lançar nota aluno', href='/lancar_nota_aluno'),
+                # dcc.Link(children='lançar nota aluno', href='/lancar_nota_aluno'),
             ]
         ),
         ListGroup().layout(
             group_title='Turma',
             group_elements=[
-                dcc.Link(children='criar turma', href='/criar_turma'),
+                dcc.Link(children='criar horario', href='/CriarHorario'),
+                dcc.Link(children='criar turma', href='/CriarTurma'),
                 dcc.Link(children='editar turma', href='/editar_turma'),
                 dcc.Link(children='lançar nota turma', href='/lancar_nota_turma'),
             ]

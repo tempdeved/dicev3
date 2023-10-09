@@ -1,0 +1,9 @@
+databases:
+  string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+
+  newcom_sp:
+    user: 'root'
+    password: 'VPuZKK4xh5#0'
+    host: 'portfolio-sp.c2p8zw3iinxp.sa-east-1.rds.amazonaws.com'
+    port: 3306
+    database: 'newcom_sp'

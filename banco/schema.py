@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     create_engine, Column, Integer, Float, VARCHAR, DATETIME, ForeignKey, Text, UniqueConstraint,
-    DATE, BOOLEAN, TEXT
+    DATE, BOOLEAN, TEXT,
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
@@ -15,9 +15,10 @@ class User(Base):
     # username = Column(VARCHAR(250), unique=True)
     email = Column(VARCHAR(250), unique=True)
     password = Column(VARCHAR(250))
-    nome_completo = Column(VARCHAR(250))
-    tipo = Column(VARCHAR(250))
-    status = Column(BOOLEAN)
+    # nome_completo = Column(VARCHAR(250))
+    # tipo = Column(VARCHAR(250))
+    status = Column(VARCHAR(10))
+    children = relationship('Funcionario')
 
 
     # __mapper_args__ = {
@@ -87,10 +88,14 @@ class Aluno(Base):
 class Funcionario(Base):
     __tablename__ = 'funcionario'
 
-    id = Column(ForeignKey('user.id'), primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    # id_user = Column(ForeignKey('user.id'))
+    email_func = Column(VARCHAR(250), ForeignKey(f'{User.__tablename__}.email'))
+    # email_func = Column(VARCHAR(250))
     created_at = Column(DATE)
-    # nome_completo = Column(VARCHAR(250))
-    status = Column(VARCHAR(250))
+    nome_completo = Column(VARCHAR(250))
+    tipo = Column(VARCHAR(250))
+    # status = Column(VARCHAR(10))
     funcao = Column(VARCHAR(250))
     senha = Column(VARCHAR(250))
     telefone1 = Column(VARCHAR(250))
@@ -106,7 +111,7 @@ class Funcionario(Base):
     cidade = Column(VARCHAR(250))
     uf = Column(VARCHAR(250))
     cep = Column(VARCHAR(250))
-    email_pessoal = Column(VARCHAR(250))
+
     foto = Column(VARCHAR(250))
 
 class Horario(Base):
@@ -119,17 +124,20 @@ class Horario(Base):
     hora_fim = Column(VARCHAR(250))
     min_fim = Column(VARCHAR(250))
 
+    children = relationship('Turma')
+
 
 class Turma(Base):
     __tablename__ = 'turma'
 
     id = Column(Integer, autoincrement=True, primary_key=True)
+    id_turma = Column(Integer)
     created_at = Column(DATE)
 
-    id_professor = Column(ForeignKey('user.id'))
-    id_coordenador = Column(ForeignKey('user.id'))
-    id_hr_turma = Column(ForeignKey('horario.id'))
-    id_aluno = Column(ForeignKey('aluno.id'))
+    id_professor = Column(Integer, ForeignKey('user.id'))
+    id_coordenador = Column(Integer, ForeignKey('user.id'))
+    id_hr_turma = Column(Integer, ForeignKey('horario.id')) # menu check box
+    id_aluno = Column(Integer, ForeignKey('aluno.id'))
 
     semestre = Column(VARCHAR(250))
     numero_turma = Column(VARCHAR(250))

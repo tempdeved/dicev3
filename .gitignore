@@ -242,3 +242,8 @@ files/
 .xlsx
 cache/
 cache-directory/
+
+images/
+*.png
+*.jpg
+*.jpeg
