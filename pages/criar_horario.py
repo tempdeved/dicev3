@@ -73,30 +73,8 @@ content_layout = dbc.Row(
                                                                     dbc.Select(
                                                                         id=f'inp-create-hora-inicio-{page_name}',
                                                                         options=[
-                                                                            {'label': '0'.upper(),'value': f'0'.upper()},
-                                                                            {'label': '1'.upper(),'value': f'1'.upper()},
-                                                                            {'label': '2'.upper(),'value': f'2'.upper()},
-                                                                            {'label': '3'.upper(),'value': f'3'.upper()},
-                                                                            {'label': '4'.upper(),'value': f'4'.upper()},
-                                                                            {'label': '5'.upper(),'value': f'5'.upper()},
-                                                                            {'label': '6'.upper(),'value': f'6'.upper()},
-                                                                            {'label': '7'.upper(),'value': f'7'.upper()},
-                                                                            {'label': '8'.upper(),'value': f'8'.upper()},
-                                                                            {'label': '9'.upper(),'value': f'9'.upper()},
-                                                                            {'label': '10'.upper(),'value': f'10'.upper()},
-                                                                            {'label': '11'.upper(),'value': f'11'.upper()},
-                                                                            {'label': '12'.upper(),'value': f'12'.upper()},
-                                                                            {'label': '13'.upper(),'value': f'13'.upper()},
-                                                                            {'label': '14'.upper(),'value': f'14'.upper()},
-                                                                            {'label': '15'.upper(),'value': f'15'.upper()},
-                                                                            {'label': '16'.upper(),'value': f'16'.upper()},
-                                                                            {'label': '17'.upper(),'value': f'17'.upper()},
-                                                                            {'label': '18'.upper(),'value': f'18'.upper()},
-                                                                            {'label': '19'.upper(),'value': f'19'.upper()},
-                                                                            {'label': '20'.upper(),'value': f'20'.upper()},
-                                                                            {'label': '21'.upper(),'value': f'21'.upper()},
-                                                                            {'label': '22'.upper(),'value': f'22'.upper()},
-                                                                            {'label': '23'.upper(),'value': f'23'.upper()},
+                                                                            {'label': f'{x}'.upper(),'value': f'{x}'.upper()}
+                                                                            for x in range(0,24)
                                                                         ],
                                                                     )
                                                                 ],
@@ -109,14 +87,23 @@ content_layout = dbc.Row(
                                                             dbc.Row('MIN INICIO', class_name='col-lg-12 col-sm-12 '),
                                                             dbc.Row(
                                                                 children=[
-                                                                    dbc.Input(
+                                                                    # dbc.Input(
+                                                                    #     id=f'inp-create-min-inicio-{page_name}',
+                                                                    #     type="number",
+                                                                    #     min=0,
+                                                                    #     max=59,
+                                                                    #     step=1,
+                                                                    #     placeholder="00-59",
+                                                                    # ),
+                                                                    dbc.Select(
                                                                         id=f'inp-create-min-inicio-{page_name}',
-                                                                        type="number",
-                                                                        min=0,
-                                                                        max=59,
-                                                                        step=1,
-                                                                        placeholder="00-59",
-                                                                    ),
+                                                                        options=[
+                                                                            {'label': f'{x}'.upper(),
+                                                                             'value': f'{x}'.upper()}
+                                                                            for x in range(0, 60)
+                                                                        ],
+                                                                        value='0'
+                                                                    )
                                                                 ],
                                                                 class_name='col-lg-12 col-sm-12 '),
                                                             ],
@@ -131,54 +118,8 @@ content_layout = dbc.Row(
                                                                     dbc.Select(
                                                                         id=f'inp-create-hora-fim-{page_name}',
                                                                         options=[
-                                                                            {'label': '0'.upper(),
-                                                                             'value': f'0'.upper()},
-                                                                            {'label': '1'.upper(),
-                                                                             'value': f'1'.upper()},
-                                                                            {'label': '2'.upper(),
-                                                                             'value': f'2'.upper()},
-                                                                            {'label': '3'.upper(),
-                                                                             'value': f'3'.upper()},
-                                                                            {'label': '4'.upper(),
-                                                                             'value': f'4'.upper()},
-                                                                            {'label': '5'.upper(),
-                                                                             'value': f'5'.upper()},
-                                                                            {'label': '6'.upper(),
-                                                                             'value': f'6'.upper()},
-                                                                            {'label': '7'.upper(),
-                                                                             'value': f'7'.upper()},
-                                                                            {'label': '8'.upper(),
-                                                                             'value': f'8'.upper()},
-                                                                            {'label': '9'.upper(),
-                                                                             'value': f'9'.upper()},
-                                                                            {'label': '10'.upper(),
-                                                                             'value': f'10'.upper()},
-                                                                            {'label': '11'.upper(),
-                                                                             'value': f'11'.upper()},
-                                                                            {'label': '12'.upper(),
-                                                                             'value': f'12'.upper()},
-                                                                            {'label': '13'.upper(),
-                                                                             'value': f'13'.upper()},
-                                                                            {'label': '14'.upper(),
-                                                                             'value': f'14'.upper()},
-                                                                            {'label': '15'.upper(),
-                                                                             'value': f'15'.upper()},
-                                                                            {'label': '16'.upper(),
-                                                                             'value': f'16'.upper()},
-                                                                            {'label': '17'.upper(),
-                                                                             'value': f'17'.upper()},
-                                                                            {'label': '18'.upper(),
-                                                                             'value': f'18'.upper()},
-                                                                            {'label': '19'.upper(),
-                                                                             'value': f'19'.upper()},
-                                                                            {'label': '20'.upper(),
-                                                                             'value': f'20'.upper()},
-                                                                            {'label': '21'.upper(),
-                                                                             'value': f'21'.upper()},
-                                                                            {'label': '22'.upper(),
-                                                                             'value': f'22'.upper()},
-                                                                            {'label': '23'.upper(),
-                                                                             'value': f'23'.upper()},
+                                                                            {'label': f'{x}'.upper(),'value': f'{x}'.upper()}
+                                                                            for x in range(0,24)
                                                                         ],
                                                                     )
                                                                 ],
@@ -192,14 +133,23 @@ content_layout = dbc.Row(
                                                             dbc.Row('MIN FIM', class_name='col-lg-12 col-sm-12 '),
                                                             dbc.Row(
                                                                 children=[
-                                                                    dbc.Input(
+                                                                    # dbc.Input(
+                                                                    #     id=f'inp-create-min-fim-{page_name}',
+                                                                    #     type="number",
+                                                                    #     min=0,
+                                                                    #     max=59,
+                                                                    #     step=1,
+                                                                    #     placeholder="00-59",
+                                                                    # ),
+                                                                    dbc.Select(
                                                                         id=f'inp-create-min-fim-{page_name}',
-                                                                        type="number",
-                                                                        min=0,
-                                                                        max=59,
-                                                                        step=1,
-                                                                        placeholder="00-59",
-                                                                    ),
+                                                                        options=[
+                                                                            {'label': f'{x}'.upper(),
+                                                                             'value': f'{x}'.upper()}
+                                                                            for x in range(0, 60)
+                                                                        ],
+                                                                        value='0'
+                                                                    )
                                                                 ],
                                                                 class_name='col-lg-12 col-sm-12 '),
                                                         ],
@@ -299,10 +249,8 @@ def update_datepicker(datepicker):
     # config_prevent_initial_callbacks=True,
 )
 def create_horario(dia_semana, hora_inicio, min_inicio, hora_fim, min_fim, n_clicks):
-# def create_horario(user_name, email_pai, celular_pai, email_mae, celular_mae, data_inicio, n_clicks):
 
     if dia_semana and hora_inicio and min_inicio and hora_fim and min_fim:
-    # if user_type and user_name and user_email and user_passdw:
         config = Config().config
         dados = Dados(config['ambiente'])
 
@@ -318,7 +266,7 @@ def create_horario(dia_semana, hora_inicio, min_inicio, hora_fim, min_fim, n_cli
         try:
             df_new_horario.dropna(inplace=True)
             dados.insert_into_table(df=df_new_horario, table_name='horario')
-            msg = 'Usuário Criado'
+            msg = f'{n_clicks} - Horário Criado'
         except Exception as err:
             msg = f'Erro: {err}'
 
@@ -327,11 +275,16 @@ def create_horario(dia_semana, hora_inicio, min_inicio, hora_fim, min_fim, n_cli
     if n_clicks:
         msg = []
 
-        if not user_name:
-            msg.append('Nome')
-
-        if not data_inicio:
-            msg.append('Data de Inicio')
+        if not dia_semana:
+            msg.append('Dia da Semana')
+        if not hora_inicio:
+            msg.append('Hora de Inicio')
+        if not min_inicio:
+            msg.append('Minuto Inicial')
+        if not hora_fim:
+            msg.append('Hora Fim')
+        if not min_fim:
+            msg.append('Minuto Final')
 
         return f'Verifique se os campos estão corretos: {msg}'
 

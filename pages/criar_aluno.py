@@ -308,7 +308,7 @@ def create_aluno(user_name, email_pai, celular_pai, email_mae, celular_mae, data
         try:
             df_new_aluno.dropna(inplace=True)
             dados.insert_into_table(df=df_new_aluno, table_name='aluno')
-            msg = 'Usuário Criado'
+            msg = f'{n_clicks} - Usuário Criado'
         except Exception as err:
             msg = f'Erro: {err}'
 

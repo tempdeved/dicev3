@@ -313,7 +313,9 @@ content_layout = dbc.Row(
 
 def layout():
     try:
-        if current_user.is_authenticated and dependecies.verify_active_user(session['email']):
+        if current_user.is_authenticated and \
+                dependecies.verify_active_user(session['email']) and \
+                (dependecies.is_admni_user(session['email']) or dependecies.is_gerente_user(session['email'])):
                 return content_layout
     except Exception as err:
         # return login_layout()

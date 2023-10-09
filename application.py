@@ -171,7 +171,7 @@ side_bar = Sidebar().layout(
                 dcc.Link(children='criar aluno', href='/CriarALuno'),
 
                 # editar aluno e exportar aluno
-                # dcc.Link(children='editar aluno', href='/editar_aluno'),
+                dcc.Link(children='--editar aluno', href='/editar_aluno'),
 
                 # lançar REMARKS junto com nota
                 # dcc.Link(children='lançar nota aluno', href='/lancar_nota_aluno'),
@@ -182,8 +182,8 @@ side_bar = Sidebar().layout(
             group_elements=[
                 dcc.Link(children='criar horario', href='/CriarHorario'),
                 dcc.Link(children='criar turma', href='/CriarTurma'),
-                dcc.Link(children='editar turma', href='/editar_turma'),
-                dcc.Link(children='lançar nota turma', href='/lancar_nota_turma'),
+                dcc.Link(children='editar turma', href='/EditarTurma'),
+                dcc.Link(children='--lançar nota turma', href='/lancar_nota_turma'),
             ]
         ),
         ListGroup().layout(
@@ -191,16 +191,16 @@ side_bar = Sidebar().layout(
             group_elements=[
 
                 # boletim
-                dcc.Link(children='boletim aluno', href='/r_boletim_aluno'),
+                dcc.Link(children='--boletim aluno', href='/r_boletim_aluno'),
 
                 # alunos, telefones, etc
-                dcc.Link(children='telefones turma', href='/r_telefones_turma'),
+                dcc.Link(children='--telefones turma', href='/r_telefones_turma'),
 
                 # boletim da turma
-                dcc.Link(children='nota por turma', href='/r_nota_por_turma'),
+                dcc.Link(children='--nota por turma', href='/r_nota_por_turma'),
 
                 # horarios das turmas
-                dcc.Link(children='horarios turmas', href='/r_horarios_turma'),
+                dcc.Link(children='--horarios turmas', href='/r_horarios_turma'),
             ]
         ),
         ListGroup().layout(

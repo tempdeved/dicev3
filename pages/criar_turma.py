@@ -543,19 +543,22 @@ def create_horario(
         df_alunos = pd.DataFrame(alunos_data)
 
         ids_prod = ''
-        for x in preofessores_turma:
-            aux = x
-            ids_prod = f'{aux},{ids_prod}'
+        if preofessores_turma:
+            for x in preofessores_turma:
+                aux = x
+                ids_prod = f'{aux},{ids_prod}'
 
         ids_coord = ''
-        for x in coordenador_turma:
-            aux = x
-            ids_coord = f'{aux},{ids_coord}'
+        if coordenador_turma:
+            for x in coordenador_turma:
+                aux = x
+                ids_coord = f'{aux},{ids_coord}'
 
         ids_horarios = ''
-        for x in horarios_turma:
-            aux = x
-            ids_horarios = f'{aux},{ids_horarios}'
+        if horarios_turma:
+            for x in horarios_turma:
+                aux = x
+                ids_horarios = f'{aux},{ids_horarios}'
 
         df_new_turma= pd.DataFrame(
             data={
@@ -594,7 +597,7 @@ def create_horario(
         try:
             df_new_turma.dropna(inplace=True)
             dados.insert_into_table(df=df_new_turma, table_name='turma2')
-            msg = 'Turma Criada'
+            msg = f'{n_clicks} - Turma Criada'
         except Exception as err:
             msg = f'Erro: {err}'
 

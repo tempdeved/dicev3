@@ -33,6 +33,75 @@ def verify_active_user(email):
         return True
     else:
         return False
+def is_professor_user(email):
+    admin = dados.query_table(
+        table_name='funcionario',
+        # operation='distinct',
+        field_list=[
+            {'name': 'email_func'},
+            {'name': 'tipo'},
+        ],
+        filter_list=[
+            {'op': 'eq', 'name': 'email_func', 'value': email}
+        ]
+    )
+
+    if admin['tipo'][0] == 'Professor':
+        return True
+    else:
+        return False
+def is_gerente_user(email):
+    admin = dados.query_table(
+        table_name='funcionario',
+        # operation='distinct',
+        field_list=[
+            {'name': 'email_func'},
+            {'name': 'tipo'},
+        ],
+        filter_list=[
+            {'op': 'eq', 'name': 'email_func', 'value': email}
+        ]
+    )
+
+    if admin['tipo'][0] == 'Gerente':
+        return True
+    else:
+        return False
+def is_admni_user(email):
+    admin = dados.query_table(
+        table_name='funcionario',
+        # operation='distinct',
+        field_list=[
+            {'name': 'email_func'},
+            {'name': 'tipo'},
+        ],
+        filter_list=[
+            {'op': 'eq', 'name': 'email_func', 'value': email}
+        ]
+    )
+
+    if admin['tipo'][0] == 'Admin':
+        return True
+    else:
+        return False
+
+def is_administrativo_user(email):
+    admin = dados.query_table(
+        table_name='funcionario',
+        # operation='distinct',
+        field_list=[
+            {'name': 'email_func'},
+            {'name': 'tipo'},
+        ],
+        filter_list=[
+            {'op': 'eq', 'name': 'email_func', 'value': email}
+        ]
+    )
+
+    if admin['tipo'][0] == 'Administrativo':
+        return True
+    else:
+        return False
 
 
 # def access_page():
