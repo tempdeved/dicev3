@@ -23,6 +23,7 @@ content_layout = dbc.Row(
     children=[
         dbc.Row(id=f'first-load-{page_name}'),
     ],
+    className='m-0 p-0'
 )
 
 def layout():
@@ -37,6 +38,7 @@ def layout():
             children=[
                 dbc.Row(id=f'first-load-{page_name}'),
             ],
+            className='m-0 p-0'
         )
 
         return result
@@ -46,6 +48,7 @@ def layout():
         children=[
             dbc.Row(id=f'first-load-{page_name}'),
         ],
+        className='m-0 p-0'
     )
 
     return result
@@ -85,14 +88,14 @@ def def_welcome_msg(m_container):
             children=[
                 dbc.Row(f'Seja bem vindo!', className='justify-content-center'),
                 dbc.Row(Titulo().load(id=f'titulo-pagina-{page_name}', title_name=msg)),
-            ]
+            ],className='justify-content-center m-0 p-0'
         )
     except:
         result = dbc.Row(
             children=[
                 'Seja bem vindo! faça login para acessar os recursos do sistema'
             ],
-            className='justify-content-center'
+            className='justify-content-center m-0 p-0'
         )
 
     return result

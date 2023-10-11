@@ -23,7 +23,7 @@ def layout():
                         children=[
                             dbc.Input(
                                 id="uname-box",
-                                placeholder="Enter your username",
+                                placeholder="Enter your email",
                                 type="text",
                                 name='username',
                                 size='sm',
@@ -56,7 +56,7 @@ def layout():
 
             # row de botoes
             dbc.Row(
-                class_name='justify-content-center mx-0 py-0',
+                class_name='justify-content-center mx-0 py-2',
                 # class_name='justify-content-center my-2',
                 children=[
                     dbc.Col(
@@ -98,29 +98,35 @@ def layout():
                 ]
     )
 
-    linha_separatoria = dbc.Row(
-        class_name='justify-content-center mx-0 py-0',
-        children=[
-            dbc.Col(width=15, children=html.Hr()),
-            # dbc.Col(width=2, children=html.P('ou'), class_name='text-center'),
-            # dbc.Col(width=5, children=html.Hr())
-        ]
-    ),
+    # linha_separatoria = dbc.Row(
+    #     class_name='justify-content-center mx-0 py-0',
+    #     children=[
+    #         dbc.Col(width=15, children=html.Hr()),
+    #         # dbc.Col(width=2, children=html.P('ou'), class_name='text-center'),
+    #         # dbc.Col(width=5, children=html.Hr())
+    #     ]
+    # ),
 
     formulario = html.Form(
         id=f'form_cadastro_{page_name}',
-        className='mx-0 my-0',
+        className='mx-0 my-4',
         # class_name='mx-2 my-2',
         method='POST',
         children=[
-            dbc.Row(html.H2(children="Portfolio Newcom", className='text-center')),
+            dbc.Row(html.H2(children="Login", className='text-center py-2')),
             dbc.Row(inputs),
-            dbc.Row(linha_separatoria),
+            # dbc.Row(linha_separatoria),
             # dbc.Row(input_social),
         ]
     )
 
-    layout = dbc.Container(children=dbc.Card(children=formulario, class_name='shadow-lg'), class_name='my-2')
+    layout = dbc.Container(
+        children=dbc.Card(
+            children=formulario,
+            class_name='shadow-lg'
+        ),
+        # class_name='my-10 py-10'
+    )
 
 
 

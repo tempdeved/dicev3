@@ -11,16 +11,17 @@ class ListGroup(object):
 
         layout = dbc.Row(
             children=[
-                dbc.ListGroup(
-                    class_name='py-2, text-center',
-                    children=[
-                        html.H4(children=group_title, className='text-center'),
+                # dbc.ListGroup(
+                #     class_name='text-center',
+                #     children=[
+                        # html.Br(),
+                        html.H5(children=group_title, className='text-center'),
                         # html.H4(children=group_title, className='text-center border-bottom'),
-                        dbc.Row(children=group_elements),
+                        dbc.Row(children=group_elements, class_name=''),
                         # html.Hr(),
-                        html.Br(),
-                    ]
-                ),
+                        html.Hr(),
+                #     ]
+                # ),
             ],
         )
 

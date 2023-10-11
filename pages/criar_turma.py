@@ -5,7 +5,7 @@ import pandas as pd
 import sqlalchemy.exc
 
 import dependecies
-from dash import html, dcc, dash_table, callback, Input, Output, State
+from dash import html, dcc, dash_table, callback, Input, Output, State, long_callback
 import dash_bootstrap_components as dbc
 
 from flask import Flask, request, redirect, session, url_for
@@ -93,6 +93,13 @@ content_layout = dbc.Row(
                 dbc.Row(id=f'out-alert-user-33{page_name}'),
                 dbc.Row(id=f'out-alert-fuc-{page_name}'),
                 dbc.Row(id=f'out-alert-edited-fuc-{page_name}'),
+
+                # dcc.Interval(
+                #     id='inp-interval',
+                #     interval=1*1000, # in milliseconds
+                #     n_intervals=0
+                # ),
+                # dbc.Row(id=f'out-interval-{page_name}'),
             ]
         )
     ],
@@ -112,6 +119,15 @@ def layout():
         # return redirect('/')
         return Titulo().load(id='titulo-pagina', title_name='Sem permissão')
     return Titulo().load(id='titulo-pagina', title_name='Sem permissão')
+
+
+# @callback(
+#     Output(component_id=f'out-interval-{page_name}', component_property='children'),
+#     Input(component_id=f'inp-interval', component_property='n_intervals'),
+#     interval=10,
+# )
+# def interval_test(n_intervals):
+#     return f'{n_intervals} - {datetime.datetime.now()}'
 
 
 @callback(
@@ -360,11 +376,20 @@ def update_datepicker(datepicker):
                     dbc.Select(
                         id=f'inp-create-nivel-turma-{page_name}',
                         options=[
-                            {'label': '0'.upper(),'value': f'0'.upper()},
-                            {'label': '1'.upper(),'value': f'1'.upper()},
-                            {'label': '2'.upper(),'value': f'2'.upper()},
-                            {'label': '3'.upper(),'value': f'3'.upper()},
-                            {'label': '4'.upper(),'value': f'4'.upper()},
+                            {'label': 'Sensório Motor'.upper(), 'value': 'Sensório Motor'.upper()},
+                            {'label': 'Sensório / Simbólico'.upper(), 'value': 'Sensório / Simbólico'.upper()},
+                            {'label': 'Simbólico'.upper(), 'value': 'Simbólico'.upper()},
+                            {'label': 'Simbólico / Intuitivo'.upper(), 'value': 'Simbólico / Intuitivo'.upper()},
+                            {'label': 'Intuitivo'.upper(), 'value': 'Intuitivo'.upper()},
+                            {'label': 'Operatório Iniciante I'.upper(), 'value': 'Operatório Iniciante I'.upper()},
+                            {'label': 'Operatório Iniciante II'.upper(), 'value': 'Operatório Iniciante II'.upper()},
+                            {'label': 'Operatório Iniciante III'.upper(), 'value': 'Operatório Iniciante III'.upper()},
+                            {'label': 'Operatório Intermediário I'.upper(), 'value': 'Operatório Intermediário I'.upper()},
+                            {'label': 'Operatório Intermediário II'.upper(), 'value': 'Operatório Intermediário II'.upper()},
+                            {'label': 'Operatório Intermediário III'.upper(), 'value': 'Operatório Intermediário III'.upper()},
+                            {'label': 'Operatório Avançado I'.upper(), 'value': 'Operatório Avançado I'.upper()},
+                            {'label': 'Operatório Avançado II'.upper(), 'value': 'Operatório Avançado II'.upper()},
+                            {'label': 'Operatório Avançado III'.upper(), 'value': 'Operatório Avançado III'.upper()},
                         ],
                         value='0'.upper()
                     )
@@ -397,9 +422,25 @@ def update_datepicker(datepicker):
             dbc.Row('MAP', className='m-0 p-0'),
             dbc.Row(
                 children=[
-                    dbc.Input(
+                    dbc.Select(
                         id=f'inp-create-map-turma-{page_name}',
-                        placeholder='digite aqui...'
+                        options=[
+                            {'label': '1'.upper(), 'value': f'1'.upper()},
+                            {'label': '2'.upper(), 'value': f'2'.upper()},
+                            {'label': '3'.upper(), 'value': f'3'.upper()},
+                            {'label': '4'.upper(), 'value': f'4'.upper()},
+                            {'label': '5'.upper(), 'value': f'5'.upper()},
+                            {'label': '6'.upper(), 'value': f'6'.upper()},
+                            {'label': '7'.upper(), 'value': f'7'.upper()},
+                            {'label': '8'.upper(), 'value': f'8'.upper()},
+                            {'label': '9'.upper(), 'value': f'9'.upper()},
+                            {'label': '10'.upper(), 'value': f'10'.upper()},
+                            {'label': '11'.upper(), 'value': f'11'.upper()},
+                            {'label': '12'.upper(), 'value': f'12'.upper()},
+                            {'label': '13'.upper(), 'value': f'13'.upper()},
+                            {'label': '14'.upper(), 'value': f'14'.upper()},
+                            {'label': '15'.upper(), 'value': f'15'.upper()},
+                        ],
                     )
                 ],
                 className='m-0 p-0'
@@ -595,9 +636,11 @@ def create_horario(
             df_new_turma['id_aluno'] = msg
 
         try:
-            df_new_turma.dropna(inplace=True)
+            df_new_turma.dropna(axis=1, inplace=True)
             dados.insert_into_table(df=df_new_turma, table_name='turma2')
             msg = f'{n_clicks} - Turma Criada'
+        except sqlalchemy.exc.IntegrityError as err:
+            msg = f'Cod Turma: {id_turma} já existe'
         except Exception as err:
             msg = f'Erro: {err}'
 

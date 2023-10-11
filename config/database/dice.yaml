@@ -3,26 +3,32 @@ ambiente:
     string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
     credentials:
      # Prod - Uso em Produção
-        user: 'dice3'
-        password: 'D1c9-3#ngl&6sh1a'
-        host: 127.0.0.1
-        port: 3306
-        database: dicev3
+#        user: 'dice3'
+#        password: 'D1c9-3#ngl&6sh1a'
+#        host: 127.0.0.1
+#        port: 3306
+#        database: dicev3
+
+            user: 'root'
+            password: ''
+            host: 127.0.0.1
+            port: 3306
+            database: dicev3
 
   nat:
     string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
     credentials:
 
       # NAT - Uso inteiro/Ambiente de Desenvolvimento
-      user: 'dice3'
-      password: 'D1c9-3#ngl&6sh1a'
-      host: 3.80.101.37
-      port: 3306
-      database: dicev3
-
-#      user: 'root'
-#      password: ''
-#      host: 127.0.0.1
+#      user: 'dice3'
+#      password: 'D1c9-3#ngl&6sh1a'
+#      host: 3.80.101.37
 #      port: 3306
 #      database: dicev3
+
+      user: 'root'
+      password: ''
+      host: 127.0.0.1
+      port: 3306
+      database: dicev3
 

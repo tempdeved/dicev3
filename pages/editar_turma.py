@@ -23,7 +23,8 @@ dash.register_page(__name__, path=f'/EditarTurma')
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
-    class_name='px-2 mx-0 shadow-lg',
+    # class_name='px-2 mx-0 shadow-lg',
+    # class_name='col-lg-10',
     children=[
 
         # Titulo da pagina
@@ -189,72 +190,42 @@ content_layout = dbc.Row(
                                 children=[
                                     dbc.AccordionItem(
                                         children=[
-                                            dbc.Card(
-                                                class_name='d-flex justify-content-center justify-content-middle text-center py-0 my-2 mx-0 shadow',
-                                                children=[
-                                                    dbc.Tabs(
+                                            # dbc.Card(
+                                            #     class_name='d-flex justify-content-center py-0 my-2 mx-0 shadow',
+                                            #     children=[
+                                                    dbc.Row(
+                                                        id=f'out-edit-funcionario-{page_name}',
                                                         children=[
-                                                            dbc.Tab(
-                                                                children=[
-                                                                    dbc.Row(
-                                                                        id=f'out-edit-funcionario-{page_name}',
-                                                                        children=[
-                                                                            dash_table.DataTable(
-                                                                                id=f'data-table-edit-user-{page_name}',
-                                                                            ),
-                                                                        ]
-                                                                    ),
-                                                                    # dbc.Row(
-                                                                    # children=[
-                                                                        # dbc.Row(
-                                                                        #     children=[
-                                                                        #         dbc.Button(
-                                                                        #             id=f'btn-buscar-usuarios-{page_name}',
-                                                                        #             children=['Buscar Funcionários'],
-                                                                        #             class_name='me-2',
-                                                                        #             color='primary',
-                                                                        #             n_clicks=0,
-                                                                        #         ),
-                                                                        #     ]
-                                                                        # )
-
-                                                                    dbc.Row(
-                                                                    children=[
-                                                                            dbc.Row(
-                                                                            children=[
-                                                                                dbc.Row(
-                                                                                    id='button_area',
-                                                                                    # class_name='d-grid d-md-block',  # gap-2
-                                                                                    children=[
-                                                                                        dbc.Col(
-                                                                                            # width=2,
-                                                                                            children=[
-                                                                                                dbc.Button(
-                                                                                                    id=f'btn-buscar-usuarios-{page_name}',
-                                                                                                    children=['BUSCAR TURMAS'],
-                                                                                                    class_name='me-2',
-                                                                                                    color='primary',
-                                                                                                    n_clicks=0,
-                                                                                                ),
-                                                                                            ]
-                                                                                        )
-                                                                                    ]
-                                                                                ),
-                                                                            ]
-                                                                        ),
-                                                                        ]
-                                                                    ),
-                                                                ],
-                                                                label="Turmas"
+                                                            dash_table.DataTable(
+                                                                id=f'data-table-edit-user-{page_name}',
                                                             ),
-
                                                         ]
                                                     ),
+                                                    # dbc.Row(
+                                                    #     id='button_area',
+                                                    #     # class_name='d-grid d-md-block',  # gap-2
+                                                    #     class_name='pb-2 pt-2 text-center',
+                                                    #     children=[
+                                                    #         dbc.Col(
+                                                    #             # width=2,
+                                                    #             children=[
+                                                    #                 dbc.Button(
+                                                    #                     id=f'btn-buscar-usuarios-{page_name}',
+                                                    #                     children=['BUSCAR TURMAS'],
+                                                    #                     class_name='me-2',
+                                                    #                     color='primary',
+                                                    #                     n_clicks=0,
+                                                    #                 ),
+                                                    #             ]
+                                                    #         )
+                                                    #     ]
+                                                    # ),
+
 
                                                     dbc.Tabs(
                                                         children=[
                                                             dbc.Tab(
-                                                                label="Campos",
+                                                                label="TURMA DETALHADA",
                                                                 children=[
                                                                     dbc.Row(id=f'out-edit-func-{page_name}'),
                                                                     dbc.Row(
@@ -282,15 +253,15 @@ content_layout = dbc.Row(
                                                                         ]
                                                                     ),
                                                                 ]),
-                                                        ])
-                                                    ,
+                                                    #     ])
+                                                    # ,
                                                 ],
                                             ),
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="EDITAR TURMA"
+                                        title="SELECIONAR TURMA"
                                     )
-                                ], start_collapsed=True, flush=True, style={'background-color': '#ffffff'}
+                                ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
                         ], class_name=''
                     )
@@ -392,89 +363,54 @@ def create_user(user_type, user_name, user_email, user_passdw, user_status, n_cl
 @callback(
     Output(component_id=f'out-edit-funcionario-{page_name}', component_property='children'),
 
-    Input(component_id=f'btn-buscar-usuarios-{page_name}', component_property='n_clicks'),
+    Input(component_id=f'main-container-{page_name}', component_property='children'),
+    # Input(component_id=f'btn-buscar-usuarios-{page_name}', component_property='n_clicks'),
 )
-def capturar_funcionarios(main_contianer):
+def buscar_turmas(btn):
 
-    if main_contianer >= 1:
+    # if btn >= 1:
 
-        config = Config().config
-        dados = Dados(config['ambiente'])
+    config = Config().config
+    dados = Dados(config['ambiente'])
 
-        df_turma  = dados.query_table(
-            table_name='turma2',
-            field_list=[
-                {'name': 'id'},
-                {'name': 'id_turma'},
-                {'name': 'semestre'},
-                {'name': 'status'},
-                {'name': 'nivel'},
-                {'name': 'inicio'},
-                {'name': 'fim'},
-                {'name': 'map'},
-                {'name': 'idioma'},
-            ]
-        )
-        # df_func  = dados.query_table(
-        #     table_name='funcionario',
-        #     # field_list=[
-        #     #     {'name': 'email'},
-        #     #     {'name': 'status'},
-        #     # ]
-        # )
-        # df_func.drop(columns=['id'], inplace=True)
-        # df_func.rename(columns={'email_func': 'email'}, inplace=True)
-        #
-        # df_merge = pd.merge(
-        #     left=df_user,
-        #     right=df_func,
-        #     on=['email'],
-        #     how='left',
-        # )
-        #
-        # df = df_merge[df_merge['tipo'].isin(['Professor', 'Gerente'])]
+    df_turma  = dados.query_table(
+        table_name='turma2',
+        field_list=[
+            {'name': 'id'},
+            {'name': 'id_turma'},
+            {'name': 'semestre'},
+            {'name': 'status'},
+            {'name': 'nivel'},
+            {'name': 'inicio'},
+            {'name': 'fim'},
+            {'name': 'map'},
+            {'name': 'idioma'},
+        ]
+    )
 
-        # df_func = dados.query_table(table_name='funcionario')
-        #
-        # df = df_func[[
-        #     # 'id', 'created_at', 'status',
-        #     'funcao',
-        #     # 'senha',
-        #     'telefone1', 'telefone2', 'dat_nasc', 'cc', 'cart_profis', 'rg',
-        #     'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
-        #     'cep', 'email_pessoal', 'foto'
-        # ]]
+    dt_user = dash_table.DataTable(
+        id=f'data-table-edit-user-{page_name}',
+        data=df_turma.to_dict('records'),
+        columns=[{"name": i.upper(), "id": i} for i in df_turma.columns],
+        page_current=0,
+        page_size=5,
+        style_cell={'textAlign': 'center'},
+        editable=False,
+        filter_action='native',
+        sort_mode="multi",
+        sort_action="native",
+        page_action="native",
+        row_selectable="single",
+        # row_selectable="multi",
+        # export_columns='all',
+        # export_format='xlsx',
+        # export_columns='all',
+        style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
+    )
+    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
-        # num_page = int(len(df) / 5)
-        #
-        # filter_columns = ['email', 'status']
-
-        # # Criando visualização em dashDataTable dos dados formatados
-        dt_user = dash_table.DataTable(
-            id=f'data-table-edit-user-{page_name}',
-            data=df_turma.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_turma.columns],
-            page_current=0,
-            page_size=5,
-            style_cell={'textAlign': 'center'},
-            editable=False,
-            filter_action='native',
-            sort_mode="multi",
-            sort_action="native",
-            page_action="native",
-            row_selectable="single",
-            # row_selectable="multi",
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-        )
-        datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
-
-        return datatable1
-    else:
-        return dash_table.DataTable(
-            id=f'data-table-edit-user-{page_name}',
-        )
+    return datatable1
 
 @callback(
     Output(component_id=f'out-edit-func-{page_name}', component_property='children'),
@@ -484,15 +420,22 @@ def capturar_funcionarios(main_contianer):
     # Input(component_id=f'btn-buscar-usuarios-{page_name}',  component_property='n_clicks'),
     # prevent_initial_callbacks=True,
     )
-def salvar_funcionarios_editados(data_drom_data_table, active_cell):
+def editar_turma(data_drom_data_table, active_cell):
 
     if data_drom_data_table and active_cell:
+        # camps editaveis
+        # Nivel
+        # Mapa
+        # Professor
+        # Alunos da turma
+
         config = Config().config
         dados = Dados(config['ambiente'])
 
         df_turma = pd.DataFrame(data_drom_data_table)
 
         turma_id = df_turma['id'].iloc[active_cell[0]]
+        id_dice = df_turma['id_turma'].iloc[active_cell[0]]
 
         df_turma2  = dados.query_table(
             table_name='turma2',
@@ -506,27 +449,25 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
 
         df_prof_filted = pd.DataFrame(
-            columns=['nome_completo', 'telefone1', 'telefone2', 'dat_nasc']
+            columns=['id', 'nome_completo']
         )
 
         if df_turma2['id_professor'].isna()[0] == False:
             list_prof = df_turma2['id_professor'][0].split(',')[:-1]
-            df_prof = dados.query_table(
-                table_name='funcionario',
-                # field_list=[
-                #     {'name': 'email'},
-                # ]
-            filter_list=[
-                {'op': 'in', 'name': 'email_func', 'value': list_prof}
-            ]
-            )
-            df_prof_filted = df_prof[['nome_completo', 'telefone1', 'telefone2', 'dat_nasc']]
+            df_prof = dados.query_table(table_name='funcionario')
 
+            df_prof_filted = df_prof[df_prof['email_func'].isin(list_prof)]
+            df_prof_filted = df_prof_filted[['id', 'nome_completo']]
+
+            df_prof_filted2 = df_prof[df_prof['tipo'].isin(
+                [ 'Professor', 'Coordenador']
+            )]
+            df_prof_filted2 = df_prof_filted2[['id', 'nome_completo']]
 
 
 
         df_coord_filted = pd.DataFrame(
-            columns=['nome_completo', 'telefone1', 'telefone2', 'dat_nasc']
+            columns=['id', 'nome_completo']
         )
 
         if df_turma2['id_coordenador'].isna()[0] == False:
@@ -540,7 +481,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                 {'op': 'in', 'name': 'email_func', 'value': list_coord}
             ]
             )
-            df_coord_filted = df_coord[['nome_completo', 'telefone1', 'telefone2', 'dat_nasc']]
+            df_coord_filted = df_coord[['id', 'nome_completo']]
 
 
 
@@ -563,7 +504,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
 
         df_alunos_filted = pd.DataFrame(
-            columns=['nome', 'status', 'dat_nasc', 'numero', 'telefone1', 'sexo', 'nome_pai', 'celular_pai', 'nome_mae', 'celular_mae']
+            columns=['id', 'nome', 'status', 'telefone1']
         )
 
         if df_turma2['id_aluno'].isna()[0] == False:
@@ -577,7 +518,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                 {'op': 'in', 'name': 'id', 'value': list_alunos}
             ]
             )
-            df_alunos_filted = df_alunos[['nome', 'status', 'dat_nasc', 'numero', 'telefone1', 'sexo', 'nome_pai', 'celular_pai', 'nome_mae', 'celular_mae']]
+            df_alunos_filted = df_alunos[['id', 'nome', 'status', 'telefone1']]
 
 
         dt_func1 = dash_table.DataTable(
@@ -596,6 +537,20 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
             columns=[{"name": i.upper(), "id": i} for i in df_prof_filted.columns],
             style_cell={'textAlign': 'center'},
             editable=False,
+            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+
+        )
+        dt_func22 = dash_table.DataTable(
+            id=f'data-table-edit-func-2-new-{page_name}',
+            data=df_prof_filted2.to_dict('records'),
+            columns=[{"name": i.upper(), "id": i} for i in df_prof_filted2.columns],
+            style_cell={'textAlign': 'center'},
+            editable=False,
+
+            filter_action='native',
+            page_current=0,
+            page_size=1,
+            row_selectable="multi",
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
         )
@@ -726,14 +681,122 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
         row1 = dbc.Row(
             children=[
-                dbc.Row('TURMA', class_name='justify-content-center'),
-                dt_func1
-        ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
+                dbc.Alert(
+                    children=[
+                        html.Div(f'TURMA {id_dice}'),
+                    ],
+                ),
+        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2')
+
+        row_nivel = html.Div(
+            children=[
+                dbc.Row('NIVEL', className='m-0 p-0'),
+                dbc.Row(
+                    children=[
+                        dbc.Select(
+                            id=f'inp-create-nivel-turma-{page_name}',
+                            options=[
+                                {'label': 'Sensório Motor'.upper(), 'value': 'Sensório Motor'.upper()},
+                                {'label': 'Sensório / Simbólico'.upper(), 'value': 'Sensório / Simbólico'.upper()},
+                                {'label': 'Simbólico'.upper(), 'value': 'Simbólico'.upper()},
+                                {'label': 'Simbólico / Intuitivo'.upper(), 'value': 'Simbólico / Intuitivo'.upper()},
+                                {'label': 'Intuitivo'.upper(), 'value': 'Intuitivo'.upper()},
+                                {'label': 'Operatório Iniciante I'.upper(), 'value': 'Operatório Iniciante I'.upper()},
+                                {'label': 'Operatório Iniciante II'.upper(),
+                                 'value': 'Operatório Iniciante II'.upper()},
+                                {'label': 'Operatório Iniciante III'.upper(),
+                                 'value': 'Operatório Iniciante III'.upper()},
+                                {'label': 'Operatório Intermediário I'.upper(),
+                                 'value': 'Operatório Intermediário I'.upper()},
+                                {'label': 'Operatório Intermediário II'.upper(),
+                                 'value': 'Operatório Intermediário II'.upper()},
+                                {'label': 'Operatório Intermediário III'.upper(),
+                                 'value': 'Operatório Intermediário III'.upper()},
+                                {'label': 'Operatório Avançado I'.upper(), 'value': 'Operatório Avançado I'.upper()},
+                                {'label': 'Operatório Avançado II'.upper(), 'value': 'Operatório Avançado II'.upper()},
+                                {'label': 'Operatório Avançado III'.upper(),
+                                 'value': 'Operatório Avançado III'.upper()},
+                            ],
+                            value='0'.upper()
+                        )
+                    ],
+                    className='m-0 p-0'
+                ),
+            ],
+            className='m-0 p-1'
+        )
+
+        row_map = dbc.Row(
+            children=[
+                dbc.Row('MAP', className='m-0 p-0'),
+                dbc.Row(
+                    children=[
+                        dbc.Select(
+                            id=f'inp-create-map-turma-{page_name}',
+                            options=[
+                                {'label': '1'.upper(), 'value': f'1'.upper()},
+                                {'label': '2'.upper(), 'value': f'2'.upper()},
+                                {'label': '3'.upper(), 'value': f'3'.upper()},
+                                {'label': '4'.upper(), 'value': f'4'.upper()},
+                                {'label': '5'.upper(), 'value': f'5'.upper()},
+                                {'label': '6'.upper(), 'value': f'6'.upper()},
+                                {'label': '7'.upper(), 'value': f'7'.upper()},
+                                {'label': '8'.upper(), 'value': f'8'.upper()},
+                                {'label': '9'.upper(), 'value': f'9'.upper()},
+                                {'label': '10'.upper(), 'value': f'10'.upper()},
+                                {'label': '11'.upper(), 'value': f'11'.upper()},
+                                {'label': '12'.upper(), 'value': f'12'.upper()},
+                                {'label': '13'.upper(), 'value': f'13'.upper()},
+                                {'label': '14'.upper(), 'value': f'14'.upper()},
+                                {'label': '15'.upper(), 'value': f'15'.upper()},
+                            ],
+                        )
+                    ],
+                    className='m-0 p-0'
+                ),
+            ],
+            className='m-0 p-1'
+        )
+
         row2 = dbc.Row(
             children=[
-                dbc.Row('PROFESSOR', class_name='justify-content-center'),
-                dt_func2
-        ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
+                dbc.Accordion(
+                    children=[
+                        dbc.AccordionItem(
+                            children=[
+                                dbc.Row(
+                                    [
+                                        dbc.Row('PROFESSOR ATUAL', class_name='justify-content-center'),
+                                        dt_func2
+                                    ],
+                                    class_name='col-lg-6 col-md-12 col-sm-12 p-0 m-0 p-0 '
+                                ),
+                                dbc.Row(
+                                    [
+                                        dbc.Row('NOVO PROFESSOR', class_name='justify-content-center pt-2'),
+                                        dt_func22
+                                    ],
+                                    class_name='col-lg-6 col-md-12 col-sm-12 p-0 m-0 p-0 '
+                                )
+                            ],
+
+                            className='m-0 p-0',
+                            # style={'background-color': '#ffffff'},
+                            title="PROFESSOR",
+                        )
+                    ],
+
+                    className='m-0 p-0',
+                    start_collapsed=True,
+                    flush=True,
+                )
+             ],
+            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 justify-content-center'
+        )
+
+
+
+
         row3 = dbc.Row(
             children=[
                 dbc.Row('COORDENADOR', class_name='justify-content-center'),
@@ -755,6 +818,8 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
             children=[
                 # data frames
                 row1,
+                row_nivel,
+                row_map,
                 row2,
                 row3,
                 row4,

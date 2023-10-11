@@ -16,9 +16,11 @@ class Sidebar(object):
 
                 dbc.Row(
                     id='',
-                    class_name='px-0 px-md-2 mx-0 py-2 justify-content-center',
+                    # class_name='px-0 mx-0 ',
+                    class_name='px-0 mx-0 pt-4 justify-content-center',
+                    # class_name='px-0 px-md-2 mx-0 py-2 justify-content-center',
                     children=[
-                        dbc.Col(
+                        dbc.Row(
                             class_name='col-2 col-lg-1 px-0 mx-0 d-block '
                                        'justify-content-center text-center',
                             children=[  
@@ -45,7 +47,9 @@ class Sidebar(object):
                     title="Menu",
                     is_open=False,
                     class_name='bg-white d-block justify-content-center justify-content-middle text-center px-0 '
-                               'overflow-auto'
+                               'overflow-auto',
+                    # placement='top'
+
                 ),
             ]
         )

@@ -155,7 +155,7 @@ class Turma(Base):
     __tablename__ = 'turma2'
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    id_turma = Column(Integer)
+    id_turma = Column(Integer, unique=True)
     created_at = Column(DATE)
 
     id_professor = Column(TEXT)
@@ -203,16 +203,16 @@ class HistoricoAluno(Base):
 config = {
     'string_engine': r'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}',
     'credentials': dict(
-        user='dice3',
-        password='D1c9-3#ngl&6sh1a',
-        host='3.80.101.37',
-        port='3306',
-        database='dicev3',
-        # user='root',
-        # password='',
-        # host='127.0.0.1',
-        # database='dicev3',
+        # user='dice3',
+        # password='D1c9-3#ngl&6sh1a',
+        # host='3.80.101.37',
         # port='3306',
+        # database='dicev3',
+        user='root',
+        password='',
+        host='127.0.0.1',
+        database='dicev3',
+        port='3306',
     ),
 }
 

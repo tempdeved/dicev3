@@ -103,9 +103,12 @@ app = Dash(
         # dbc.icons.FONT_AWESOME
     ],
     suppress_callback_exceptions=True,
-    external_scripts=['https://cdn.plot.ly/plotly-locale-pt-br-latest.js']
-
+    external_scripts=['https://cdn.plot.ly/plotly-locale-pt-br-latest.js'],
+    dados=dados,
 )
+import os
+os.environ['DADOS_VENV'] = f'{dados}'
+os.environ['DADOS_VENV_HEX'] = f'{id(dados)}'
 
 # Updating the Flask Server configuration with Secret Key to encrypt the user session cookie
 # server.config.update(SECRET_KEY='')
@@ -215,7 +218,12 @@ side_bar = Sidebar().layout(
 
 app.layout = dbc.Row(
     id='main_container',
-    class_name='shadow px-0 mx-0 my-1 py-1',
+    # class_name='px-0 mx-0 my-1 py-1',
+    class_name='m-0 p-0 background',
+    style={
+        'background': 'hotpink',
+    },
+
     children=[
 
         # dcc.Location(id="url"),
@@ -225,38 +233,39 @@ app.layout = dbc.Row(
             id='',
             class_name='mx-0 px-0',
             children=[
-
-                dbc.Row(
-                    id='nav-bar-row',
-                    class_name='px-0 mx-0 my-1 shadow-lg',
-                    children=[
-
-                        # Nav bar
-                        dbc.Col(
-                            id='nav-bar',
-                            width=1,
-                            class_name='col-12 justify-content-center py-0 px-0 mx-0 px-0',
-                            children=[
-                                dbc.Row(
-                                    class_name='justify-content-center mx-0 px-0 px-0 py-0',
-                                    children=[side_bar]
-                                )
-                            ],
-                        ),
-
-                        # Título dashboard
-                        dbc.Col(
-                            id='col-titulo-dashboard',
-                            class_name='col-12 py-2 mx-0 px-0 my-0 py-0',
-                            children=[]
-                        ),
-                    ]
-                ),
+                dbc.Row(side_bar, class_name='justify-content-center'),
+                # dbc.Row(
+                #     id='nav-bar-row',
+                #     class_name='px-0 mx-0 my-1 ',
+                #     children=[
+                #
+                #         # Nav bar
+                #         dbc.Col(
+                #             id='nav-bar',
+                #             width=1,
+                #             class_name='col-12 justify-content-center py-0 px-0 mx-0 px-0',
+                #             children=[
+                #                 dbc.Row(
+                #                     class_name='justify-content-center mx-0 px-0 px-0 py-0',
+                #                     children=[side_bar]
+                #                 )
+                #             ],
+                #         ),
+                #
+                #         # Título dashboard
+                #         dbc.Col(
+                #             id='col-titulo-dashboard',
+                #             class_name='col-12 py-2 mx-0 px-0 my-0 py-0',
+                #             children=[]
+                #         ),
+                #     ]
+                # ),
 
                 # Main app area
                 dbc.Row(
                     id='main_area_app',
-                    class_name='shadow-lg mx-0 px-0 my-0 py-0',
+                    # class_name=' mx-5 px-0 my-0 py-0',
+                    class_name='p-5 p-0',
                     children=[dash.page_container]
                 ),
                 # dcc.Store(id=f'out-tbl-preco-medio-prazo-historico-2')
