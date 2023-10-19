@@ -15,7 +15,7 @@ class Logo(object):
             children=[
                 html.A(children=[
                     html.Img(
-                        src="/static/images/logo.webp",
+                        src="/static/images/logo/logo.webp",
                         alt='logo',
                         className='perfil_avatar py-2 mx-auto text-center',
                         style={'height': '100%', 'width': '50%'},

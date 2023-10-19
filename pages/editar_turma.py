@@ -241,7 +241,7 @@ content_layout = dbc.Row(
                                                                                             dbc.Button(
                                                                                                 id=f'btn-salvar-func-edited-{page_name}',
                                                                                                 children=[
-                                                                                                    'Salvar Funcionário'],
+                                                                                                    'SALVAR TURMA'],
                                                                                                 # class_name='p-5',
                                                                                                 color='primary',
                                                                                                 n_clicks=0,
@@ -374,7 +374,7 @@ def buscar_turmas(btn):
     dados = Dados(config['ambiente'])
 
     df_turma  = dados.query_table(
-        table_name='turma2',
+        table_name='turma',
         field_list=[
             {'name': 'id'},
             {'name': 'id_turma'},
@@ -438,13 +438,22 @@ def editar_turma(data_drom_data_table, active_cell):
         id_dice = df_turma['id_turma'].iloc[active_cell[0]]
 
         df_turma2  = dados.query_table(
-            table_name='turma2',
+            table_name='turma',
             # field_list=[
             #     {'name': 'email'},
             # ]
             filter_list=[
                 {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
             ]
+        )
+        df_all_aluno  = dados.query_table(
+            table_name='aluno',
+            # field_list=[
+            #     {'name': 'email'},
+            # ]
+            # filter_list=[
+            #     {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
+            # ]
         )
 
 
@@ -469,6 +478,7 @@ def editar_turma(data_drom_data_table, active_cell):
         df_coord_filted = pd.DataFrame(
             columns=['id', 'nome_completo']
         )
+        coord_name = ''
 
         if df_turma2['id_coordenador'].isna()[0] == False:
             list_coord = df_turma2['id_coordenador'][0].split(',')[:-1]
@@ -482,6 +492,8 @@ def editar_turma(data_drom_data_table, active_cell):
             ]
             )
             df_coord_filted = df_coord[['id', 'nome_completo']]
+
+            coord_name = df_coord_filted['nome_completo'].to_list()
 
 
 
@@ -572,125 +584,132 @@ def editar_turma(data_drom_data_table, active_cell):
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
         )
+        list_of_hour = []
+        if len(df_hr_filted) >=1 :
+            for x, row in df_hr_filted.iterrows():
+                list_of_hour.append(
+                    dbc.Row(
+                        children=[
+                            f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
+                            f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper()
+                        ],
+                        class_name='pt-1'
+                    )
+                )
+        else:
+            list_of_hour.append(
+                dbc.Row(f'SEM HORARIO CADASTRADO')
+            )
+
+        alunos_cadastrados = df_alunos_filted['id'].to_list()
+
+        df_all_aluno['cadastrado'] = df_all_aluno['id'].apply(lambda x: 'CAD' if x in alunos_cadastrados else 'NAO CAD')
+
+        df_all_aluno.sort_values(
+            by=['cadastrado'],
+            ascending=True,
+        )
+
+        df_alunos_filted = df_all_aluno[['id', 'nome', 'status', 'telefone1', 'cadastrado']]
+
         dt_func5 = dash_table.DataTable(
             id=f'data-table-edit-func-5-{page_name}',
             data=df_alunos_filted.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_alunos_filted.columns],
+            columns=[
+                {
+                    "name": i.upper(),
+                    "id": i,
+                    "editable": True if i == 'cadastrado' else False,
+                    "presentation": 'dropdown' if i == 'cadastrado' else '',
+                } for i in df_alunos_filted.columns
+            ],
+            dropdown={
+                'cadastrado': {
+                    'options': [
+                        {'label': "CAD", 'value': "CAD"},
+                        {'label': "NAO CAD", 'value': "NAO CAD"},
+                    ]
+                }
+            },
             style_cell={'textAlign': 'center'},
-            page_size=10,
-            editable=False,
+            page_size=30,
+            filter_action='native',
+            sort_mode="multi",
+            sort_action="native",
+            page_action="native",
+            # row_selectable=True,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
         )
+
+        # from collections import OrderedDict
         #
-        # radio_status = dbc.Row(
-        #     children=[
-        #         dbc.Row(
-        #             'Tipo Usuário',
-        #             class_name='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
+        # df = pd.DataFrame(OrderedDict([
+        #     ('climate', ['Sunny', 'Snowy', 'Sunny', 'Rainy']),
+        #     ('temperature', [13, 43, 50, 30]),
+        #     ('city', ['NYC', 'Montreal', 'Miami', 'NYC'])
+        # ]))
+        #
+        # a = [
+        #     {'label': i, 'value': i}
+        #     for i in df['climate'].unique()
+        # ]
+        #
+        # dt_func5 = html.Div([
+        #     dash_table.DataTable(
+        #         id='table-dropdown',
+        #         data=df.to_dict('records'),
+        #         columns=[
+        #             {'id': 'climate', 'name': 'climate', 'presentation': 'dropdown'},
+        #             {'id': 'temperature', 'name': 'temperature'},
+        #             {'id': 'city', 'name': 'city', 'presentation': 'dropdown'},
+        #         ],
+        #
+        #         editable=True,
+        #         dropdown={
+        #             'climate': {
+        #                 'options': [
+        #                     {'label': i, 'value': i}
+        #                     for i in df['climate'].unique()
+        #                 ]
         #             },
-        #         ),
-        #         dbc.Row(
-        #             children=[
-        #                 dbc.RadioItems(
-        #                     id=f'inp-edit-func-type-{page_name}',
-        #                     options={
-        #                         'Gerente': f'Gerente'.upper(),
-        #                         'Administrativo': f'Administrativo'.upper(),
-        #                         'Professor': f'Professor'.upper(),
-        #                     },
-        #                     value=val_tipo,
-        #                     inline=True,
-        #                 )
-        #             ],
-        #             class_name='col-lg-12 col-sm-12',
-        #         ),
-        #     ]
-        # ),
+        #             'city': {
+        #                 'options': [
+        #                     {'label': i, 'value': i}
+        #                     for i in df['city'].unique()
+        #                 ]
+        #             }
+        #         },
+        #         style_table={
+        #             "width": "600px",
+        #             "overflowY": "hidden"
+        #         }
         #
-        # radio_tipo = dbc.Row(
-        #     children=[
-        #         dbc.Row(
-        #             'Status',
-        #             className='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
-        #             },
-        #         ),
-        #         dbc.Row(
-        #             children=[
-        #                 dbc.RadioItems(
-        #                     id=f'inp-edit-func-status-{page_name}',
-        #                     options={
-        #                         'Ativo': f'Ativo'.upper(),
-        #                         'Inativo': f'Inativo'.upper(),
-        #                     },
-        #                     value=val_status,
-        #                     inline=True
-        #                 )
-        #             ],
-        #             class_name='col-lg-12 col-sm-12'
-        #         ),
-        #     ]
-        # ),
-        #
-        # email_titulo = dbc.Row(
-        #             id=f'title-{page_name}',
-        #             children=[
-        #                 dbc.Row(
-        #                     'Email',
-        #                     className='col-lg-12 col-sm-12 justify-content-center ',
-        #                     style={
-        #                         'background-color': '#FCFCFC',
-        #                         'font-weight': 'bold',
-        #                     },
-        #                 ),
-        #                 html.H1(
-        #                     id=f'inp-edit-func-email-{page_name}',
-        #                     children=val_email,
-        #                     className='py-0 px-0 mx-0',
-        #                 )
-        #             ]
-        #         )
-        #
-        # mudar_senha = dbc.Row(
-        #     children=[
-        #         dbc.Col(
-        #             'Senha',
-        #             className='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
-        #             },
-        #         ),
-        #         dbc.Col(
-        #             dbc.Input(
-        #                 id=f'inp-edit-func-password-{page_name}',
-        #                 placeholder="altere aqui...",
-        #                 type='password',
-        #                 # size="md",
-        #                 className='col-lg-6 col-sm-12 justify-content-center ',
-        #             ),
-        #         )
-        #     ]
-        # ),
+        #     ),html.Div(id='table-dropdown-container')
+        # ],
+        # )
 
         row1 = dbc.Row(
             children=[
                 dbc.Alert(
                     children=[
-                        html.Div(f'TURMA {id_dice}'),
+                        dbc.Row(
+                            [
+                                dbc.Col(f'TURMA {id_dice}', class_name='col-lg-6 col-md-6 col-sm-12 '),
+                                dbc.Col(f'COORDENADOR {coord_name}', class_name='col-lg-6 col-md-6 col-sm-12 '),
+                            ],
+                            class_name='p-0 m-0',
+                        )
                     ],
+                    # class_name = 'p-0 m-0',
                 ),
-        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2')
+            ],
+            # class_name='p-0 m-0 py-2',
+            # class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
+        )
 
         row_nivel = html.Div(
             children=[
-                dbc.Row('NIVEL', className='m-0 p-0'),
+                dbc.Row('NIVEL', className='m-0 p-0 pt-2'),
                 dbc.Row(
                     children=[
                         dbc.Select(
@@ -769,19 +788,19 @@ def editar_turma(data_drom_data_table, active_cell):
                                         dbc.Row('PROFESSOR ATUAL', class_name='justify-content-center'),
                                         dt_func2
                                     ],
-                                    class_name='col-lg-6 col-md-12 col-sm-12 p-0 m-0 p-0 '
+                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
                                 ),
                                 dbc.Row(
                                     [
-                                        dbc.Row('NOVO PROFESSOR', class_name='justify-content-center pt-2'),
+                                        dbc.Row('NOVO PROFESSOR', class_name='justify-content-center'),
                                         dt_func22
                                     ],
-                                    class_name='col-lg-6 col-md-12 col-sm-12 p-0 m-0 p-0 '
+                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
                                 )
                             ],
 
                             className='m-0 p-0',
-                            # style={'background-color': '#ffffff'},
+                            style={'background-color': '#FAFAFA'},
                             title="PROFESSOR",
                         )
                     ],
@@ -791,22 +810,52 @@ def editar_turma(data_drom_data_table, active_cell):
                     flush=True,
                 )
              ],
-            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 justify-content-center'
+            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-2'
+        )
+        row_aluno = dbc.Row(
+            children=[
+                dbc.Accordion(
+                    children=[
+                        dbc.AccordionItem(
+                            children=[
+                                dbc.Row(
+                                    dt_func5,
+                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
+                                ),
+                            ],
+
+                            className='m-0 p-0',
+                            style={'background-color': '#FAFAFA'},
+                            title="ALUNOS",
+                        )
+                    ],
+
+                    className='m-0 p-0',
+                    start_collapsed=True,
+                    flush=True,
+                )
+             ],
+            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-2'
         )
 
 
 
 
-        row3 = dbc.Row(
+        row3_coord = dbc.Row(
             children=[
                 dbc.Row('COORDENADOR', class_name='justify-content-center'),
                 dt_func3
         ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
-        row4 = dbc.Row(
+
+        row4_title_hora = dbc.Row(
             children=[
-                dbc.Row('HORARIO', class_name='justify-content-center'),
-                dt_func4
-        ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
+                dbc.Row('HORARIO', class_name=''),
+        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-1 pb-1')
+
+        row4_content_hora = dbc.Row(
+            children=list_of_hour,
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-1 pb-1 pl-2'
+        )
 
         row5 = dbc.Row(
             children=[
@@ -818,12 +867,14 @@ def editar_turma(data_drom_data_table, active_cell):
             children=[
                 # data frames
                 row1,
+                row4_title_hora, # HORARIO
+                row4_content_hora, # HORARIO
                 row_nivel,
                 row_map,
                 row2,
-                row3,
-                row4,
-                row5,
+                # row3_coord,
+
+                row_aluno,
             ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
         )
     else:

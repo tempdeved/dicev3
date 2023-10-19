@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     create_engine, Column, Integer, Float, VARCHAR, DATETIME, ForeignKey, Text, UniqueConstraint,
-    DATE, BOOLEAN, TEXT,ARRAY
+    DATE, BOOLEAN, TEXT,ARRAY, INTEGER, JSON
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
@@ -151,17 +151,41 @@ class Horario(Base):
 #     map = Column(VARCHAR(250))
 #     idioma = Column(VARCHAR(250))
 
+# class Turma(Base):
+#     __tablename__ = 'turma2'
+#
+#     id = Column(Integer, autoincrement=True, primary_key=True)
+#     id_turma = Column(Integer, unique=True)
+#     created_at = Column(DATE)
+#
+#     id_professor = Column(TEXT)
+#     id_coordenador = Column(TEXT)
+#     id_hr_turma = Column(TEXT) # menu check box
+#     id_aluno = Column(TEXT)
+#
+#     semestre = Column(VARCHAR(250))
+#     numero_turma = Column(VARCHAR(250))
+#     status = Column(VARCHAR(250))
+#     escola = Column(VARCHAR(250))
+#     observacao = Column(VARCHAR(250))
+#     descricao = Column(VARCHAR(250))
+#     nivel = Column(VARCHAR(250))
+#     inicio = Column(DATE)
+#     fim = Column(DATE)
+#     map = Column(VARCHAR(250))
+#     idioma = Column(VARCHAR(250))
+
 class Turma(Base):
-    __tablename__ = 'turma2'
+    __tablename__ = 'turma'
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     id_turma = Column(Integer, unique=True)
     created_at = Column(DATE)
 
-    id_professor = Column(TEXT)
-    id_coordenador = Column(TEXT)
-    id_hr_turma = Column(TEXT) # menu check box
-    id_aluno = Column(TEXT)
+    id_professor = Column(JSON)
+    id_coordenador = Column(JSON)
+    id_hr_turma = Column(JSON) # menu check box
+    id_aluno = Column(JSON)
 
     semestre = Column(VARCHAR(250))
     numero_turma = Column(VARCHAR(250))
@@ -182,7 +206,8 @@ class HistoricoAluno(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     created_at = Column(DATE)
 
-    id_turma = Column(ForeignKey('turma2.id'))
+    id_turma = Column(ForeignKey('turma.id'))
+    # id_turma = Column(ForeignKey('turma2.id'))
     id_aluno = Column(ForeignKey('aluno.id'))
 
     numero_aulas = Column(Integer)

@@ -16,8 +16,9 @@ from elements.titulo import Titulo
 from banco.dados import Dados
 from config.config import Config
 
-page_name = __name__[6:].replace('.', '_')
-dash.register_page(__name__, path=f'/CriarHorario')
+# page_name = __name__[6:].replace('.', '_')
+page_name = 'CriarHorario'
+dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
 
 
@@ -42,10 +43,9 @@ content_layout = dbc.Row(
                                             dbc.Row(
                                                 class_name='col-lg-12 col-sm-12',
                                                 children=[
-
                                                     dbc.Row(
                                                         children=[
-                                                            dbc.Row('DIA DA SEMANA', class_name='col-lg-12 col-sm-12 '),
+                                                            dbc.Row('DIA DA SEMANA'),
                                                             dbc.Row(
                                                                 children=[
                                                                     dbc.Select(
@@ -61,123 +61,128 @@ content_layout = dbc.Row(
                                                                         ],
                                                                     )
                                                                 ],
-                                                                class_name='col-lg-12 col-sm-12 mb-2'
                                                             ),
                                                         ]
                                                     ),
                                                     dbc.Row(
+                                                        class_name='mt-2',
                                                         children=[
-                                                            dbc.Row('HORA DE INICIO', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Row(
+                                                            dbc.Col(
                                                                 children=[
-                                                                    dbc.Select(
-                                                                        id=f'inp-create-hora-inicio-{page_name}',
-                                                                        options=[
-                                                                            {'label': f'{x}'.upper(),'value': f'{x}'.upper()}
-                                                                            for x in range(0,24)
-                                                                        ],
-                                                                    )
-                                                                ],
-                                                                class_name='col-lg-12 col-sm-12 mb-2'
-                                                            ),
-                                                        ]
-                                                    ),
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('MIN INICIO', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Row(
-                                                                children=[
-                                                                    # dbc.Input(
-                                                                    #     id=f'inp-create-min-inicio-{page_name}',
-                                                                    #     type="number",
-                                                                    #     min=0,
-                                                                    #     max=59,
-                                                                    #     step=1,
-                                                                    #     placeholder="00-59",
-                                                                    # ),
-                                                                    dbc.Select(
-                                                                        id=f'inp-create-min-inicio-{page_name}',
-                                                                        options=[
-                                                                            {'label': f'{x}'.upper(),
-                                                                             'value': f'{x}'.upper()}
-                                                                            for x in range(0, 60)
-                                                                        ],
-                                                                        value='0'
-                                                                    )
-                                                                ],
-                                                                class_name='col-lg-12 col-sm-12 '),
-                                                            ],
-                                                    ),
-
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('HORA FIM',
-                                                                    class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Row(
-                                                                children=[
-                                                                    dbc.Select(
-                                                                        id=f'inp-create-hora-fim-{page_name}',
-                                                                        options=[
-                                                                            {'label': f'{x}'.upper(),'value': f'{x}'.upper()}
-                                                                            for x in range(0,24)
-                                                                        ],
-                                                                    )
-                                                                ],
-                                                                class_name='col-lg-12 col-sm-12 mb-2'
-                                                            ),
-                                                        ]
-                                                    ),
-
-                                                    dbc.Row(
-                                                        children=[
-                                                            dbc.Row('MIN FIM', class_name='col-lg-12 col-sm-12 '),
-                                                            dbc.Row(
-                                                                children=[
-                                                                    # dbc.Input(
-                                                                    #     id=f'inp-create-min-fim-{page_name}',
-                                                                    #     type="number",
-                                                                    #     min=0,
-                                                                    #     max=59,
-                                                                    #     step=1,
-                                                                    #     placeholder="00-59",
-                                                                    # ),
-                                                                    dbc.Select(
-                                                                        id=f'inp-create-min-fim-{page_name}',
-                                                                        options=[
-                                                                            {'label': f'{x}'.upper(),
-                                                                             'value': f'{x}'.upper()}
-                                                                            for x in range(0, 60)
-                                                                        ],
-                                                                        value='0'
-                                                                    )
-                                                                ],
-                                                                class_name='col-lg-12 col-sm-12 '),
-                                                        ],
-                                                    ),
-                                                            dbc.Row(
-                                                        children=[
-                                                            dbc.Row(
-                                                                id='button_area',
-                                                                # class_name='d-grid d-md-block',  # gap-2
-                                                                children=[
-                                                                    dbc.Col(
-                                                                        # width=2,
+                                                                    dbc.Row('HORA DE INICIO'),
+                                                                    dbc.Row(
+                                                                        class_name='px-1',
                                                                         children=[
-                                                                            dbc.Button(
-                                                                                id=f'btn-create-user-{page_name}',
-                                                                                children=['SALVAR HORARIO'],
-                                                                                class_name='me-0',
-                                                                                color='primary',
-                                                                                n_clicks=0,
-                                                                            ),
-                                                                        ]
-                                                                    )
+                                                                            dbc.Select(
+                                                                                id=f'inp-create-hora-inicio-{page_name}',
+                                                                                options=[
+                                                                                    {'label': f'{x}'.zfill(2).upper(),
+                                                                                     'value': f'{x}'.zfill(2).upper()}
+                                                                                    for x in range(0, 24)
+                                                                                ],
+                                                                            )
+                                                                        ],
+                                                                    ),
                                                                 ]
                                                             ),
-                                                        ]
+                                                            dbc.Col(
+                                                                children=[
+                                                                    dbc.Row('MIN INICIO'),
+                                                                    dbc.Row(
+                                                                        class_name='px-1',
+                                                                        children=[
+                                                                            dbc.Select(
+                                                                                id=f'inp-create-min-inicio-{page_name}',
+                                                                                options=[
+                                                                                    {'label': f'{x}'.zfill(2),
+                                                                                     'value': f'{x}'.zfill(2)}
+                                                                                    for x in range(0, 60)
+                                                                                ],
+                                                                                value='0'
+                                                                            )
+                                                                        ],
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        ],
                                                     ),
 
+                                                    dbc.Row(
+                                                        class_name='mt-2',
+                                                        children=[
+                                                            dbc.Col(
+                                                                children=[
+                                                                    dbc.Row('HORA FIM'),
+                                                                    dbc.Row(
+                                                                        class_name='px-1',
+                                                                        children=[
+                                                                            dbc.Select(
+                                                                                id=f'inp-create-hora-fim-{page_name}',
+                                                                                options=[
+                                                                                    {'label': f'{x}'.zfill(2),'value': f'{x}'.zfill(2)}
+                                                                                    for x in range(0,24)
+                                                                                ],
+                                                                                class_name='px-1',
+                                                                            )
+                                                                        ],
+                                                                    ),
+                                                                ]
+                                                            ),
+                                                            dbc.Col(
+                                                                children=[
+                                                                    dbc.Row('MIN FIM',),
+                                                                    dbc.Row(
+                                                                        class_name='px-1',
+                                                                        children=[
+                                                                            dbc.Select(
+                                                                                id=f'inp-create-min-fim-{page_name}',
+                                                                                options=[
+                                                                                    {'label': f'{x}'.zfill(2),
+                                                                                     'value': f'{x}'.zfill(2)}
+                                                                                    for x in range(0, 60)
+                                                                                ],
+                                                                                class_name='px-1',
+                                                                                value='0'
+                                                                            )
+                                                                        ],
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        ],
+                                                    ),
+                                                    dbc.Row(
+                                                        id=f'button-area-{page_name}',
+                                                        class_name='ml-0 pt-2',  # gap-2
+                                                        children=[
+                                                            dbc.Col(
+                                                                # width=2,
+                                                                children=[
+                                                                    html.A(
+                                                                        dbc.Button(
+                                                                            id=f'btn-limpar-campos-{page_name}',
+                                                                            children=['LIMPAR CAMPOS'],
+                                                                            class_name='me-1',
+                                                                            color='light',
+                                                                            n_clicks=0,
 
+                                                                        ),
+                                                                    href=f'/{page_name}'),
+                                                                ]
+                                                            ),
+                                                            dbc.Col(
+                                                                # width=2,
+                                                                children=[
+                                                                    dbc.Button(
+                                                                        id=f'btn-create-user-{page_name}',
+                                                                        children=['SALVAR HORARIO'],
+                                                                        class_name='me-0',
+                                                                        color='primary',
+                                                                        n_clicks=0,
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        ]
+                                                    ),
                                                 ]
                                             ),
 
@@ -185,7 +190,7 @@ content_layout = dbc.Row(
                                         style={'background-color': '#ffffff'},
                                         title="CRIAR HORARIO"
                                     )
-                                ], start_collapsed=True, flush=True, style={'background-color': '#ffffff'}
+                                ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
                         ], class_name=''
                     )

@@ -219,9 +219,9 @@ side_bar = Sidebar().layout(
 app.layout = dbc.Row(
     id='main_container',
     # class_name='px-0 mx-0 my-1 py-1',
-    class_name='m-0 p-0 background',
+    class_name='m-0 p-0',
     style={
-        'background': 'hotpink',
+        'background': 'Salmom',
     },
 
     children=[
@@ -269,6 +269,39 @@ app.layout = dbc.Row(
                     children=[dash.page_container]
                 ),
                 # dcc.Store(id=f'out-tbl-preco-medio-prazo-historico-2')
+                dbc.Row(
+                    children=[
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                    ],
+                )
             ],
         ),
 

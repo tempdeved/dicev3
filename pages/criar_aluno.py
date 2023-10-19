@@ -208,7 +208,7 @@ def update_datepicker(datepicker):
     print('update-date')
 
     df_turmas = dados.query_table(
-        table_name='turma2',
+        table_name='turma',
         # field_list=[
         #     {'name': 'email'},
         #     {'name': 'status'},
@@ -258,11 +258,16 @@ def update_datepicker(datepicker):
     State(component_id=f'inp-create-email-mae-{page_name}', component_property='value'),
     State(component_id=f'inp-create-celular-mae-{page_name}', component_property='value'),
     State(component_id=f'inp-date-inicio-aluno-{page_name}', component_property='date'),
+    State(component_id=f'inp-associete-turma-aluno-{page_name}', component_property='value'),
 
     Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
     # config_prevent_initial_callbacks=True,
 )
-def create_aluno(user_name, email_pai, celular_pai, email_mae, celular_mae, data_inicio, n_clicks):
+def create_aluno(
+        user_name, email_pai, celular_pai,
+        email_mae, celular_mae, data_inicio,
+        turma,
+        n_clicks):
 
     if user_name and data_inicio:
     # if user_type and user_name and user_email and user_passdw:
@@ -290,6 +295,7 @@ def create_aluno(user_name, email_pai, celular_pai, email_mae, celular_mae, data
         )
 
         max = df_max_aluno['id'].max() + 1
+        print(f'ALUNO: {max}')
 
         df_new_aluno = pd.DataFrame(
             data={
@@ -301,13 +307,44 @@ def create_aluno(user_name, email_pai, celular_pai, email_mae, celular_mae, data
                 'celular_pai': [celular_pai],
                 'email_mae': [email_mae],
                 'celular_mae': [celular_mae],
-                'inicio': [inicio],
 
             }
         )
+
+        turma_alunos = []
+
+        if turma:
+
+            df_turma = dados.query_table(
+                table_name='turma',
+                # field_list=[
+                    # {'name': 'id_aluno'},
+                # ],
+                filter_list=[
+                    {'op': 'eq', 'name': 'id', 'value': turma}
+                ]
+            )
+            # turma_alunos.append(turma)
+
+            turma_alunos = f'{max}'
+            if df_turma['id_aluno'][0]:
+                split = df_turma['id_aluno'][0].split(',')
+                for x in split[:-1]:
+                    turma_alunos = f'{turma_alunos}, {x}'
+
+            df_turma['id_aluno'] = turma_alunos
+
+
         try:
-            df_new_aluno.dropna(inplace=True)
+            df_new_aluno.dropna(inplace=True, axis=1)
             dados.insert_into_table(df=df_new_aluno, table_name='aluno')
+            dados.update_table(
+                values=df_turma[['id', 'id_aluno']].to_dict(orient='records')[0],
+                table_name='turma',
+                pk_value=turma,
+                pk_name='id'
+            )
+
             msg = f'{n_clicks} - Usuário Criado'
         except Exception as err:
             msg = f'Erro: {err}'

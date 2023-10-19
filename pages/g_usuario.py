@@ -16,7 +16,8 @@ from elements.titulo import Titulo
 from banco.dados import Dados
 from config.config import Config
 
-page_name = __name__[6:].replace('.', '_')
+# page_name = __name__[6:].replace('.', '_')
+page_name='/GerenciarUsuario'
 dash.register_page(__name__, path=f'/GerenciarUsuario')
 # require_login(__name__)
 
@@ -141,18 +142,38 @@ content_layout = dbc.Row(
                                                                 id='button_area',
                                                                 class_name='d-grid d-md-block',  # gap-2
                                                                 children=[
-                                                                    dbc.Col(
-                                                                        # width=2,
+                                                                    dbc.Row(
                                                                         children=[
-                                                                            dbc.Button(
-                                                                                id=f'btn-create-user-{page_name}',
-                                                                                children=['Salvar novo usuário'],
-                                                                                class_name='me-2',
-                                                                                color='primary',
-                                                                                n_clicks=0,
+                                                                            dbc.Col(
+                                                                                # width=2,
+                                                                                children=[
+                                                                                    html.A(
+                                                                                        dbc.Button(
+                                                                                            id=f'btn-limpar-campos-{page_name}',
+                                                                                            children=['LIMPAR CAMPOS'],
+                                                                                            class_name='me-1',
+                                                                                            color='light',
+                                                                                            n_clicks=0,
+
+                                                                                        ),
+                                                                                        href=page_name),
+                                                                                ]
                                                                             ),
-                                                                        ]
-                                                                    )
+                                                                            dbc.Col(
+                                                                                # width=2,
+                                                                                children=[
+                                                                                    dbc.Button(
+                                                                                        id=f'btn-create-user-{page_name}',
+                                                                                        children=[
+                                                                                            'Salvar novo usuário'],
+                                                                                        class_name='me-2',
+                                                                                        color='primary',
+                                                                                        n_clicks=0,
+                                                                                    ),
+                                                                                ]
+                                                                            )
+                                                                        ],
+                                                                    ),
                                                                 ]
                                                             ),
                                                         ]
@@ -223,7 +244,7 @@ content_layout = dbc.Row(
                                                                             dbc.Row(
                                                                             children=[
                                                                                 dbc.Row(
-                                                                                    id='button_area',
+                                                                                    id=f'button-area-{page_name}',
                                                                                     # class_name='d-grid d-md-block',  # gap-2
                                                                                     children=[
                                                                                         dbc.Col(
@@ -422,7 +443,11 @@ def capturar_funcionarios(main_contianer):
             how='left',
         )
 
-        df = df_merge[df_merge['tipo'].isin(['Professor', 'Gerente'])]
+        df = df_merge[
+            ~df_merge['tipo'].isin(
+                ['Admin']
+            )
+        ]
 
         # df_func = dados.query_table(table_name='funcionario')
         #
@@ -681,7 +706,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
     # if active_cell:
     #     print(active_cell)
-    return datatable1, str(active_cell) if active_cell else "Click the table"
+    return datatable1, str(active_cell) if active_cell else ""
 
 
 # id=f'out-alert-edited-fuc-{page_name}'

@@ -3,7 +3,7 @@ import dash
 import mysql.connector.errors
 import pandas as pd
 import sqlalchemy.exc
-
+import json
 import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State, long_callback
 import dash_bootstrap_components as dbc
@@ -50,14 +50,32 @@ content_layout = dbc.Row(
                                                             dbc.Row(
                                                                 id='button_area',
                                                                 # class_name='d-grid d-md-block',  # gap-2
+                                                                align='end',
                                                                 children=[
                                                                     dbc.Col(
                                                                         # width=2,
                                                                         children=[
+                                                                            html.A(
+                                                                                dbc.Button(
+                                                                                    id=f'btn-limpar-campos-{page_name}',
+                                                                                    children=['LIMPAR CAMPOS'],
+                                                                                    class_name='me-1',
+                                                                                    color='light',
+                                                                                    n_clicks=0,
+
+                                                                                ),
+                                                                            href='/CriarTurma'),
+                                                                        ]
+                                                                    ),
+                                                                    dbc.Col(
+                                                                        # width=2,
+                                                                        align='end',
+                                                                        class_name='right',
+                                                                        children=[
                                                                             dbc.Button(
                                                                                 id=f'btn-create-user-{page_name}',
                                                                                 children=['SALVAR TURMA'],
-                                                                                class_name='me-0',
+                                                                                class_name='me-1',
                                                                                 color='primary',
                                                                                 n_clicks=0,
                                                                             ),
@@ -557,7 +575,7 @@ def update_datepicker(datepicker):
 
     Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
 )
-def create_horario(
+def create_turma(
         id_turma,
         semestre_turma,
         status_turma,
@@ -583,23 +601,26 @@ def create_horario(
 
         df_alunos = pd.DataFrame(alunos_data)
 
-        ids_prod = ''
+        ids_prod = None
         if preofessores_turma:
+            list_prof = []
             for x in preofessores_turma:
-                aux = x
-                ids_prod = f'{aux},{ids_prod}'
+                list_prof.append(x)
+            ids_prod = json.dumps({'email_user': list_prof})
 
-        ids_coord = ''
+        ids_coord = None
         if coordenador_turma:
+            list_coordenador = []
             for x in coordenador_turma:
-                aux = x
-                ids_coord = f'{aux},{ids_coord}'
+                list_coordenador.append(x)
+            ids_coord = json.dumps({'email_user': list_coordenador})
 
-        ids_horarios = ''
+        ids_horarios = None
         if horarios_turma:
+            list_horarios = []
             for x in horarios_turma:
-                aux = x
-                ids_horarios = f'{aux},{ids_horarios}'
+                list_horarios.append(x)
+            ids_horarios = json.dumps({'id_horario': list_horarios})
 
         df_new_turma= pd.DataFrame(
             data={
@@ -628,19 +649,15 @@ def create_horario(
         if alunos_rows:
             df_alunos_filted = pd.DataFrame()
             df_alunos_filted = df_alunos.iloc[alunos_rows]
-            msg = ''
+            list_aluno = []
             for x in df_alunos_filted['id']:
-                aux = x
-                msg = f'{aux},{msg}'
-
-            df_new_turma['id_aluno'] = msg
+                list_aluno.append(x)
+            df_new_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
 
         try:
             df_new_turma.dropna(axis=1, inplace=True)
-            dados.insert_into_table(df=df_new_turma, table_name='turma2')
+            dados.insert_into_table(df=df_new_turma, table_name='turma')
             msg = f'{n_clicks} - Turma Criada'
-        except sqlalchemy.exc.IntegrityError as err:
-            msg = f'Cod Turma: {id_turma} já existe'
         except Exception as err:
             msg = f'Erro: {err}'
 
