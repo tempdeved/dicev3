@@ -16,10 +16,12 @@ from elements.titulo import Titulo
 from banco.dados import Dados
 from config.config import Config
 
-page_name = __name__[6:].replace('.', '_')
-dash.register_page(__name__, path=f'/CriarTurma')
-# require_login(__name__)
+# page_name = __name__[6:].replace('.', '_')
+page_name = 'CriarTurma'
+dash.register_page(__name__, path=f'/{page_name}')
 
+config = Config().config
+dados = Dados(config['ambiente'])
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -409,7 +411,7 @@ def update_datepicker(datepicker):
                             {'label': 'Operatório Avançado II'.upper(), 'value': 'Operatório Avançado II'.upper()},
                             {'label': 'Operatório Avançado III'.upper(), 'value': 'Operatório Avançado III'.upper()},
                         ],
-                        value='0'.upper()
+                        # value='0'.upper()
                     )
                 ],
                 className='m-0 p-0'
@@ -594,10 +596,7 @@ def create_turma(
         n_clicks,
 ):
 
-    if n_clicks and id_turma and status_turma and inicio_turma and fim_turma:
-    # if user_type and user_name and user_email and user_passdw:
-        config = Config().config
-        dados = Dados(config['ambiente'])
+    if n_clicks and id_turma and status_turma and inicio_turma and fim_turma and nivel_turma and map:
 
         df_alunos = pd.DataFrame(alunos_data)
 
@@ -674,6 +673,10 @@ def create_turma(
             msg.append('DATA INICIO')
         if not fim_turma:
             msg.append('DATA FIM')
+        if not nivel_turma:
+            msg.append('NIVEL')
+        if not map:
+            msg.append('MAP')
 
 
         return f'Verifique se os campos estão corretos: {msg}'

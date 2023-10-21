@@ -3,6 +3,7 @@ import dash
 import mysql.connector.errors
 import pandas as pd
 import sqlalchemy.exc
+import json
 
 import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State
@@ -16,10 +17,15 @@ from elements.titulo import Titulo
 from banco.dados import Dados
 from config.config import Config
 
-page_name = __name__[6:].replace('.', '_')
-dash.register_page(__name__, path=f'/EditarTurma')
+# page_name = __name__[6:].replace('.', '_')
+page_name = 'EditarTurma'
+dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
-
+"""
+instanciando banco
+"""
+config = Config().config
+dados = Dados(config['ambiente'])
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -190,71 +196,61 @@ content_layout = dbc.Row(
                                 children=[
                                     dbc.AccordionItem(
                                         children=[
-                                            # dbc.Card(
-                                            #     class_name='d-flex justify-content-center py-0 my-2 mx-0 shadow',
+
+                                            dbc.Row(
+                                                id=f'out-edit-funcionario-{page_name}',
+                                                children=[
+                                                    dash_table.DataTable(
+                                                        id=f'data-table-edit-user-{page_name}',
+                                                    ),
+                                                ]
+                                            ),
+                                            # dbc.Row(
+                                            #     id='button_area',
+                                            #     # class_name='d-grid d-md-block',  # gap-2
+                                            #     class_name='pb-2 pt-2 text-center',
                                             #     children=[
-                                                    dbc.Row(
-                                                        id=f'out-edit-funcionario-{page_name}',
+                                            #         dbc.Col(
+                                            #             # width=2,
+                                            #             children=[
+                                            #                 dbc.Button(
+                                            #                     id=f'btn-buscar-usuarios-{page_name}',
+                                            #                     children=['BUSCAR TURMAS'],
+                                            #                     class_name='me-2',
+                                            #                     color='primary',
+                                            #                     n_clicks=0,
+                                            #                 ),
+                                            #             ]
+                                            #         )
+                                            #     ]
+                                            # ),
+
+
+                                            dbc.Tabs(
+                                                children=[
+                                                    dbc.Tab(
+                                                        label="TURMA DETALHADA",
                                                         children=[
-                                                            dash_table.DataTable(
-                                                                id=f'data-table-edit-user-{page_name}',
+                                                            dbc.Row(id=f'out-edit-func-{page_name}'),
+                                                            dbc.Row(
+                                                                class_name='pt-5',
+                                                                children=[
+                                                                    dbc.Col(
+                                                                        # width=2,
+                                                                        children=[
+                                                                            dbc.Button(
+                                                                                id=f'btn-salvar-func-edited-{page_name}',
+                                                                                children=['SALVAR TURMA'],
+                                                                                class_name='me-1',
+                                                                                color='primary',
+                                                                                n_clicks=0,
+                                                                            ),
+                                                                        ]
+                                                                    )
+                                                                ]
                                                             ),
                                                         ]
                                                     ),
-                                                    # dbc.Row(
-                                                    #     id='button_area',
-                                                    #     # class_name='d-grid d-md-block',  # gap-2
-                                                    #     class_name='pb-2 pt-2 text-center',
-                                                    #     children=[
-                                                    #         dbc.Col(
-                                                    #             # width=2,
-                                                    #             children=[
-                                                    #                 dbc.Button(
-                                                    #                     id=f'btn-buscar-usuarios-{page_name}',
-                                                    #                     children=['BUSCAR TURMAS'],
-                                                    #                     class_name='me-2',
-                                                    #                     color='primary',
-                                                    #                     n_clicks=0,
-                                                    #                 ),
-                                                    #             ]
-                                                    #         )
-                                                    #     ]
-                                                    # ),
-
-
-                                                    dbc.Tabs(
-                                                        children=[
-                                                            dbc.Tab(
-                                                                label="TURMA DETALHADA",
-                                                                children=[
-                                                                    dbc.Row(id=f'out-edit-func-{page_name}'),
-                                                                    dbc.Row(
-                                                                        children=[
-                                                                            dbc.Row(
-                                                                                # id='button_area',
-                                                                                # class_name='d-grid d-md-block',  # gap-2
-                                                                                class_name='p-5',
-                                                                                children=[
-                                                                                    dbc.Col(
-                                                                                        # width=2,
-                                                                                        children=[
-                                                                                            dbc.Button(
-                                                                                                id=f'btn-salvar-func-edited-{page_name}',
-                                                                                                children=[
-                                                                                                    'SALVAR TURMA'],
-                                                                                                # class_name='p-5',
-                                                                                                color='primary',
-                                                                                                n_clicks=0,
-                                                                                            ),
-                                                                                        ]
-                                                                                    )
-                                                                                ]
-                                                                            ),
-                                                                        ]
-                                                                    ),
-                                                                ]),
-                                                    #     ])
-                                                    # ,
                                                 ],
                                             ),
                                         ],
@@ -299,65 +295,65 @@ def layout():
     return Titulo().load(id='titulo-pagina', title_name='Sem permissão')
 
 
-@callback(
-    Output(component_id=f'out-alert-user-{page_name}', component_property='children'),
-
-    State(component_id=f'inp-create-user-type-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-name-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-email-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-password-{page_name}', component_property='value'),
-    State(component_id=f'inp-create-user-status-{page_name}', component_property='value'),
-    Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
-    # config_prevent_initial_callbacks=True,
-)
-def create_user(user_type, user_name, user_email, user_passdw, user_status, n_clicks):
-
-    if user_type and user_name and user_email and user_passdw:
-        config = Config().config
-        dados = Dados(config['ambiente'])
-        df_new_user = pd.DataFrame(
-            data={
-                'email': [user_email],
-                'password': [user_passdw],
-                'status': [user_status],
-            }
-        )
-        df_new_func = pd.DataFrame(
-            data={
-                'email_func': [user_email],
-
-                'nome_completo': [user_name],
-                'created_at': [datetime.datetime.now()],
-                'tipo': [user_type],
-            }
-        )
-
-        try:
-            dados.insert_into_table(df=df_new_user, table_name='user')
-            dados.insert_into_table(df=df_new_func, table_name='funcionario')
-            msg = 'Usuário Criado'
-        except Exception as err:
-            msg = f'Usuário já existe: {user_email}'
-
-        return msg
-
-    if n_clicks:
-        msg = []
-
-        if not user_type:
-            msg.append('Tipo')
-
-        if not user_email:
-            msg.append('Email')
-
-        if not user_passdw:
-            msg.append('Senha')
-
-        if not user_name:
-            msg.append('Nome')
-
-        return f'Verifique se os campos estão corretos: {msg}'
-    return ''
+# @callback(
+#     Output(component_id=f'out-alert-user-{page_name}', component_property='children'),
+#
+#     State(component_id=f'inp-create-user-type-{page_name}', component_property='value'),
+#     State(component_id=f'inp-create-name-{page_name}', component_property='value'),
+#     State(component_id=f'inp-create-email-{page_name}', component_property='value'),
+#     State(component_id=f'inp-create-password-{page_name}', component_property='value'),
+#     State(component_id=f'inp-create-user-status-{page_name}', component_property='value'),
+#     Input(component_id=f'btn-create-user-{page_name}', component_property='n_clicks'),
+#     # config_prevent_initial_callbacks=True,
+# )
+# def create_user(user_type, user_name, user_email, user_passdw, user_status, n_clicks):
+#
+#     if user_type and user_name and user_email and user_passdw:
+#         config = Config().config
+#         dados = Dados(config['ambiente'])
+#         df_new_user = pd.DataFrame(
+#             data={
+#                 'email': [user_email],
+#                 'password': [user_passdw],
+#                 'status': [user_status],
+#             }
+#         )
+#         df_new_func = pd.DataFrame(
+#             data={
+#                 'email_func': [user_email],
+#
+#                 'nome_completo': [user_name],
+#                 'created_at': [datetime.datetime.now()],
+#                 'tipo': [user_type],
+#             }
+#         )
+#
+#         try:
+#             dados.insert_into_table(df=df_new_user, table_name='user')
+#             dados.insert_into_table(df=df_new_func, table_name='funcionario')
+#             msg = 'Usuário Criado'
+#         except Exception as err:
+#             msg = f'Usuário já existe: {user_email}'
+#
+#         return msg
+#
+#     if n_clicks:
+#         msg = []
+#
+#         if not user_type:
+#             msg.append('Tipo')
+#
+#         if not user_email:
+#             msg.append('Email')
+#
+#         if not user_passdw:
+#             msg.append('Senha')
+#
+#         if not user_name:
+#             msg.append('Nome')
+#
+#         return f'Verifique se os campos estão corretos: {msg}'
+#     return ''
 
 
 @callback(
@@ -388,12 +384,18 @@ def buscar_turmas(btn):
         ]
     )
 
+    df_turma.sort_values(
+        by=['id', 'status', 'semestre'],
+        ascending=[False, True, True],
+        inplace=True
+    )
+
     dt_user = dash_table.DataTable(
         id=f'data-table-edit-user-{page_name}',
         data=df_turma.to_dict('records'),
-        columns=[{"name": i.upper(), "id": i} for i in df_turma.columns],
+        columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_turma.columns],
         page_current=0,
-        page_size=5,
+        page_size=15,
         style_cell={'textAlign': 'center'},
         editable=False,
         filter_action='native',
@@ -402,8 +404,8 @@ def buscar_turmas(btn):
         page_action="native",
         row_selectable="single",
         # row_selectable="multi",
-        # export_columns='all',
-        # export_format='xlsx',
+        export_columns='all',
+        export_format='xlsx',
         # export_columns='all',
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
@@ -446,6 +448,10 @@ def editar_turma(data_drom_data_table, active_cell):
                 {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
             ]
         )
+
+        turma_nivel  = df_turma2['nivel'][0]
+        turma_map  = df_turma2['map'][0]
+
         df_all_aluno  = dados.query_table(
             table_name='aluno',
             # field_list=[
@@ -460,37 +466,39 @@ def editar_turma(data_drom_data_table, active_cell):
         df_prof_filted = pd.DataFrame(
             columns=['id', 'nome_completo']
         )
-
+        prof_name = ['']
         if df_turma2['id_professor'].isna()[0] == False:
-            list_prof = df_turma2['id_professor'][0].split(',')[:-1]
+            list_prof = json.loads(df_turma2['id_professor'][0])['email_user']
             df_prof = dados.query_table(table_name='funcionario')
 
-            df_prof_filted = df_prof[df_prof['email_func'].isin(list_prof)]
+            # df_prof_filted = df_prof[df_prof['email_func'].isin(list_prof)]
+            # df_prof_filted = df_prof_filted[['id', 'nome_completo']]
+
+            df_prof_filted = df_prof[df_prof['email_func'].isin(
+                list_prof
+                # [ 'Professor', 'Coordenador']
+            )]
             df_prof_filted = df_prof_filted[['id', 'nome_completo']]
 
-            df_prof_filted2 = df_prof[df_prof['tipo'].isin(
-                [ 'Professor', 'Coordenador']
-            )]
-            df_prof_filted2 = df_prof_filted2[['id', 'nome_completo']]
+            prof_name = df_prof_filted['nome_completo'].to_list()
 
 
 
-        df_coord_filted = pd.DataFrame(
-            columns=['id', 'nome_completo']
-        )
+
+        df_coord_filted = pd.DataFrame(columns=['id', 'nome_completo'])
+
         coord_name = ''
 
         if df_turma2['id_coordenador'].isna()[0] == False:
-            list_coord = df_turma2['id_coordenador'][0].split(',')[:-1]
+            list_coord = json.loads(df_turma2['id_coordenador'][0])['email_user']
+            # list_coord = df_turma2['id_coordenador'][0].split(',')[:-1]
             df_coord = dados.query_table(
                 table_name='funcionario',
-                # field_list=[
-                #     {'name': 'email'},
-                # ]
-            filter_list=[
-                {'op': 'in', 'name': 'email_func', 'value': list_coord}
-            ]
+                filter_list=[
+                    {'op': 'in', 'name': 'email_func', 'value': list_coord}
+                ]
             )
+
             df_coord_filted = df_coord[['id', 'nome_completo']]
 
             coord_name = df_coord_filted['nome_completo'].to_list()
@@ -502,16 +510,16 @@ def editar_turma(data_drom_data_table, active_cell):
         )
 
         if df_turma2['id_hr_turma'].isna()[0] == False:
-            list_hr = df_turma2['id_hr_turma'][0].split(',')[:-1]
+            list_hr = json.loads(df_turma2['id_hr_turma'][0])['id_horario']
+
+            # list_hr = df_turma2['id_hr_turma'][0].split(',')[:-1]
             df_hr = dados.query_table(
                 table_name='horario',
-                # field_list=[
-                #     {'name': 'email'},
-                # ]
-            filter_list=[
-                {'op': 'in', 'name': 'id', 'value': list_hr}
-            ]
+                filter_list=[
+                    {'op': 'in', 'name': 'id', 'value': list_hr}
+                ]
             )
+
             df_hr_filted = df_hr[['dia_semana', 'hora_inicio', 'min_inicio', 'hora_fim', 'min_fim']]
 
 
@@ -520,70 +528,110 @@ def editar_turma(data_drom_data_table, active_cell):
         )
 
         if df_turma2['id_aluno'].isna()[0] == False:
-            list_alunos = df_turma2['id_aluno'][0].split(',')[:-1]
+            list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
+            # list_alunos = df_turma2['id_aluno'][0].split(',')[:-1]
             df_alunos = dados.query_table(
                 table_name='aluno',
-                # field_list=[
-                #     {'name': 'email'},
-                # ]
-            filter_list=[
-                {'op': 'in', 'name': 'id', 'value': list_alunos}
-            ]
+                filter_list=[
+                    {'op': 'in', 'name': 'id', 'value': list_alunos}
+                ]
             )
+
             df_alunos_filted = df_alunos[['id', 'nome', 'status', 'telefone1']]
 
 
-        dt_func1 = dash_table.DataTable(
-            id=f'data-table-edit-func-1-{page_name}',
-            data=df_turma.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_turma.columns],
-            style_cell={'textAlign': 'center'},
-            editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        # dt_func1 = dash_table.DataTable(
+        #     id=f'data-table-edit-func-1-{page_name}',
+        #     data=df_turma.to_dict('records'),
+        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_turma.columns],
+        #     style_cell={'textAlign': 'center'},
+        #     editable=False,
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #
+        # )
 
+        profs_cadastrados = df_prof_filted['id'].to_list()
+
+        df_prof['cadastrado'] = df_prof['id'].apply(lambda x: 'CAD' if x in profs_cadastrados else 'NAO CAD')
+
+        df_prof.sort_values(
+            by=['cadastrado'],
+            ascending=True,
+            inplace=True
         )
 
-        dt_func2 = dash_table.DataTable(
-            id=f'data-table-edit-func-2-{page_name}',
+        df_prof_filted = df_prof[['id', 'nome_completo', 'cadastrado']]
+        df_profs = dash_table.DataTable(
+            id=f'data-table-edit-profs-{page_name}',
             data=df_prof_filted.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_prof_filted.columns],
+            columns=[
+                {
+                    "name": i.replace('_', ' ').upper(),
+                    "id": i,
+                    "editable": True if i == 'cadastrado' else False,
+                    "presentation": 'dropdown' if i == 'cadastrado' else '',
+                 } for i in df_prof_filted.columns],
+            dropdown={
+                'cadastrado': {
+                    'options': [
+                        {'label': "CAD", 'value': "CAD"},
+                        {'label': "NAO CAD", 'value': "NAO CAD"},
+                    ]
+                }
+            },
             style_cell={'textAlign': 'center'},
-            editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-        )
-        dt_func22 = dash_table.DataTable(
-            id=f'data-table-edit-func-2-new-{page_name}',
-            data=df_prof_filted2.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_prof_filted2.columns],
-            style_cell={'textAlign': 'center'},
-            editable=False,
-
+            page_size=30,
             filter_action='native',
-            page_current=0,
-            page_size=1,
-            row_selectable="multi",
+            sort_mode="multi",
+            sort_action="native",
+            page_action="native",
+            editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
         )
+
+        #
+        # dt_func2 = dash_table.DataTable(
+        #     id=f'data-table-edit-func-2-{page_name}',
+        #     data=df_prof_filted.to_dict('records'),
+        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_prof_filted.columns],
+        #     style_cell={'textAlign': 'center'},
+        #     editable=False,
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #
+        # )
+        # dt_func22 = dash_table.DataTable(
+        #     id=f'data-table-edit-func-2-new-{page_name}',
+        #     data=df_prof_filted2.to_dict('records'),
+        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_prof_filted2.columns],
+        #     style_cell={'textAlign': 'center'},
+        #     editable=False,
+        #
+        #     filter_action='native',
+        #     page_current=0,
+        #     page_size=1,
+        #     row_selectable="multi",
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #
+        # )
         dt_func3 = dash_table.DataTable(
             id=f'data-table-edit-func-3-{page_name}',
             data=df_coord_filted.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_coord_filted.columns],
+            columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_coord_filted.columns],
             style_cell={'textAlign': 'center'},
             editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
         )
-        dt_func4 = dash_table.DataTable(
-            id=f'data-table-edit-func-4-{page_name}',
-            data=df_hr_filted.to_dict('records'),
-            columns=[{"name": i.upper(), "id": i} for i in df_hr_filted.columns],
-            style_cell={'textAlign': 'center'},
-            editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-        )
+        # dt_func4 = dash_table.DataTable(
+        #     id=f'data-table-edit-func-4-{page_name}',
+        #     data=df_hr_filted.to_dict('records'),
+        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_hr_filted.columns],
+        #     style_cell={'textAlign': 'center'},
+        #     editable=False,
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #
+        # )
         list_of_hour = []
         if len(df_hr_filted) >=1 :
             for x, row in df_hr_filted.iterrows():
@@ -598,7 +646,14 @@ def editar_turma(data_drom_data_table, active_cell):
                 )
         else:
             list_of_hour.append(
-                dbc.Row(f'SEM HORARIO CADASTRADO')
+                # html.Img(
+                #     src='../static/images/aluno/312.jpg',
+                #     alt='312',
+                #     className='perfil_avatar py-2 mx-auto text-center',
+                #     # width=10
+                #     style={'height': '150px', 'width': '150px'},
+                # ),
+                dbc.Row(f'SEM HORARIO CADASTRADO'),
             )
 
         alunos_cadastrados = df_alunos_filted['id'].to_list()
@@ -608,6 +663,7 @@ def editar_turma(data_drom_data_table, active_cell):
         df_all_aluno.sort_values(
             by=['cadastrado'],
             ascending=True,
+            inplace=True
         )
 
         df_alunos_filted = df_all_aluno[['id', 'nome', 'status', 'telefone1', 'cadastrado']]
@@ -617,7 +673,7 @@ def editar_turma(data_drom_data_table, active_cell):
             data=df_alunos_filted.to_dict('records'),
             columns=[
                 {
-                    "name": i.upper(),
+                    "name": i.replace('_', ' ').upper(),
                     "id": i,
                     "editable": True if i == 'cadastrado' else False,
                     "presentation": 'dropdown' if i == 'cadastrado' else '',
@@ -637,7 +693,7 @@ def editar_turma(data_drom_data_table, active_cell):
             sort_mode="multi",
             sort_action="native",
             page_action="native",
-            # row_selectable=True,
+            editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
         )
 
@@ -694,8 +750,10 @@ def editar_turma(data_drom_data_table, active_cell):
                     children=[
                         dbc.Row(
                             [
-                                dbc.Col(f'TURMA {id_dice}', class_name='col-lg-6 col-md-6 col-sm-12 '),
-                                dbc.Col(f'COORDENADOR {coord_name}', class_name='col-lg-6 col-md-6 col-sm-12 '),
+                                dbc.Col(
+                                    children=[f'TURMA {id_dice}'],
+                                    class_name='col-lg-6 col-md-6 col-sm-12 '),
+                                dbc.Col(f'PROFESSOR {prof_name}', class_name='col-lg-6 col-md-6 col-sm-12 '),
                             ],
                             class_name='p-0 m-0',
                         )
@@ -706,6 +764,42 @@ def editar_turma(data_drom_data_table, active_cell):
             # class_name='p-0 m-0 py-2',
             # class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
+        row_id_turma = dbc.Row(
+            children=[
+                dbc.Row('TURMA', className='m-0 p-0 pt-2'),
+                dbc.Row(
+                    children=[
+                        dbc.Select(
+                            id=f'id-turma-dice-{page_name}',
+                            disabled=True,
+                            options=[
+                                {'label': id_dice, 'value': id_dice},
+                            ],
+                            value=id_dice,
+                         )
+                    ],
+                    className='m-0 p-0 pt-2',
+                ),
+            ],
+        )
+        row_professor = dbc.Row(
+            children=[
+                dbc.Row('PROFESSOR', className='m-0 p-0 pt-2'),
+                dbc.Row(
+                    children=[
+                        dbc.Select(
+                            id=f'nome-{x}-{page_name}',
+                            disabled=True,
+                            options=[
+                                {'label': x, 'value': x},
+                            ],
+                            value=x,
+                         )
+                     for x in prof_name ],
+                    className='m-0 p-0 pt-2',
+                ),
+            ],
+        )
 
         row_nivel = html.Div(
             children=[
@@ -714,6 +808,7 @@ def editar_turma(data_drom_data_table, active_cell):
                     children=[
                         dbc.Select(
                             id=f'inp-create-nivel-turma-{page_name}',
+                            # disabled=True,
                             options=[
                                 {'label': 'Sensório Motor'.upper(), 'value': 'Sensório Motor'.upper()},
                                 {'label': 'Sensório / Simbólico'.upper(), 'value': 'Sensório / Simbólico'.upper()},
@@ -736,7 +831,7 @@ def editar_turma(data_drom_data_table, active_cell):
                                 {'label': 'Operatório Avançado III'.upper(),
                                  'value': 'Operatório Avançado III'.upper()},
                             ],
-                            value='0'.upper()
+                            value=turma_nivel.upper()
                         )
                     ],
                     className='m-0 p-0'
@@ -752,23 +847,25 @@ def editar_turma(data_drom_data_table, active_cell):
                     children=[
                         dbc.Select(
                             id=f'inp-create-map-turma-{page_name}',
+                            # disabled=True,
                             options=[
-                                {'label': '1'.upper(), 'value': f'1'.upper()},
-                                {'label': '2'.upper(), 'value': f'2'.upper()},
-                                {'label': '3'.upper(), 'value': f'3'.upper()},
-                                {'label': '4'.upper(), 'value': f'4'.upper()},
-                                {'label': '5'.upper(), 'value': f'5'.upper()},
-                                {'label': '6'.upper(), 'value': f'6'.upper()},
-                                {'label': '7'.upper(), 'value': f'7'.upper()},
-                                {'label': '8'.upper(), 'value': f'8'.upper()},
-                                {'label': '9'.upper(), 'value': f'9'.upper()},
-                                {'label': '10'.upper(), 'value': f'10'.upper()},
-                                {'label': '11'.upper(), 'value': f'11'.upper()},
-                                {'label': '12'.upper(), 'value': f'12'.upper()},
-                                {'label': '13'.upper(), 'value': f'13'.upper()},
-                                {'label': '14'.upper(), 'value': f'14'.upper()},
-                                {'label': '15'.upper(), 'value': f'15'.upper()},
+                                {'label': '1'.zfill(2), 'value': f'1'.zfill(2)},
+                                {'label': '2'.zfill(2), 'value': f'2'.zfill(2)},
+                                {'label': '3'.zfill(2), 'value': f'3'.zfill(2)},
+                                {'label': '4'.zfill(2), 'value': f'4'.zfill(2)},
+                                {'label': '5'.zfill(2), 'value': f'5'.zfill(2)},
+                                {'label': '6'.zfill(2), 'value': f'6'.zfill(2)},
+                                {'label': '7'.zfill(2), 'value': f'7'.zfill(2)},
+                                {'label': '8'.zfill(2), 'value': f'8'.zfill(2)},
+                                {'label': '9'.zfill(2), 'value': f'9'.zfill(2)},
+                                {'label': '10'.zfill(2), 'value': f'10'.zfill(2)},
+                                {'label': '11'.zfill(2), 'value': f'11'.zfill(2)},
+                                {'label': '12'.zfill(2), 'value': f'12'.zfill(2)},
+                                {'label': '13'.zfill(2), 'value': f'13'.zfill(2)},
+                                {'label': '14'.zfill(2), 'value': f'14'.zfill(2)},
+                                {'label': '15'.zfill(2), 'value': f'15'.zfill(2)},
                             ],
+                            value=turma_map,
                         )
                     ],
                     className='m-0 p-0'
@@ -783,20 +880,12 @@ def editar_turma(data_drom_data_table, active_cell):
                     children=[
                         dbc.AccordionItem(
                             children=[
+
                                 dbc.Row(
-                                    [
-                                        dbc.Row('PROFESSOR ATUAL', class_name='justify-content-center'),
-                                        dt_func2
-                                    ],
-                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
+                                    df_profs,
+                                    class_name='justify-content-center overflow-auto'
+                                               'col-lg-12 col-md-12 col-sm-12 p-0 m-0 p-0 pt-2 px-5'
                                 ),
-                                dbc.Row(
-                                    [
-                                        dbc.Row('NOVO PROFESSOR', class_name='justify-content-center'),
-                                        dt_func22
-                                    ],
-                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
-                                )
                             ],
 
                             className='m-0 p-0',
@@ -810,7 +899,7 @@ def editar_turma(data_drom_data_table, active_cell):
                     flush=True,
                 )
              ],
-            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-2'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
         row_aluno = dbc.Row(
             children=[
@@ -820,7 +909,8 @@ def editar_turma(data_drom_data_table, active_cell):
                             children=[
                                 dbc.Row(
                                     dt_func5,
-                                    class_name='col-lg-6 col-md-6 col-sm-12 p-0 m-0 p-0 pt-2 '
+                                    class_name='justify-content-center overflow-auto'
+                                               'col-lg-12 col-md-12 col-sm-12 p-0 m-0 p-0 pt-2 px-5'
                                 ),
                             ],
 
@@ -835,17 +925,17 @@ def editar_turma(data_drom_data_table, active_cell):
                     flush=True,
                 )
              ],
-            class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-2'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
 
 
 
 
-        row3_coord = dbc.Row(
-            children=[
-                dbc.Row('COORDENADOR', class_name='justify-content-center'),
-                dt_func3
-        ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
+        # row3_coord = dbc.Row(
+        #     children=[
+        #         dbc.Row('COORDENADOR', class_name='justify-content-center'),
+        #         dt_func3
+        # ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
 
         row4_title_hora = dbc.Row(
             children=[
@@ -857,16 +947,21 @@ def editar_turma(data_drom_data_table, active_cell):
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-1 pb-1 pl-2'
         )
 
-        row5 = dbc.Row(
-            children=[
-                dbc.Row('ALUNOS', class_name='justify-content-center'),
-                dt_func5
-        ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
+        # row5 = dbc.Row(
+        #     children=[
+        #         dt_func5
+        #     ],
+        #     class_name='justify-content-center'
+        #                'col-lg-12 col-md-12 col-sm-12 '
+        #                'overflow-auto p-0 m-0 pt-2 py-5 '
+        # )
 
         datatable1 = dbc.Row(
             children=[
                 # data frames
-                row1,
+                # row1,
+                row_id_turma,
+                row_professor,
                 row4_title_hora, # HORARIO
                 row4_content_hora, # HORARIO
                 row_nivel,
@@ -878,70 +973,80 @@ def editar_turma(data_drom_data_table, active_cell):
             ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
         )
     else:
-        # datatable1 = dbc.Row(children=[
-        #     dash_table.DataTable(id=f'data-table-edit-func-0-{page_name}',),
-        #     dash_table.DataTable(id=f'data-table-edit-func-1-{page_name}',),
-        #     dash_table.DataTable(id=f'data-table-edit-func-2-{page_name}',),
-        # ])
-        dt_func = dash_table.DataTable(
-            id=f'data-table-edit-func-{page_name}',
-        )
+
+        dt_func = dash_table.DataTable(id=f'data-table-edit-func-{page_name}',)
+
         datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
-
-    # if active_cell:
-    #     print(active_cell)
-    return datatable1, str(active_cell) if active_cell else "Click the table"
+    return datatable1, '' if active_cell else ""
 
 
 # id=f'out-alert-edited-fuc-{page_name}'
 
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
-    State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-func-2-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
-    State(component_id=f'inp-edit-func-type-{page_name}',  component_property='value'),
-    State(component_id=f'inp-edit-func-status-{page_name}',  component_property='value'),
-    State(component_id=f'inp-edit-func-email-{page_name}',  component_property='children'),
-    State(component_id=f'inp-edit-func-password-{page_name}',  component_property='value'),
-    # State(component_id=f'inp-edit-func-passwd-{page_name}',  component_property='value'),
-    # Input(component_id=f'data-table-edit-user-{page_name}',  component_property='selected_rows'),
+    # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
+    State(component_id=f'data-table-edit-func-5-{page_name}',  component_property='data'),
+    State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
+    # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
+    State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
+    State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
+    State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+    # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
     )
-def salvar_funcionarios_editados2(dt_1, dt_2, dt_3, func_type, func_status, func_email, func_passwd, n_clicks):
+def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
+    # if n_clicks :
+    if n_clicks or dt_aluno or dt_prof or nivel or map:
 
-    if n_clicks and func_type and func_status:
-        config = Config().config
-        dados = Dados(config['ambiente'])
+        df_prof = pd.DataFrame(dt_prof)
+        df_aluno = pd.DataFrame(dt_aluno)
 
-        df1 = pd.DataFrame(dt_1)
-        df2 = pd.DataFrame(dt_2)
-        df3 = pd.DataFrame(dt_3)
+        profs_cadastrados = df_prof[df_prof['cadastrado'] == 'CAD']
+        alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
 
-        df_func = pd.DataFrame()
+        df_turma = pd.DataFrame()
+        df_turma['id'] = [6]
+        df_turma['id_turma'] = [id_turma_dice]
+        df_turma['nivel'] = [nivel]
+        df_turma['map'] = [map]
 
-        for df in [df1, df2, df3]:
-            for column in df.columns:
-                if len(df[column]) >=1 :
-                    df_func[column] = df[column]
+        # append alunos novos
+        if len(alunos_cadastrados) >=1 :
+            list_aluno = []
+            for x in alunos_cadastrados['id']:
+                list_aluno.append(x)
 
-        df_func['tipo'] = func_type
-        df_func.dropna(axis=1, inplace=True)
+            df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
 
-        df_user = pd.DataFrame()
-        df_user['status'] = [func_status]
-        if func_passwd:
-            df_user['password'] = [func_passwd]
+        # append prof novos
+        if len(profs_cadastrados) >= 1:
+            func_prof = dados.query_table(
+                table_name='funcionario',
+                filter_list=[
+                    {'op': 'in', 'name': 'id', 'value': profs_cadastrados['id'].to_list()}
+                ],
+            )
 
+
+            list_profs = []
+            for x in func_prof['email_func']:
+                list_profs.append(x)
+
+            df_turma['id_professor'] = json.dumps({'email_user': list_profs})
 
         try:
-            dados.update_table(values=df_user.to_dict(orient='records')[0], table_name='user', pk_value=func_email, pk_name='email')
-            dados.update_table(values=df_func.to_dict(orient='records')[0], table_name='funcionario', pk_value=func_email, pk_name='email_func')
+            dados.update_table(
+                values=df_turma.to_dict(orient='records')[0],
+                table_name='turma',
+                pk_value=id_turma_dice,
+                pk_name='id_turma'
+            )
 
-            return 'Usuário Salvo'
+            return 'TURMA ATUALIZADA'
         except Exception as err:
             return str(err)
 
-
-    return str(n_clicks) if n_clicks else "Click the table"
+    else:
+        return "SELECIONE UMA TURMA"

@@ -198,6 +198,11 @@ class Dados(object):
                 getattr(table, pk_name) == pk_value
             )
 
+            # from sqlalchemy import inspect
+            # insp = inspect(self.engine)
+            # insp.get_table_names()
+            # a = insp.get_columns(table_name='funcionario')
+
             try:
                 session.execute(up)
                 session.commit()
