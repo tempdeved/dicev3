@@ -18,7 +18,7 @@ from banco.dados import Dados
 from config.config import Config
 
 # page_name = __name__[6:].replace('.', '_')
-page_name = 'EditarTurma'
+page_name = 'EditarAluno2'
 dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
 """
@@ -378,26 +378,10 @@ def layout():
     Input(component_id=f'main-container-{page_name}', component_property='children'),
     # Input(component_id=f'btn-buscar-usuarios-{page_name}', component_property='n_clicks'),
 )
-def buscar_turmas(btn):
-
-    # if btn >= 1:
-
-    config = Config().config
-    dados = Dados(config['ambiente'])
+def buscar_aluno(btn):
 
     df_turma  = dados.query_table(
-        table_name='turma',
-        field_list=[
-            {'name': 'id'},
-            {'name': 'id_turma'},
-            {'name': 'semestre'},
-            {'name': 'status'},
-            {'name': 'nivel'},
-            {'name': 'inicio'},
-            {'name': 'fim'},
-            {'name': 'map'},
-            {'name': 'idioma'},
-        ]
+        table_name='aluno',
     )
 
     df_turma.sort_values(

@@ -45,7 +45,6 @@ class Aluno(Base):
     ultimo_nome = Column(VARCHAR(250))
     status = Column(VARCHAR(250))
     dat_nasc = Column(DATE)
-    # mes_nascimento = Column(VARCHAR(250))
     cidade_nascimento = Column(VARCHAR(250))
     endereco = Column(VARCHAR(250))
     numero = Column(Integer)

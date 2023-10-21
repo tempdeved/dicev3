@@ -157,6 +157,18 @@ content_layout = dbc.Row(
                                                             dbc.Col(
                                                                 # width=2,
                                                                 children=[
+                                                                    dbc.Button(
+                                                                        id=f'btn-create-user-{page_name}',
+                                                                        children=['SALVAR HORARIO'],
+                                                                        class_name='me-0',
+                                                                        color='primary',
+                                                                        n_clicks=0,
+                                                                    ),
+                                                                ]
+                                                            ),
+                                                            dbc.Col(
+                                                                # width=2,
+                                                                children=[
                                                                     html.A(
                                                                         dbc.Button(
                                                                             id=f'btn-limpar-campos-{page_name}',
@@ -169,18 +181,6 @@ content_layout = dbc.Row(
                                                                     href=f'/{page_name}'),
                                                                 ]
                                                             ),
-                                                            dbc.Col(
-                                                                # width=2,
-                                                                children=[
-                                                                    dbc.Button(
-                                                                        id=f'btn-create-user-{page_name}',
-                                                                        children=['SALVAR HORARIO'],
-                                                                        class_name='me-0',
-                                                                        color='primary',
-                                                                        n_clicks=0,
-                                                                    ),
-                                                                ]
-                                                            )
                                                         ]
                                                     ),
                                                 ]

@@ -174,7 +174,7 @@ side_bar = Sidebar().layout(
                 dcc.Link(children='criar aluno', href='/CriarALuno'),
 
                 # editar aluno e exportar aluno
-                dcc.Link(children='--editar aluno', href='/editar_aluno'),
+                dcc.Link(children='--editar aluno', href='/EditarAluno'),
 
                 # lançar REMARKS junto com nota
                 # dcc.Link(children='lançar nota aluno', href='/lancar_nota_aluno'),

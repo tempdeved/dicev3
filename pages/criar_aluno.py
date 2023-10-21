@@ -1,4 +1,5 @@
 import datetime
+import json
 import dash
 import mysql.connector.errors
 import pandas as pd
@@ -16,10 +17,13 @@ from elements.titulo import Titulo
 from banco.dados import Dados
 from config.config import Config
 
-page_name = __name__[6:].replace('.', '_')
-dash.register_page(__name__, path=f'/CriarALuno')
+# page_name = __name__[6:].replace('.', '_')
+page_name = 'CriarALuno'
+dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
 
+config = Config().config
+dados = Dados(config['ambiente'])
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -123,23 +127,34 @@ content_layout = dbc.Row(
                                                     dbc.Row(id=f'out-associete-turma-{page_name}',children=[], class_name='m-0 p-1'),
 
                                                     dbc.Row(
+                                                        id=f'button-area-{page_name}',
+                                                        class_name='ml-0 pt-2',  # gap-2
                                                         children=[
-                                                            dbc.Row(
-                                                                id='button_area',
-                                                                # class_name='d-grid d-md-block',  # gap-2
+                                                            dbc.Col(
+                                                                # width=2,
                                                                 children=[
-                                                                    dbc.Col(
-                                                                        # width=2,
-                                                                        children=[
-                                                                            dbc.Button(
-                                                                                id=f'btn-create-user-{page_name}',
-                                                                                children=['SALVAR NOVO ALUNO'],
-                                                                                class_name='me-0',
-                                                                                color='primary',
-                                                                                n_clicks=0,
-                                                                            ),
-                                                                        ]
-                                                                    )
+                                                                    dbc.Button(
+                                                                        id=f'btn-create-user-{page_name}',
+                                                                        children=['SALVAR NOVO ALUNO'],
+                                                                        class_name='me-0',
+                                                                        color='primary',
+                                                                        n_clicks=0,
+                                                                    ),
+                                                                ]
+                                                            ),
+                                                            dbc.Col(
+                                                                # width=2,
+                                                                children=[
+                                                                    html.A(
+                                                                        dbc.Button(
+                                                                            id=f'btn-limpar-campos-{page_name}',
+                                                                            children=['LIMPAR CAMPOS'],
+                                                                            class_name='me-1',
+                                                                            color='light',
+                                                                            n_clicks=0,
+
+                                                                        ),
+                                                                        href=f'/{page_name}'),
                                                                 ]
                                                             ),
                                                         ]
@@ -192,9 +207,6 @@ def layout():
 )
 def update_datepicker(datepicker):
 
-    config = Config().config
-    dados = Dados(config['ambiente'])
-
     dt_picker = dcc.DatePickerSingle(
         id=f'inp-date-inicio-aluno-{page_name}',
         min_date_allowed=datetime.date(1992, 8, 12),
@@ -213,6 +225,11 @@ def update_datepicker(datepicker):
         #     {'name': 'email'},
         #     {'name': 'status'},
         # ]
+    )
+    df_turmas.sort_values(
+        by=['created_at'],
+        ascending=[False],
+        inplace=True
     )
 
     row_turmas = dbc.Row(
@@ -271,8 +288,6 @@ def create_aluno(
 
     if user_name and data_inicio:
     # if user_type and user_name and user_email and user_passdw:
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         created_at = datetime.datetime.now()
         inicio = data_inicio
@@ -301,7 +316,7 @@ def create_aluno(
             data={
                 'id': [max],
                 'created_at': [created_at],
-                'nome': [user_name],
+                'nome': [user_name.upper()],
                 'inicio': [created_at],
                 'email_pai': [email_pai],
                 'celular_pai': [celular_pai],
@@ -328,9 +343,19 @@ def create_aluno(
 
             turma_alunos = f'{max}'
             if df_turma['id_aluno'][0]:
-                split = df_turma['id_aluno'][0].split(',')
-                for x in split[:-1]:
-                    turma_alunos = f'{turma_alunos}, {x}'
+                json_alunos = json.loads(df_turma['id_aluno'][0])
+                json_alunos['id_aluno'].append(turma_alunos)
+                turma_alunos = json.dumps(json_alunos)
+
+                # list_aluno = []
+                # for x in alunos_cadastrados['id']:
+                #     list_aluno.append(x)
+                #
+                # df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
+
+                # plit = df_turma['id_aluno'][0].split(',')
+                # for x in split[:-1]:
+                #     turma_alunos = f'{turma_alunos}, {x}'
 
             df_turma['id_aluno'] = turma_alunos
 
