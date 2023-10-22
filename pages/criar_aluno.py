@@ -168,7 +168,7 @@ content_layout = dbc.Row(
                                         style={'background-color': '#ffffff'},
                                         title="Criar Aluno"
                                     )
-                                ], start_collapsed=True, flush=True, style={'background-color': '#ffffff'}
+                                ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
                         ], class_name=''
                     )

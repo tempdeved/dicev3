@@ -171,22 +171,22 @@ side_bar = Sidebar().layout(
         ListGroup().layout(
             group_title='Aluno',
             group_elements=[
-                dcc.Link(children='criar aluno', href='/CriarALuno'),
+                dcc.Link(children='criar aluno'.title(), href='/CriarALuno'),
 
                 # editar aluno e exportar aluno
-                dcc.Link(children='--editar aluno', href='/EditarAluno'),
+                dcc.Link(children='editar aluno'.title(), href='/EditarAluno'),
 
                 # lançar REMARKS junto com nota
-                # dcc.Link(children='lançar nota aluno', href='/lancar_nota_aluno'),
+                # dcc.Link(children='lançar nota aluno'.title(), href='/lancar_nota_aluno'),
             ]
         ),
         ListGroup().layout(
             group_title='Turma',
             group_elements=[
-                dcc.Link(children='criar horario', href='/CriarHorario'),
-                dcc.Link(children='criar turma', href='/CriarTurma'),
-                dcc.Link(children='editar turma', href='/EditarTurma'),
-                dcc.Link(children='--lançar nota turma', href='/lancar_nota_turma'),
+                dcc.Link(children='criar horario'.title(), href='/CriarHorario'),
+                dcc.Link(children='criar turma'.title(), href='/CriarTurma'),
+                dcc.Link(children='editar turma'.title(), href='/EditarTurma'),
+                dcc.Link(children='--lançar nota turma'.title(), href='/lancar_nota_turma'),
             ]
         ),
         ListGroup().layout(
@@ -194,22 +194,22 @@ side_bar = Sidebar().layout(
             group_elements=[
 
                 # boletim
-                dcc.Link(children='--boletim aluno', href='/r_boletim_aluno'),
+                dcc.Link(children='--boletim aluno'.title(), href='/r_boletim_aluno'),
 
                 # alunos, telefones, etc
-                dcc.Link(children='--telefones turma', href='/r_telefones_turma'),
+                dcc.Link(children='--telefones turma'.title(), href='/r_telefones_turma'),
 
                 # boletim da turma
-                dcc.Link(children='--nota por turma', href='/r_nota_por_turma'),
+                dcc.Link(children='--nota por turma'.title(), href='/r_nota_por_turma'),
 
                 # horarios das turmas
-                dcc.Link(children='--horarios turmas', href='/r_horarios_turma'),
+                dcc.Link(children='--horarios turmas'.title(), href='/r_horarios_turma'),
             ]
         ),
         ListGroup().layout(
             group_title='Gerenciar',
             group_elements=[
-                dcc.Link(children='usuario', href='/GerenciarUsuario'),
+                dcc.Link(children='usuario'.title(), href='/GerenciarUsuario'),
             ]
         ),
     ]
@@ -287,19 +287,6 @@ app.layout = dbc.Row(
                         html.Br(),
                         html.Br(),
                         html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
                     ],
                 )
             ],
@@ -326,7 +313,7 @@ app.layout = dbc.Row(
 #     ### test if user is logged in
 #     if current_user.is_authenticated:
 #         if path == '/login':
-#             return dcc.Link(children="logout", href="/logout"), '/'
+#             return dcc.Link(children="logout".title(), href="/logout"), '/'
 #
 #         return dcc.Link(children="logout", href="/logout"), dash.no_update
 #     else:

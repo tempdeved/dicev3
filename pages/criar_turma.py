@@ -99,7 +99,7 @@ content_layout = dbc.Row(
                                     )
                                 ],
                                 className='m-0 p-0',
-                                start_collapsed=True,
+                                start_collapsed=False,
                                 flush=True,
                                 style={'background-color': '#ffffff'}
                             ),
@@ -165,7 +165,7 @@ def update_datepicker(datepicker):
     df_aluno = dados.query_table(table_name='aluno')
 
     df_aluno_filted = df_aluno[['id', 'nome', 'status']]
-    df_aluno_filted.fillna('', inplace=True)
+    df_aluno_filted = df_aluno_filted.fillna('').copy()
 
     df_funcionario.rename(columns={'email_func': 'email'}, inplace=True)
 

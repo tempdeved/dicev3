@@ -1,4 +1,8 @@
 import datetime
+import os
+import base64
+import PIL.Image as Image
+import io
 import dash
 import mysql.connector.errors
 import pandas as pd
@@ -17,7 +21,7 @@ from banco.dados import Dados
 from config.config import Config
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='/EditarAluno'
+page_name='EditarAluno'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
@@ -58,7 +62,8 @@ content_layout = dbc.Row(
         #                                             #                 initial_visible_month=NOW,
         #                                             #                 date=NOW,
         #                                             #                 month_format='MMMM Y',
-        #                                             #                 display_format='DD-MM-YYYY',
+#         #                                             #                 display_format='DD-MM-YYYY',
+        #                                             #                 display_format='DDYYYY-MM-DD
         #                                             #                 # placeholder='YY-MM-DD',
         #                                             #             ),
         #                                             #             class_name='col-lg-12 col-sm-12 '
@@ -437,7 +442,7 @@ def capturar_alunos(main_contianer):
     # Input(component_id=f'btn-buscar-usuarios-{page_name}',  component_property='n_clicks'),
     # prevent_initial_callbacks=True,
     )
-def salvar_funcionarios_editados(data_drom_data_table, active_cell):
+def editar_aluno(data_drom_data_table, active_cell):
 
     if data_drom_data_table and active_cell:
 
@@ -450,107 +455,172 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                 {'op': 'eq', 'name': 'id', 'value': int(id_aluno)}
             ]
         )
-        cidade_list = ['rj', 'sp']
-        campos = [
 
-            dbc.Row('foto', class_name='pt-2 '),
-            dbc.Input(value=df_user["foto"]),
+        estados_list = config['estados']
+        cidade_list = config['cidades']
+
+        path_file = f'static/images/aluno/{df_user["foto"][0]}'
+        path_no_foto = f'static/images/logo/no_foto.png'
+
+        foto_user = path_file if os.path.isfile(path_file) else path_no_foto
+
+        campos = [
 
             # dbc.Row('created_at', class_name='pt-2 '),
             # dbc.Input(value=df_user["created_at"]),
-            dbc.Row('nome', class_name='pt-2 '),
-            dbc.Input(value=df_user["nome"]),
-            # dbc.Row('nome_do_meio', class_name='pt-2 '),
-            # dbc.Input(value=df_user["nome_do_meio"]),
-            # dbc.Row('ultimo_nome', class_name='pt-2 '),
-            # dbc.Input(value=df_user["ultimo_nome"]),
 
-            dbc.Row('status', class_name='pt-2 '),
             dbc.Row(
                 children=[
-                    dbc.Select(
-                        id=f'status-user-{page_name}',
-                        options=[
-                            {'label': 'ativo'.upper(), 'value': 'ativo'.upper()},
-                            {'label': 'inativo'.upper(), 'value': 'inativo'.upper()},
-                            {'label': 'jubilado'.upper(), 'value': 'jubilado'.upper()},
-                            {'label': 'encerrado'.upper(), 'value': 'encerrado'.upper()},
-                        ],
-                        value=df_user["status"]
-                    )
+                    dbc.Col(
+                        children=[
+                        dbc.Row('nome'.replace('_', ' ').title(), class_name='pt-2 '),
+                        dbc.Input(
+                            id=f'nome-user-{page_name}',
+                            value=df_user["nome"][0]),
+                        # dbc.Row('nome_do_meio'.replace('_', ' ',.tittle( class_name='pt-2 '),
+                        # dbc.Input(value=df_user["nome_do_meio"]),
+                        # dbc.Row('ultimo_nome'.replace('_', ' ',.tittle( class_name='pt-2 '),
+                        # dbc.Input(value=df_user["ultimo_nome"]),
+
+                        dbc.Row('status'.replace('_', ' ').title(), class_name='pt-2 '),
+                        dbc.Row(
+                            children=[
+                                dbc.Select(
+                                    id=f'status-user-{page_name}',
+                                    options=[
+                                        {'label': 'ativo'.upper(), 'value': 'ativo'.upper()},
+                                        {'label': 'inativo'.upper(), 'value': 'inativo'.upper()},
+                                        {'label': 'jubilado'.upper(), 'value': 'jubilado'.upper()},
+                                        {'label': 'encerrado'.upper(), 'value': 'encerrado'.upper()},
+                                    ],
+                                    value=df_user["status"][0]
+                                )
+                            ],
+                            class_name='pt-2 m-0 px-0'
+                        ),
+
+                        dbc.Row('Data Nascimento'.replace('_', ' ').title(), class_name='pt-2 '),
+                        dbc.Row(
+                            children=[
+                                dcc.DatePickerSingle(
+                                    id=f'dat-nasc-user-{page_name}',
+                                    min_date_allowed=datetime.date(1900, 8, 12),
+                                    # max_date_allowed=datetime.,
+                                    initial_visible_month=df_user["dat_nasc"][0],
+                                    # initial_visible_month=datetime.datetime.today(),
+                                    # date=datetime.datetime.today(),
+                                    month_format='MMMM Y',
+                                    # display_format='DD-MM-YYYY',
+                                    display_format='YYYY-MM-DD',
+                                    # placeholder='YY-MM-DD',
+                                )
+                            ],
+                            class_name='col-lg-12 col-sm-12 mb-3 '
+                        ),
+                        dbc.Input(value=df_user["dat_nasc"][0], disabled=True),
+                        ]
+                    ),
+                    dbc.Col(
+                        children=[
+                            dbc.Row('foto'.replace('_', ' ').title(), class_name='pt-2 '),
+                            dbc.Row(
+                                children=[
+                                    html.Img(
+                                        id=f'img-user-{page_name}',
+                                        src=foto_user,
+                                        alt=f'Aluno {df_user["nome"][0]}',
+                                        className='perfil_avatar py-2 mx-auto text-center',
+                                        # width=10
+                                        style={'height': '300px', 'width': '300px'},
+                                    ),
+                                ],
+                                class_name='px-0 justify-content-center'
+                            ),
+                            dcc.Upload(
+                                id=f'upload-img-file{page_name}',
+                                children=[
+                                    'Arraste e Solte ou ',
+                                    html.B('Selecione um Arquivo')
+                                ],
+                                style={
+                                    'width': '100%',
+                                    'height': '60px',
+                                    'lineHeight': '60px',
+                                    'borderWidth': '1px',
+                                    'borderStyle': 'dashed',
+                                    'borderRadius': '5px',
+                                    'textAlign': 'center'
+                                }
+                            ),
+
+
+                            # dbc.Input(value=df_user["foto"][0]),
+                        ]
+                    ),
                 ],
-                class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('Data Nascimento', class_name='pt-2 '),
-            dbc.Row(
-                children=[
-                    dcc.DatePickerSingle(
-                        id=f'dat-nasc-user-{page_name}',
-                        min_date_allowed=datetime.date(1900, 8, 12),
-                        # max_date_allowed=datetime.,
-                        initial_visible_month=df_user["dat_nasc"][0],
-                        # initial_visible_month=datetime.datetime.today(),
-                        # date=datetime.datetime.today(),
-                        month_format='MMMM Y',
-                        display_format='DD-MM-YYYY',
-                        # placeholder='YY-MM-DD',
-                    )
-                ],
-                class_name='col-lg-12 col-sm-12 mb-3 '
-            ),
-            dbc.Input(value=df_user["dat_nasc"], disabled=True),
 
 
-            dbc.Row('Cidade Nascimento', class_name='pt-2 '),
+            dbc.Row('Cidade Nascimento'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 dcc.Dropdown(
                     id=f'cidade-nasc-user-{page_name}',
                     className='',
                     options=cidade_list,
-                    value='rj'.upper(),
+                    value=df_user["cidade_nascimento"][0],
                     searchable=True,
                 ),
                 className='pt-2 m-0 px-0'
             ),
             
-            dbc.Row('endereco', class_name='pt-2 '),
-            dbc.Input(value=df_user["endereco"]),
+            dbc.Row('endereco'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'endereco-user-{page_name}',value=df_user["endereco"][0]),
 
-            dbc.Row('numero', class_name='pt-2 '),
-            dbc.Input(value=df_user["numero"], type='number'),
+            dbc.Row('numero'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'numero-user-{page_name}',value=df_user["numero"][0], type='number'),
 
-            dbc.Row('complemento', class_name='pt-2 '),
-            dbc.Input(value=df_user["complemento"]),
+            dbc.Row('complemento'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'complemento-user-{page_name}',value=df_user["complemento"][0]),
 
-            dbc.Row('bairro', class_name='pt-2 '),
-            dbc.Input(value=df_user["bairro"]),
+            dbc.Row('bairro'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'bairro-user-{page_name}',value=df_user["bairro"][0]),
 
-            dbc.Row('cidade', class_name='pt-2 '),
+            dbc.Row('cidade'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 dcc.Dropdown(
                     id=f'cidade-user-{page_name}',
                     className='',
                     options=cidade_list,
-                    value='rj'.upper(),
+                    value=df_user["cidade"][0],
                     searchable=True,
                 ),
                 className='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('uf', class_name='pt-2 '),
-            dbc.Input(value=df_user["uf"]),
+            dbc.Row('uf'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Row(
+                dcc.Dropdown(
+                    id=f'estados-user-{page_name}',
+                    className='',
+                    options=estados_list,
+                    value=df_user["uf"][0],
+                    searchable=True,
+                ),
+                className='pt-2 m-0 px-0'
+            ),
+            # dbc.Input(value=df_user["uf"][0]),
 
-            dbc.Row('cep', class_name='pt-2 '),
-            dbc.Input(value=df_user["cep"]),
+            dbc.Row('cep'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'cep-user-{page_name}',value=df_user["cep"][0]),
 
-            dbc.Row('telefone1', class_name='pt-2 '),
-            dbc.Input(value=df_user["telefone1"]),
+            dbc.Row('telefone1'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'telefone1-user-{page_name}',value=df_user["telefone1"][0]),
 
-            dbc.Row('moradia', class_name='pt-2 '),
-            dbc.Input(value=df_user["moradia"]),
+            dbc.Row('moradia'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'moradia-user-{page_name}',value=df_user["moradia"][0]),
 
-            dbc.Row('inicio', class_name='pt-2 '),
+            dbc.Row('inicio'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dcc.DatePickerSingle(
@@ -561,18 +631,23 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                         # initial_visible_month=datetime.datetime.today(),
                         # date=datetime.datetime.today(),
                         month_format='MMMM Y',
-                        display_format='DD-MM-YYYY',
+                        # display_format='DD-MM-YYYY',
+                        display_format='YYYY-MM-DD',
                         # placeholder='YY-MM-DD',
                     )
                 ],
                 class_name='col-lg-12 col-sm-12 mb-3 '
             ),
-            dbc.Input(value=df_user["inicio"], disabled=True),
+            dbc.Input(value=df_user["inicio"][0], disabled=True),
 
-            dbc.Row('n_irmaos', class_name='pt-2 '),
-            dbc.Input(value=df_user["n_irmaos"], type='number'),
+            dbc.Row('n_irmaos'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(
+                id=f'irmaos-user-{page_name}',
+                value=df_user["n_irmaos"][0],
+                type='number'
+            ),
 
-            dbc.Row('retorno', class_name='pt-2 '),
+            dbc.Row('retorno'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dcc.DatePickerSingle(
@@ -583,15 +658,16 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                         # initial_visible_month=datetime.datetime.today(),
                         # date=datetime.datetime.today(),
                         month_format='MMMM Y',
-                        display_format='DD-MM-YYYY',
+                        # display_format='DD-MM-YYYY',
+                        display_format='YYYY-MM-DD',
                         # placeholder='YY-MM-DD',
                     )
                 ],
                 class_name='col-lg-12 col-sm-12 mb-3 '
             ),
-            dbc.Input(value=df_user["retorno"], disabled=True),
+            dbc.Input(value=df_user["retorno"][0], disabled=True),
 
-            dbc.Row('sexo', class_name='pt-2 '),
+            dbc.Row('sexo'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dbc.Select(
@@ -600,28 +676,28 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                             {'label': 'masculino'.upper(), 'value': 'masculino'.upper()},
                             {'label': 'feminino'.upper(), 'value': 'feminino'.upper()},
                         ],
-                        value=df_user["sexo"]
+                        value=df_user["sexo"][0]
                     )
                 ],
                 class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('responsavel_financeiro', class_name='pt-2 '),
-            dbc.Input(value=df_user["responsavel_financeiro"]),
+            dbc.Row('responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'responsavel_financeiro-user-{page_name}',value=df_user["responsavel_financeiro"][0]),
 
-            dbc.Row('tel_responsavel_financeiro', class_name='pt-2 '),
-            dbc.Input(value=df_user["tel_responsavel_financeiro"]),
+            dbc.Row('tel_responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'tel_responsavel_financeiro-user-{page_name}',value=df_user["tel_responsavel_financeiro"][0]),
 
-            dbc.Row('responsavel_p_filhos', class_name='pt-2 '),
-            dbc.Input(value=df_user["responsavel_p_filhos"]),
+            dbc.Row('responsavel_p_filhos'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'responsavel_p_filhos-user-{page_name}',value=df_user["responsavel_p_filhos"][0]),
 
-            dbc.Row('bairro_de_ida', class_name='pt-2 '),
-            dbc.Input(value=df_user["bairro_de_ida"]),
+            dbc.Row('bairro_de_ida'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'bairro_de_ida-user-{page_name}',value=df_user["bairro_de_ida"][0]),
 
-            dbc.Row('bairro_de_volta', class_name='pt-2 '),
-            dbc.Input(value=df_user["bairro_de_volta"]),
+            dbc.Row('bairro_de_volta'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'bairro_de_volta-user-{page_name}',value=df_user["bairro_de_volta"][0]),
 
-            dbc.Row('enviar_boleto', class_name='pt-2 '),
+            dbc.Row('enviar_boleto'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dbc.Select(
@@ -630,13 +706,13 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                             {'label': 'sim'.upper(), 'value': 1},
                             {'label': 'não'.upper(), 'value': 0},
                         ],
-                        value=df_user["enviar_boleto"]
+                        value=df_user["enviar_boleto"][0]
                     )
                 ],
                 class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('gerar_taxa', class_name='pt-2 '),
+            dbc.Row('gerar_taxa'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dbc.Select(
@@ -645,13 +721,13 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                             {'label': 'sim'.upper(), 'value': 1},
                             {'label': 'não'.upper(), 'value': 0},
                         ],
-                        value=df_user["gerar_taxa"]
+                        value=df_user["gerar_taxa"][0]
                     )
                 ],
                 class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('bolsista', class_name='pt-2 '),
+            dbc.Row('bolsista'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
                 children=[
                     dbc.Select(
@@ -660,269 +736,248 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
                             {'label': 'sim'.upper(), 'value': 1},
                             {'label': 'não'.upper(), 'value': 0},
                         ],
-                        value=df_user["bolsista"]
+                        value=df_user["bolsista"][0]
                     )
                 ],
                 class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('nome_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["nome_pai"]),
+            dbc.Row('nome_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'nome_pai-user-{page_name}',value=df_user["nome_pai"][0]),
 
-            dbc.Row('email_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["email_pai"]),
+            dbc.Row('email_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'email_pai-user-{page_name}',value=df_user["email_pai"][0]),
 
-            dbc.Row('celular_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["celular_pai"]),
+            dbc.Row('celular_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'celular_pai-user-{page_name}',value=df_user["celular_pai"][0]),
 
-            dbc.Row('tel_trabalho_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["tel_trabalho_pai"]),
+            dbc.Row('tel_trabalho_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'tel_trabalho_pai-user-{page_name}',value=df_user["tel_trabalho_pai"][0]),
 
-            dbc.Row('cpf_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["cpf_pai"]),
+            dbc.Row('cpf_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'cpf_pai-user-{page_name}',value=df_user["cpf_pai"][0]),
 
-            dbc.Row('profissao_pai', class_name='pt-2 '),
-            dbc.Input(value=df_user["profissao_pai"]),
+            dbc.Row('profissao_pai'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'profissao_pai-user-{page_name}',value=df_user["profissao_pai"][0]),
 
-            dbc.Row('nome_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["nome_mae"]),
+            dbc.Row('nome_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'nome_mae-user-{page_name}',value=df_user["nome_mae"][0]),
 
-            dbc.Row('email_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["email_mae"], type='email'),
+            dbc.Row('email_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'email_mae-user-{page_name}',value=df_user["email_mae"][0], type='email'),
 
-            dbc.Row('celular_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["celular_mae"]),
+            dbc.Row('celular_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'celular_mae-user-{page_name}',value=df_user["celular_mae"][0]),
 
-            dbc.Row('tel_trabalho_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["tel_trabalho_mae"]),
+            dbc.Row('tel_trabalho_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'tel_trabalho_mae-user-{page_name}',value=df_user["tel_trabalho_mae"][0]),
 
-            dbc.Row('cpf_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["cpf_mae"]),
+            dbc.Row('cpf_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'cpf_mae-user-{page_name}',value=df_user["cpf_mae"][0]),
 
-            dbc.Row('profissao_mae', class_name='pt-2 '),
-            dbc.Input(value=df_user["profissao_mae"]),
+            dbc.Row('profissao_mae'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Input(id=f'profissao_mae-user-{page_name}',value=df_user["profissao_mae"][0]),
 
-            # dbc.Row('senha', class_name='pt-2 '),
+            # dbc.Row('senha'.replace('_', ' ',.tittle( class_name='pt-2 '),
             # dbc.Input(value=df_user["senha"]),
         ]
-
-        # txt_columns = [
-        #     'nome',
-        # ]
-        #
-        #
-        # df_func1 = df_user[['nome', 'status', 'telefone1', 'telefone2', 'dat_nasc']].copy()
-        # df_func2 = df_user[['cc', 'cart_profis', 'rg', 'endereco', 'numero', 'complemento']].copy()
-        # df_func3 = df_user[['bairro', 'cidade', 'rg', 'uf', 'cep',]].copy()
-        #
-        # val_tipo = df_func['tipo'][0]
-        # val_status = df_user['status'][0]
-        # val_email = df_user['email'][0]
-
-        val_senha = ''
-
-        # dt_func1 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-1-{page_name}',
-        #     data=df_func1.to_dict('records'),
-        #     columns=[{"name": i.upper(), "id": i} for i in df_func1.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=True,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
-        #
-        # dt_func2 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-2-{page_name}',
-        #     data=df_func2.to_dict('records'),
-        #     columns=[{"name": i.upper(), "id": i} for i in df_func2.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=True,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
-        # dt_func3 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-3-{page_name}',
-        #     data=df_func3.to_dict('records'),
-        #     columns=[{"name": i.upper(), "id": i} for i in df_func3.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=True,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
-        #
-        # radio_status = dbc.Row(
-        #     children=[
-        #         dbc.Row(
-        #             'Tipo Usuário',
-        #             class_name='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
-        #             },
-        #         ),
-        #         dbc.Row(
-        #             children=[
-        #                 dbc.RadioItems(
-        #                     id=f'inp-edit-func-type-{page_name}',
-        #                     options={
-        #                         'Gerente': f'Gerente'.upper(),
-        #                         'Administrativo': f'Administrativo'.upper(),
-        #                         'Professor': f'Professor'.upper(),
-        #                     },
-        #                     value=val_tipo,
-        #                     inline=True,
-        #                 )
-        #             ],
-        #             class_name='col-lg-12 col-sm-12',
-        #         ),
-        #     ]
-        # ),
-        #
-        # radio_tipo = dbc.Row(
-        #     children=[
-        #         dbc.Row(
-        #             'Status',
-        #             className='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
-        #             },
-        #         ),
-        #         dbc.Row(
-        #             children=[
-        #                 dbc.RadioItems(
-        #                     id=f'inp-edit-func-status-{page_name}',
-        #                     options={
-        #                         'Ativo': f'Ativo'.upper(),
-        #                         'Inativo': f'Inativo'.upper(),
-        #                     },
-        #                     value=val_status,
-        #                     inline=True
-        #                 )
-        #             ],
-        #             class_name='col-lg-12 col-sm-12'
-        #         ),
-        #     ]
-        # ),
-        #
-        # email_titulo = dbc.Row(
-        #             id=f'title-{page_name}',
-        #             children=[
-        #                 dbc.Row(
-        #                     'Email',
-        #                     className='col-lg-12 col-sm-12 justify-content-center ',
-        #                     style={
-        #                         'background-color': '#FCFCFC',
-        #                         'font-weight': 'bold',
-        #                     },
-        #                 ),
-        #                 html.H1(
-        #                     id=f'inp-edit-func-email-{page_name}',
-        #                     children=val_email,
-        #                     className='py-0 px-0 mx-0',
-        #                 )
-        #             ]
-        #         )
-        #
-        # mudar_senha = dbc.Row(
-        #     children=[
-        #         dbc.Col(
-        #             'Senha',
-        #             className='col-lg-12 col-sm-12 justify-content-center ',
-        #             style={
-        #                 'background-color': '#FCFCFC',
-        #                 'font-weight': 'bold',
-        #             },
-        #         ),
-        #         dbc.Col(
-        #             dbc.Input(
-        #                 id=f'inp-edit-func-password-{page_name}',
-        #                 placeholder="altere aqui...",
-        #                 type='password',
-        #                 # size="md",
-        #                 className='col-lg-6 col-sm-12 justify-content-center ',
-        #             ),
-        #         )
-        #     ]
-        # ),
-        #
-        # row1 = dbc.Row(dt_func1, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
-        # row2 = dbc.Row(dt_func2, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
-        # row3 = dbc.Row(dt_func3, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
-        # row4 = dbc.Row(radio_status, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-5')
-        # row5 = dbc.Row(radio_tipo, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-5')
-        # row6 = dbc.Row(email_titulo, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-5')
-        # row7 = dbc.Row(mudar_senha, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-5')
 
         datatable1 = dbc.Row(
             children=campos,
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
         )
     else:
-        # datatable1 = dbc.Row(children=[
-        #     dash_table.DataTable(id=f'data-table-edit-func-0-{page_name}',),
-        #     dash_table.DataTable(id=f'data-table-edit-func-1-{page_name}',),
-        #     dash_table.DataTable(id=f'data-table-edit-func-2-{page_name}',),
-        # ])
+
         dt_func = dash_table.DataTable(
             id=f'data-table-edit-func-{page_name}',
         )
         datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
+    return datatable1, ""
 
-    # if active_cell:
-    #     print(active_cell)
-    return datatable1, str(active_cell) if active_cell else ""
-
-
-# id=f'out-alert-edited-fuc-{page_name}'
 
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
-    State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-func-2-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
-    State(component_id=f'inp-edit-func-type-{page_name}',  component_property='value'),
-    State(component_id=f'inp-edit-func-status-{page_name}',  component_property='value'),
-    State(component_id=f'inp-edit-func-email-{page_name}',  component_property='children'),
-    State(component_id=f'inp-edit-func-password-{page_name}',  component_property='value'),
-    # State(component_id=f'inp-edit-func-passwd-{page_name}',  component_property='value'),
-    # Input(component_id=f'data-table-edit-user-{page_name}',  component_property='selected_rows'),
+
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
+
+    State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
+    State(component_id=f'data-table-edit-user-{page_name}', component_property='selected_rows'),
+
+    State(component_id=f'nome-user-{page_name}', component_property='value'),
+    State(component_id=f'status-user-{page_name}', component_property='value'),
+    State(component_id=f'dat-nasc-user-{page_name}', component_property='date'),
+    State(component_id=f'cidade-nasc-user-{page_name}', component_property='value'),
+    State(component_id=f'endereco-user-{page_name}', component_property='value'),
+    State(component_id=f'numero-user-{page_name}', component_property='value'),
+    State(component_id=f'complemento-user-{page_name}', component_property='value'),
+    State(component_id=f'bairro-user-{page_name}', component_property='value'),
+    State(component_id=f'cidade-user-{page_name}', component_property='value'),
+    State(component_id=f'estados-user-{page_name}', component_property='value'),
+    State(component_id=f'cep-user-{page_name}', component_property='value'),
+    State(component_id=f'telefone1-user-{page_name}', component_property='value'),
+    State(component_id=f'moradia-user-{page_name}', component_property='value'),
+    State(component_id=f'dat-inicio-user-{page_name}', component_property='date'),
+    State(component_id=f'irmaos-user-{page_name}', component_property='value'),
+    State(component_id=f'dat-retorno-user-{page_name}', component_property='date'),
+    State(component_id=f'sexo-user-{page_name}', component_property='value'),
+    State(component_id=f'responsavel_financeiro-user-{page_name}', component_property='value'),
+    State(component_id=f'tel_responsavel_financeiro-user-{page_name}', component_property='value'),
+    State(component_id=f'responsavel_p_filhos-user-{page_name}', component_property='value'),
+    State(component_id=f'bairro_de_ida-user-{page_name}', component_property='value'),
+    State(component_id=f'bairro_de_volta-user-{page_name}', component_property='value'),
+    State(component_id=f'enviar-boleto-user-{page_name}', component_property='value'),
+    State(component_id=f'gerar-taxa-user-{page_name}', component_property='value'),
+    State(component_id=f'bolsista-user-{page_name}', component_property='value'),
+    State(component_id=f'nome_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'email_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'celular_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'tel_trabalho_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'cpf_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'profissao_pai-user-{page_name}', component_property='value'),
+    State(component_id=f'nome_mae-user-{page_name}', component_property='value'),
+    State(component_id=f'email_mae-user-{page_name}', component_property='value'),
+    State(component_id=f'celular_mae-user-{page_name}', component_property='value'),
+    State(component_id=f'tel_trabalho_mae-user-{page_name}', component_property='value'),
+    State(component_id=f'cpf_mae-user-{page_name}', component_property='value'),
+    State(component_id=f'profissao_mae-user-{page_name}', component_property='value'),
+
+    State(component_id=f'upload-img-file{page_name}', component_property='contents'),
+    State(component_id=f'upload-img-file{page_name}', component_property='filename'),
+
     )
-def salvar_funcionarios_editados2(dt_1, dt_2, dt_3, func_type, func_status, func_email, func_passwd, n_clicks):
+def salvar_funcionarios_editados2(
+        n_clicks,
+        data_drom_data_table,
+        active_cell,
+        nome,
+        status,
+        dat_nasc,
+        cidade_nasc,
+        endereco,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        uf,
+        cep,
+        telefone1,
+        moradia,
+        dat_inicio,
+        irmaos,
+        dat_retorno,
+        sexo,
+        responsavel_financeiro,
+        tel_responsavel_financeiro,
+        responsavel_p_filhos,
+        bairro_de_ida,
+        bairro_de_volta,
+        enviar_boleto,
+        gerar_taxa,
+        bolsista,
+        nome_pai,
+        email_pai,
+        celular_pai,
+        tel_trabalho_pai,
+        cpf_pai,
+        profissao_pai,
+        nome_mae,
+        email_mae,
+        celular_mae,
+        tel_trabalho_mae,
+        cpf_mae,
+        profissao_mae,
 
-    if n_clicks and func_type and func_status:
-        config = Config().config
-        dados = Dados(config['ambiente'])
+        img_content,
+        img_name,
+):
 
-        df1 = pd.DataFrame(dt_1)
-        df2 = pd.DataFrame(dt_2)
-        df3 = pd.DataFrame(dt_3)
+    if n_clicks:
 
-        df_func = pd.DataFrame()
-
-        for df in [df1, df2, df3]:
-            for column in df.columns:
-                if len(df[column]) >=1 :
-                    df_func[column] = df[column]
-
-        df_func['tipo'] = func_type
-        df_func.dropna(axis=1, inplace=True)
+        df_user_resume = pd.DataFrame(data_drom_data_table)
+        id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
 
         df_user = pd.DataFrame()
-        df_user['status'] = [func_status]
-        if func_passwd:
-            df_user['password'] = [func_passwd]
+        df_user['id'] = [id_aluno]
+
+        df_user['nome'] = [nome.upper()]
+        df_user['status'] = [status]
+        df_user['dat_nasc'] = [dat_nasc]
+        df_user['cidade_nascimento'] = [cidade_nasc]
+        df_user['endereco'] = [endereco.upper()]
+        df_user['numero'] = [numero]
+        df_user['complemento'] = [complemento.upper()]
+        df_user['bairro'] = [bairro.upper()]
+        df_user['cidade'] = [cidade]
+        df_user['uf'] = [uf]
+        df_user['cep'] = [cep]
+        df_user['telefone1'] = [telefone1]
+        df_user['moradia'] = [moradia.upper()]
+        df_user['inicio'] = [dat_inicio]
+        df_user['n_irmaos'] = [irmaos]
+        df_user['retorno'] = [dat_retorno]
+        df_user['sexo'] = [sexo]
+        df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
+        df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
+        df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
+        df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
+        df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
+        df_user['enviar_boleto'] = [int(enviar_boleto)]
+        df_user['gerar_taxa'] = [int(gerar_taxa)]
+        df_user['bolsista'] = [int(bolsista)]
+        df_user['nome_pai'] = [nome_pai.upper()]
+        df_user['email_pai'] = [email_pai]
+        df_user['celular_pai'] = [celular_pai]
+        df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
+        df_user['cpf_pai'] = [cpf_pai]
+        df_user['profissao_pai'] = [profissao_pai.upper()]
+        df_user['nome_mae'] = [nome_mae.upper()]
+        df_user['email_mae'] = [email_mae]
+        df_user['celular_mae'] = [celular_mae]
+        df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
+        df_user['cpf_mae'] = [cpf_mae]
+        df_user['profissao_mae'] = [profissao_mae.upper()]
+
+
 
 
         try:
-            dados.update_table(values=df_user.to_dict(orient='records')[0], table_name='user', pk_value=func_email, pk_name='email')
-            dados.update_table(values=df_func.to_dict(orient='records')[0], table_name='funcionario', pk_value=func_email, pk_name='email_func')
+            df_user.dropna(inplace=True, axis=1)
 
-            return 'Usuário Salvo'
+            # LENDO IMAGEM
+            if img_name:
+                try:
+                    # convert in bytes
+                    content_type, content_string = img_content.split(',')
+                    decoded = base64.b64decode(content_string)
+
+                    # read bytes
+                    image = Image.open(io.BytesIO(decoded))
+
+                    name_file = f'{id_aluno}.{image.format.lower()}'
+
+                    image.save(fp=f'static/images/aluno/{name_file}')
+                    df_user['foto'] = [f'{name_file}']
+
+                except Exception as err:
+                    result_uploaded = html.Div(f'verifique se é o arquivo correto: {img_name}', className='text-danger')
+                    return result_uploaded
+
+            # atualizando aluno
+            dados.update_table(
+                values=df_user.to_dict(orient='records')[0],
+                table_name='aluno',
+                pk_value=id_aluno,
+                pk_name='id'
+            )
+
+
+            return 'salvo'
+            # return redirect(f'/{page_name}')
         except Exception as err:
             return str(err)
+            # return redirect(f'/error')
+
+    return ''
 
 
-    return str(n_clicks) if n_clicks else "Click the table"
