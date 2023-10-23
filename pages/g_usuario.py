@@ -17,10 +17,12 @@ from banco.dados import Dados
 from config.config import Config
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='/GerenciarUsuario'
-dash.register_page(__name__, path=f'/GerenciarUsuario')
+page_name='GerenciarUsuario'
+dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
 
+config = Config().config
+dados = Dados(config['ambiente'])
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -137,45 +139,34 @@ content_layout = dbc.Row(
                                                         ]
                                                     ),
                                                     dbc.Row(
+                                                        class_name='ml-0 pt-2',
                                                         children=[
-                                                            dbc.Row(
-                                                                id='button_area',
-                                                                class_name='d-grid d-md-block',  # gap-2
+                                                            dbc.Col(
                                                                 children=[
-                                                                    dbc.Row(
-                                                                        children=[
-                                                                            dbc.Col(
-                                                                                # width=2,
-                                                                                children=[
-                                                                                    html.A(
-                                                                                        dbc.Button(
-                                                                                            id=f'btn-limpar-campos-{page_name}',
-                                                                                            children=['LIMPAR CAMPOS'],
-                                                                                            class_name='me-1',
-                                                                                            color='light',
-                                                                                            n_clicks=0,
-
-                                                                                        ),
-                                                                                        href=page_name),
-                                                                                ]
-                                                                            ),
-                                                                            dbc.Col(
-                                                                                # width=2,
-                                                                                children=[
-                                                                                    dbc.Button(
-                                                                                        id=f'btn-create-user-{page_name}',
-                                                                                        children=[
-                                                                                            'Salvar novo usuário'],
-                                                                                        class_name='me-2',
-                                                                                        color='primary',
-                                                                                        n_clicks=0,
-                                                                                    ),
-                                                                                ]
-                                                                            )
-                                                                        ],
+                                                                    html.A(
+                                                                        dbc.Button(
+                                                                            id=f'btn-limpar-campos-{page_name}',
+                                                                            children=['LIMPAR CAMPOS'],
+                                                                            class_name='me-1',
+                                                                            color='light',
+                                                                            n_clicks=0,
+                                                                        ),
+                                                                        href=f'/{page_name}'
                                                                     ),
                                                                 ]
                                                             ),
+                                                            dbc.Col(
+                                                                children=[
+                                                                    dbc.Button(
+                                                                        id=f'btn-create-user-{page_name}',
+                                                                        children=[
+                                                                            'Salvar novo usuário'],
+                                                                        class_name='me-2',
+                                                                        color='primary',
+                                                                        n_clicks=0,
+                                                                    ),
+                                                                ]
+                                                            )
                                                         ]
                                                     ),
 
@@ -283,8 +274,23 @@ content_layout = dbc.Row(
                                                                             dbc.Row(
                                                                                 # id='button_area',
                                                                                 # class_name='d-grid d-md-block',  # gap-2
-                                                                                class_name='p-5',
+                                                                                class_name='m-0 pt-2',
                                                                                 children=[
+                                                                                    dbc.Col(
+                                                                                        # width=2,
+                                                                                        children=[
+                                                                                            html.A(
+                                                                                                dbc.Button(
+                                                                                                    id=f'btn-limpar-campos-{page_name}',
+                                                                                                    children=['LIMPAR CAMPOS'],
+                                                                                                    class_name='me-1',
+                                                                                                    color='light',
+                                                                                                    n_clicks=0,
+
+                                                                                                ),
+                                                                                                href=f'/{page_name}'),
+                                                                                        ]
+                                                                                    ),
                                                                                     dbc.Col(
                                                                                         # width=2,
                                                                                         children=[
@@ -359,8 +365,7 @@ def layout():
 def create_user(user_type, user_name, user_email, user_passdw, user_status, n_clicks):
 
     if user_type and user_name and user_email and user_passdw:
-        config = Config().config
-        dados = Dados(config['ambiente'])
+
         df_new_user = pd.DataFrame(
             data={
                 'email': [user_email],
@@ -414,9 +419,6 @@ def create_user(user_type, user_name, user_email, user_passdw, user_status, n_cl
 def capturar_funcionarios(main_contianer):
 
     if main_contianer >= 1:
-
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         df_user  = dados.query_table(
             table_name='user',
@@ -502,9 +504,6 @@ def capturar_funcionarios(main_contianer):
 def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
     if data_drom_data_table and active_cell:
-        config = Config().config
-        dados = Dados(config['ambiente'])
-
         df_user = pd.DataFrame(data_drom_data_table)
         email = df_user['email'].iloc[active_cell[0]]
 
@@ -727,8 +726,6 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 def salvar_funcionarios_editados2(dt_1, dt_2, dt_3, func_type, func_status, func_email, func_passwd, n_clicks):
 
     if n_clicks and func_type and func_status:
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         df1 = pd.DataFrame(dt_1)
         df2 = pd.DataFrame(dt_2)

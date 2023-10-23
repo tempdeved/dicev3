@@ -17,6 +17,9 @@ page_name = __name__[6:].replace('.', '_')
 dash.register_page(__name__, path=f'/')
 # require_login(__name__)
 
+config = Config().config
+dados = Dados(config['ambiente'])
+
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
     # class_name='px-2 mx-0 shadow-lg',
@@ -60,9 +63,6 @@ def layout():
 )
 def def_welcome_msg(m_container):
 
-    config = Config().config
-    dados = Dados(config['ambiente'])
-
     try:
 
         if session['email'] == 'logout' or session['email'] == '':
@@ -83,14 +83,18 @@ def def_welcome_msg(m_container):
 
         nome_completo = df_func['nome_completo'][0]
         tipo = df_func['tipo'][0]
-        msg = f'{nome_completo} - {tipo}'
+        msg = f'Usuário: {nome_completo} Tipo: {tipo}'
+
         result = dbc.Row(
             children=[
                 dbc.Row(f'Seja bem vindo!', className='justify-content-center'),
                 dbc.Row(Titulo().load(id=f'titulo-pagina-{page_name}', title_name=msg)),
-            ],className='justify-content-center m-0 p-0'
+            ],
+            className='justify-content-center m-0 p-0'
         )
+
     except:
+
         result = dbc.Row(
             children=[
                 'Seja bem vindo! faça login para acessar os recursos do sistema'

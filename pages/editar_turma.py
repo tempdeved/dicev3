@@ -21,9 +21,7 @@ from config.config import Config
 page_name = 'EditarTurma'
 dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
-"""
-instanciando banco
-"""
+
 config = Config().config
 dados = Dados(config['ambiente'])
 
@@ -380,11 +378,6 @@ def layout():
 )
 def buscar_turmas(btn):
 
-    # if btn >= 1:
-
-    config = Config().config
-    dados = Dados(config['ambiente'])
-
     df_turma  = dados.query_table(
         table_name='turma',
         field_list=[
@@ -420,8 +413,8 @@ def buscar_turmas(btn):
         page_action="native",
         row_selectable="single",
         # row_selectable="multi",
-        export_columns='all',
-        export_format='xlsx',
+        # export_columns='all',
+        # export_format='xlsx',
         # export_columns='all',
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 
@@ -446,9 +439,6 @@ def editar_turma(data_drom_data_table, active_cell):
         # Mapa
         # Professor
         # Alunos da turma
-
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         df_turma = pd.DataFrame(data_drom_data_table)
 

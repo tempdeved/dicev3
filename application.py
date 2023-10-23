@@ -186,7 +186,7 @@ side_bar = Sidebar().layout(
                 dcc.Link(children='criar horario'.title(), href='/CriarHorario'),
                 dcc.Link(children='criar turma'.title(), href='/CriarTurma'),
                 dcc.Link(children='editar turma'.title(), href='/EditarTurma'),
-                dcc.Link(children='--lançar nota turma'.title(), href='/lancar_nota_turma'),
+                dcc.Link(children='lançar nota turma'.title(), href='/LancarNotaTurma'),
             ]
         ),
         ListGroup().layout(
