@@ -909,124 +909,126 @@ def salvar_funcionarios_editados2(
     try:
         if n_clicks:
 
-        df_user_resume = pd.DataFrame(data_drom_data_table)
-        id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
+            df_user_resume = pd.DataFrame(data_drom_data_table)
+            id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
 
-        df_user = pd.DataFrame()
-        df_user['id'] = [id_aluno]
+            df_user = pd.DataFrame()
+            df_user['id'] = [id_aluno]
 
-        if len(nome) >= 1:
-            df_user['nome'] = [nome.upper()]
-        if len(status) >= 1:
-            df_user['status'] = [status]
-        if len(dat_nasc) >= 1:
-            df_user['dat_nasc'] = [dat_nasc]
-        if len(cidade_nasc) >= 1:
-            df_user['cidade_nascimento'] = [cidade_nasc]
-        if len(endereco) >= 1:
-            df_user['endereco'] = [endereco.upper()]
-        if len(numero) >= 1:
-            df_user['numero'] = [numero]
-        if len(complemento) >= 1:
-            df_user['complemento'] = [complemento.upper()]
-        if len(bairro) >= 1:
-            df_user['bairro'] = [bairro.upper()]
-        if len(cidade) >= 1:
-            df_user['cidade'] = [cidade]
-        if len(uf) >= 1:
-            df_user['uf'] = [uf]
-        if len(cep) >= 1:
-            df_user['cep'] = [cep]
-        if len(telefone1) >= 1:
-            df_user['telefone1'] = [telefone1]
-        if len(moradia) >= 1:
-            df_user['moradia'] = [moradia.upper()]
-        if len(dat_inicio) >= 1:
-            df_user['inicio'] = [dat_inicio]
-        if len(irmaos) >= 1:
-            df_user['n_irmaos'] = [irmaos]
-        if len(dat_retorno) >= 1:
-            df_user['retorno'] = [dat_retorno]
-        if len(sexo) >= 1:
-            df_user['sexo'] = [sexo]
-        if len(responsavel_financeiro) >= 1:
-            df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
-        if len(tel_responsavel_financeiro) >= 1:
-            df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
-        if len(responsavel_p_filhos) >= 1:
-            df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
-        if len(bairro_de_ida) >= 1:
-            df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
-        if len(bairro_de_volta) >= 1:
-            df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
-        if len(int) >= 1:
-            df_user['enviar_boleto'] = [int(enviar_boleto)]
-        if len(int) >= 1:
-            df_user['gerar_taxa'] = [int(gerar_taxa)]
-        if len(int) >= 1:
-            df_user['bolsista'] = [int(bolsista)]
-        if len(nome_pai) >= 1:
-            df_user['nome_pai'] = [nome_pai.upper()]
-        if len(email_pai) >= 1:
-            df_user['email_pai'] = [email_pai]
-        if len(celular_pai) >= 1:
-            df_user['celular_pai'] = [celular_pai]
-        if len(tel_trabalho_pai) >= 1:
-            df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
-        if len(cpf_pai) >= 1:
-            df_user['cpf_pai'] = [cpf_pai]
-        if len(profissao_pai) >= 1:
-            df_user['profissao_pai'] = [profissao_pai.upper()]
-        if len(nome_mae) >= 1:
-            df_user['nome_mae'] = [nome_mae.upper()]
-        if len(email_mae) >= 1:
-            df_user['email_mae'] = [email_mae]
-        if len(celular_mae) >= 1:
-            df_user['celular_mae'] = [celular_mae]
-        if len(tel_trabalho_mae) >= 1:
-            df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
-        if len(cpf_mae) >= 1:
-            df_user['cpf_mae'] = [cpf_mae]
-        if len(profissao_mae) >= 1:
-            df_user['profissao_mae'] = [profissao_mae.upper()]
+            if len(nome) >= 1:
+                df_user['nome'] = [nome.upper()]
+            if len(status) >= 1:
+                df_user['status'] = [status]
+            if len(dat_nasc) >= 1:
+                df_user['dat_nasc'] = [dat_nasc]
+            if len(cidade_nasc) >= 1:
+                df_user['cidade_nascimento'] = [cidade_nasc]
+            if len(endereco) >= 1:
+                df_user['endereco'] = [endereco.upper()]
+            if len(numero) >= 1:
+                df_user['numero'] = [numero]
+            if len(complemento) >= 1:
+                df_user['complemento'] = [complemento.upper()]
+            if len(bairro) >= 1:
+                df_user['bairro'] = [bairro.upper()]
+            if len(cidade) >= 1:
+                df_user['cidade'] = [cidade]
+            if len(uf) >= 1:
+                df_user['uf'] = [uf]
+            if len(cep) >= 1:
+                df_user['cep'] = [cep]
+            if len(telefone1) >= 1:
+                df_user['telefone1'] = [telefone1]
+            if len(moradia) >= 1:
+                df_user['moradia'] = [moradia.upper()]
+            if len(dat_inicio) >= 1:
+                df_user['inicio'] = [dat_inicio]
+            if len(irmaos) >= 1:
+                df_user['n_irmaos'] = [irmaos]
+            if len(dat_retorno) >= 1:
+                df_user['retorno'] = [dat_retorno]
+            if len(sexo) >= 1:
+                df_user['sexo'] = [sexo]
+            if len(responsavel_financeiro) >= 1:
+                df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
+            if len(tel_responsavel_financeiro) >= 1:
+                df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
+            if len(responsavel_p_filhos) >= 1:
+                df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
+            if len(bairro_de_ida) >= 1:
+                df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
+            if len(bairro_de_volta) >= 1:
+                df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
+            if len(enviar_boleto) >= 1:
+                df_user['enviar_boleto'] = [int(enviar_boleto)]
+            if len(gerar_taxa) >= 1:
+                df_user['gerar_taxa'] = [int(gerar_taxa)]
+            if len(bolsista) >= 1:
+                df_user['bolsista'] = [int(bolsista)]
+            if len(nome_pai) >= 1:
+                df_user['nome_pai'] = [nome_pai.upper()]
+            if len(email_pai) >= 1:
+                df_user['email_pai'] = [email_pai]
+            if len(celular_pai) >= 1:
+                df_user['celular_pai'] = [celular_pai]
+            if len(tel_trabalho_pai) >= 1:
+                df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
+            if len(cpf_pai) >= 1:
+                df_user['cpf_pai'] = [cpf_pai]
+            if len(profissao_pai) >= 1:
+                df_user['profissao_pai'] = [profissao_pai.upper()]
+            if len(nome_mae) >= 1:
+                df_user['nome_mae'] = [nome_mae.upper()]
+            if len(email_mae) >= 1:
+                df_user['email_mae'] = [email_mae]
+            if len(celular_mae) >= 1:
+                df_user['celular_mae'] = [celular_mae]
+            if len(tel_trabalho_mae) >= 1:
+                df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
+            if len(cpf_mae) >= 1:
+                df_user['cpf_mae'] = [cpf_mae]
+            if len(profissao_mae) >= 1:
+                df_user['profissao_mae'] = [profissao_mae.upper()]
 
-        try:
-            df_user.dropna(inplace=True, axis=1)
+            try:
+                df_user.dropna(inplace=True, axis=1)
 
-            # LENDO IMAGEM
-            if img_name:
-                try:
-                    # convert in bytes
-                    content_type, content_string = img_content.split(',')
-                    decoded = base64.b64decode(content_string)
+                # LENDO IMAGEM
+                if img_name:
+                    try:
+                        # convert in bytes
+                        content_type, content_string = img_content.split(',')
+                        decoded = base64.b64decode(content_string)
 
-                    # read bytes
-                    image = Image.open(io.BytesIO(decoded))
+                        # read bytes
+                        image = Image.open(io.BytesIO(decoded))
 
-                    name_file = f'{id_aluno}.{image.format.lower()}'
+                        name_file = f'{id_aluno}.{image.format.lower()}'
 
-                    image.save(fp=f'static/images/aluno/{name_file}')
-                    df_user['foto'] = [f'{name_file}']
+                        image.save(fp=f'static/images/aluno/{name_file}')
+                        df_user['foto'] = [f'{name_file}']
 
-                except Exception as err:
-                    result_uploaded = html.Div(f'verifique se é o arquivo correto: {img_name}', className='text-danger')
-                    return result_uploaded
+                    except Exception as err:
+                        result_uploaded = html.Div(f'verifique se é o arquivo correto: {img_name}', className='text-danger')
+                        return result_uploaded
 
-            # atualizando aluno
-            dados.update_table(
-                values=df_user.to_dict(orient='records')[0],
-                table_name='aluno',
-                pk_value=id_aluno,
-                pk_name='id'
-            )
+                # atualizando aluno
+                dados.update_table(
+                    values=df_user.to_dict(orient='records')[0],
+                    table_name='aluno',
+                    pk_value=id_aluno,
+                    pk_name='id'
+                )
 
 
-            return 'salvo'
-            # return redirect(f'/{page_name}')
-        except Exception as err:
-            return str(err)
-            # return redirect(f'/error')
+                return 'Aluno Salvo'
+
+            except Exception as err:
+                return str(err)
+
+        else:
+            # quando nao estiver nada selecionado
+            return ''
 
     except Exception as err:
         return str(err)
-        # return redirect(f'/error')
