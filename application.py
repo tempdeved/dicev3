@@ -104,7 +104,6 @@ app = Dash(
     ],
     suppress_callback_exceptions=True,
     external_scripts=['https://cdn.plot.ly/plotly-locale-pt-br-latest.js'],
-    dados=dados,
 )
 import os
 os.environ['DADOS_VENV'] = f'{dados}'
