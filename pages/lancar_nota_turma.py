@@ -281,6 +281,8 @@ def editar_turma(data_drom_data_table, active_cell):
                 {'nome': 'id_turma', 'type': '', 'editable': 0},
             'id_aluno':
                 {'nome': 'id_aluno', 'type': '', 'editable': 0},
+            'nome':
+                {'nome': 'nome', 'type': '', 'editable': 0},
             'numero_aulas':
                 {'nome': 'numero_aulas', 'type': '', 'editable': 1},
             'numero_faltas':
