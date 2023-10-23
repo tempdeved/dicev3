@@ -24,7 +24,8 @@ def dump_alunos():
         if os.path.isfile(f'images/{row["foto"]}'):
 
             # copiando foto
-            shutil.copyfile(f'images/{row["foto"]}', f'../static/images/aluno/{row["id"]}.jpg')
+            # shutil.copyfile(f'images/{row["foto"]}', f'../static/images/aluno/{row["id"]}.jpg')
+            shutil.copyfile(f'images/{row["foto"]}', f'../static/images/server/{row["id"]}.jpg')
 
             # atualizando na tabela
             dados.update_table(

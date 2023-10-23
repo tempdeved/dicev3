@@ -464,11 +464,12 @@ def editar_aluno(data_drom_data_table, active_cell):
 
         foto_user = path_file if os.path.isfile(path_file) else path_no_foto
 
-        campos = [
+        campos = []
 
-            # dbc.Row('created_at', class_name='pt-2 '),
-            # dbc.Input(value=df_user["created_at"]),
+        # dbc.Row('created_at', class_name='pt-2 '),
+        # dbc.Input(value=df_user["created_at"]),
 
+        left_col = [
             dbc.Row(
                 children=[
                     dbc.Col(
@@ -476,7 +477,8 @@ def editar_aluno(data_drom_data_table, active_cell):
                         dbc.Row('nome'.replace('_', ' ').title(), class_name='pt-2 '),
                         dbc.Input(
                             id=f'nome-user-{page_name}',
-                            value=df_user["nome"][0]),
+                            value=df_user["nome"][0] if len(df_user["nome"][0]) >= 1 else ''
+                        ),
                         # dbc.Row('nome_do_meio'.replace('_', ' ',.tittle( class_name='pt-2 '),
                         # dbc.Input(value=df_user["nome_do_meio"]),
                         # dbc.Row('ultimo_nome'.replace('_', ' ',.tittle( class_name='pt-2 '),
@@ -493,7 +495,7 @@ def editar_aluno(data_drom_data_table, active_cell):
                                         {'label': 'jubilado'.upper(), 'value': 'jubilado'.upper()},
                                         {'label': 'encerrado'.upper(), 'value': 'encerrado'.upper()},
                                     ],
-                                    value=df_user["status"][0]
+                                    value=df_user["status"][0],
                                 )
                             ],
                             class_name='pt-2 m-0 px-0'
@@ -517,7 +519,10 @@ def editar_aluno(data_drom_data_table, active_cell):
                             ],
                             class_name='col-lg-12 col-sm-12 mb-3 '
                         ),
-                        dbc.Input(value=df_user["dat_nasc"][0], disabled=True),
+                        dbc.Input(
+                            value=df_user["dat_nasc"][0],
+                            disabled=True
+                        ),
                         ]
                     ),
                     dbc.Col(
@@ -554,7 +559,9 @@ def editar_aluno(data_drom_data_table, active_cell):
                             ),
 
 
-                            # dbc.Input(value=df_user["foto"][0]),
+                            # dbc.Input(
+                            # value=df_user["foto"][0],
+                            # ),
                         ]
                     ),
                 ],
@@ -575,16 +582,24 @@ def editar_aluno(data_drom_data_table, active_cell):
             ),
             
             dbc.Row('endereco'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'endereco-user-{page_name}',value=df_user["endereco"][0]),
+            dbc.Input(id=f'endereco-user-{page_name}',
+                      value=df_user["endereco"][0],
+                      ),
 
             dbc.Row('numero'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'numero-user-{page_name}',value=df_user["numero"][0], type='number'),
+            dbc.Input(id=f'numero-user-{page_name}',
+                      value=df_user["numero"][0],
+                      type='number'),
 
             dbc.Row('complemento'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'complemento-user-{page_name}',value=df_user["complemento"][0]),
+            dbc.Input(id=f'complemento-user-{page_name}',
+                      value=df_user["complemento"][0],
+                      ),
 
             dbc.Row('bairro'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'bairro-user-{page_name}',value=df_user["bairro"][0]),
+            dbc.Input(id=f'bairro-user-{page_name}',
+                      value=df_user["bairro"][0],
+                      ),
 
             dbc.Row('cidade'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
@@ -900,46 +915,80 @@ def salvar_funcionarios_editados2(
         df_user = pd.DataFrame()
         df_user['id'] = [id_aluno]
 
-        df_user['nome'] = [nome.upper()]
-        df_user['status'] = [status]
-        df_user['dat_nasc'] = [dat_nasc]
-        df_user['cidade_nascimento'] = [cidade_nasc]
-        df_user['endereco'] = [endereco.upper()]
-        df_user['numero'] = [numero]
-        df_user['complemento'] = [complemento.upper()]
-        df_user['bairro'] = [bairro.upper()]
-        df_user['cidade'] = [cidade]
-        df_user['uf'] = [uf]
-        df_user['cep'] = [cep]
-        df_user['telefone1'] = [telefone1]
-        df_user['moradia'] = [moradia.upper()]
-        df_user['inicio'] = [dat_inicio]
-        df_user['n_irmaos'] = [irmaos]
-        df_user['retorno'] = [dat_retorno]
-        df_user['sexo'] = [sexo]
-        df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
-        df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
-        df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
-        df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
-        df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
-        df_user['enviar_boleto'] = [int(enviar_boleto)]
-        df_user['gerar_taxa'] = [int(gerar_taxa)]
-        df_user['bolsista'] = [int(bolsista)]
-        df_user['nome_pai'] = [nome_pai.upper()]
-        df_user['email_pai'] = [email_pai]
-        df_user['celular_pai'] = [celular_pai]
-        df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
-        df_user['cpf_pai'] = [cpf_pai]
-        df_user['profissao_pai'] = [profissao_pai.upper()]
-        df_user['nome_mae'] = [nome_mae.upper()]
-        df_user['email_mae'] = [email_mae]
-        df_user['celular_mae'] = [celular_mae]
-        df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
-        df_user['cpf_mae'] = [cpf_mae]
-        df_user['profissao_mae'] = [profissao_mae.upper()]
-
-
-
+        if len(df_user['nome']) >= 1:
+            df_user['nome'] = [nome.upper()]
+        if len(df_user['status']) >= 1:
+            df_user['status'] = [status]
+        if len(df_user['dat_nasc']) >= 1:
+            df_user['dat_nasc'] = [dat_nasc]
+        if len(df_user['cidade_nascimento']) >= 1:
+            df_user['cidade_nascimento'] = [cidade_nasc]
+        if len(df_user['endereco']) >= 1:
+            df_user['endereco'] = [endereco.upper()]
+        if len(df_user['numero']) >= 1:
+            df_user['numero'] = [numero]
+        if len(df_user['complemento']) >= 1:
+            df_user['complemento'] = [complemento.upper()]
+        if len(df_user['bairro']) >= 1:
+            df_user['bairro'] = [bairro.upper()]
+        if len(df_user['cidade']) >= 1:
+            df_user['cidade'] = [cidade]
+        if len(df_user['uf']) >= 1:
+            df_user['uf'] = [uf]
+        if len(df_user['cep']) >= 1:
+            df_user['cep'] = [cep]
+        if len(df_user['telefone1']) >= 1:
+            df_user['telefone1'] = [telefone1]
+        if len(df_user['moradia']) >= 1:
+            df_user['moradia'] = [moradia.upper()]
+        if len(df_user['inicio']) >= 1:
+            df_user['inicio'] = [dat_inicio]
+        if len(df_user['n_irmaos']) >= 1:
+            df_user['n_irmaos'] = [irmaos]
+        if len(df_user['retorno']) >= 1:
+            df_user['retorno'] = [dat_retorno]
+        if len(df_user['sexo']) >= 1:
+            df_user['sexo'] = [sexo]
+        if len(df_user['responsavel_financeiro']) >= 1:
+            df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
+        if len(df_user['tel_responsavel_financeiro']) >= 1:
+            df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
+        if len(df_user['responsavel_p_filhos']) >= 1:
+            df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
+        if len(df_user['bairro_de_ida']) >= 1:
+            df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
+        if len(df_user['bairro_de_volta']) >= 1:
+            df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
+        if len(df_user['enviar_boleto']) >= 1:
+            df_user['enviar_boleto'] = [int(enviar_boleto)]
+        if len(df_user['gerar_taxa']) >= 1:
+            df_user['gerar_taxa'] = [int(gerar_taxa)]
+        if len(df_user['bolsista']) >= 1:
+            df_user['bolsista'] = [int(bolsista)]
+        if len(df_user['nome_pai']) >= 1:
+            df_user['nome_pai'] = [nome_pai.upper()]
+        if len(df_user['email_pai']) >= 1:
+            df_user['email_pai'] = [email_pai]
+        if len(df_user['celular_pai']) >= 1:
+            df_user['celular_pai'] = [celular_pai]
+        if len(df_user['tel_trabalho_pai']) >= 1:
+            df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
+        if len(df_user['cpf_pai']) >= 1:
+            df_user['cpf_pai'] = [cpf_pai]
+        if len(df_user['profissao_pai']) >= 1:
+            df_user['profissao_pai'] = [profissao_pai.upper()]
+        if len(df_user['nome_mae']) >= 1:
+            df_user['nome_mae'] = [nome_mae.upper()]
+        if len(df_user['email_mae']) >= 1:
+            df_user['email_mae'] = [email_mae]
+        if len(df_user['celular_mae']) >= 1:
+            df_user['celular_mae'] = [celular_mae]
+        if len(df_user['tel_trabalho_mae']) >= 1:
+            df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
+        if len(df_user['cpf_mae']) >= 1:
+            df_user['cpf_mae'] = [cpf_mae]
+        if len(df_user['profissao_mae']) >= 1:
+            df_user['profissao_mae'] = [profissao_mae.upper()]
 
         try:
             df_user.dropna(inplace=True, axis=1)
