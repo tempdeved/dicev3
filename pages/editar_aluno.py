@@ -464,12 +464,12 @@ def editar_aluno(data_drom_data_table, active_cell):
 
         foto_user = path_file if os.path.isfile(path_file) else path_no_foto
 
-        campos = []
+        # campos = []
 
         # dbc.Row('created_at', class_name='pt-2 '),
         # dbc.Input(value=df_user["created_at"]),
 
-        left_col = [
+        campos = [
             dbc.Row(
                 children=[
                     dbc.Col(
@@ -477,7 +477,7 @@ def editar_aluno(data_drom_data_table, active_cell):
                         dbc.Row('nome'.replace('_', ' ').title(), class_name='pt-2 '),
                         dbc.Input(
                             id=f'nome-user-{page_name}',
-                            value=df_user["nome"][0] if len(df_user["nome"][0]) >= 1 else ''
+                            value=df_user["nome"][0]
                         ),
                         # dbc.Row('nome_do_meio'.replace('_', ' ',.tittle( class_name='pt-2 '),
                         # dbc.Input(value=df_user["nome_do_meio"]),
