@@ -267,9 +267,9 @@ def editar_turma(data_drom_data_table, active_cell):
             # field_list=[
             #     {'name': 'email'},
             # ]
-            # filter_list=[
-            #     {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
-            # ]
+            filter_list=[
+                {'op': 'in', 'name': 'id', 'value': list_alunos},
+            ]
         )
 
         hist_columns = {
@@ -327,6 +327,8 @@ def editar_turma(data_drom_data_table, active_cell):
             }
         )
 
+        df_all_aluno.rename(columns={'id': 'id_aluno'}, inplace=True)
+
         # if len(df_hist_turma >= 1):
         #     print('contem historico')
         #
@@ -343,7 +345,7 @@ def editar_turma(data_drom_data_table, active_cell):
         #     merge = aux.copy
 
         df_merge = pd.merge(
-            left=aux,
+            left=df_all_aluno,
             right=df_hist_turma,
             how='left',
             on=['id_aluno'],
