@@ -693,10 +693,7 @@ def capturar_funcionarios(main_contianer):
 
     if main_contianer >= 1:
 
-        config = Config().config
-        dados = Dados(config['ambiente'])
-
-        df_user  = dados.query_table(
+        df_user = dados.query_table(
             table_name='user',
             field_list=[
                 {'name': 'id'},
@@ -776,8 +773,6 @@ def capturar_funcionarios(main_contianer):
 def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 
     if data_drom_data_table and active_cell:
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         df_user = pd.DataFrame(data_drom_data_table)
         email = df_user['email'].iloc[active_cell[0]]
@@ -1001,8 +996,6 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
 def salvar_funcionarios_editados2(dt_1, dt_2, dt_3, func_type, func_status, func_email, func_passwd, n_clicks):
 
     if n_clicks and func_type and func_status:
-        config = Config().config
-        dados = Dados(config['ambiente'])
 
         df1 = pd.DataFrame(dt_1)
         df2 = pd.DataFrame(dt_2)
