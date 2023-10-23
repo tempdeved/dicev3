@@ -906,8 +906,8 @@ def salvar_funcionarios_editados2(
         img_content,
         img_name,
 ):
-
-    if n_clicks:
+    try:
+        if n_clicks:
 
         df_user_resume = pd.DataFrame(data_drom_data_table)
         id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
@@ -1027,6 +1027,6 @@ def salvar_funcionarios_editados2(
             return str(err)
             # return redirect(f'/error')
 
-    return ''
-
-
+    except Exception as err:
+        return str(err)
+        # return redirect(f'/error')
