@@ -912,82 +912,89 @@ def salvar_funcionarios_editados2(
             df_user_resume = pd.DataFrame(data_drom_data_table)
             id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
 
-            df_user = pd.DataFrame()
-            df_user['id'] = [id_aluno]
+            df_user = dados.query_table(
+                table_name='aluno',
+                filter_list=[
+                    {'op': 'eq', 'name': 'id', 'value': id_aluno}
+                ]
+            )
 
-            if len(nome) >= 1:
+            # df_user = pd.DataFrame()
+            # df_user['id'] = [id_aluno]
+
+            if nome is not None:
                 df_user['nome'] = [nome.upper()]
-            if len(status) >= 1:
+            if status is not None:
                 df_user['status'] = [status]
-            if len(dat_nasc) >= 1:
+            if dat_nasc is not None:
                 df_user['dat_nasc'] = [dat_nasc]
-            if len(cidade_nasc) >= 1:
+            if cidade_nasc is not None:
                 df_user['cidade_nascimento'] = [cidade_nasc]
-            if len(endereco) >= 1:
+            if endereco is not None:
                 df_user['endereco'] = [endereco.upper()]
-            if len(numero) >= 1:
+            if numero is not None:
                 df_user['numero'] = [numero]
-            if len(complemento) >= 1:
+            if complemento is not None:
                 df_user['complemento'] = [complemento.upper()]
-            if len(bairro) >= 1:
+            if bairro is not None:
                 df_user['bairro'] = [bairro.upper()]
-            if len(cidade) >= 1:
+            if cidade is not None:
                 df_user['cidade'] = [cidade]
-            if len(uf) >= 1:
+            if uf is not None:
                 df_user['uf'] = [uf]
-            if len(cep) >= 1:
+            if cep is not None:
                 df_user['cep'] = [cep]
-            if len(telefone1) >= 1:
+            if telefone1 is not None:
                 df_user['telefone1'] = [telefone1]
-            if len(moradia) >= 1:
+            if moradia is not None:
                 df_user['moradia'] = [moradia.upper()]
-            if len(dat_inicio) >= 1:
+            if dat_inicio is not None:
                 df_user['inicio'] = [dat_inicio]
-            if len(irmaos) >= 1:
+            if irmaos is not None:
                 df_user['n_irmaos'] = [irmaos]
-            if len(dat_retorno) >= 1:
+            if dat_retorno is not None:
                 df_user['retorno'] = [dat_retorno]
-            if len(sexo) >= 1:
+            if sexo is not None:
                 df_user['sexo'] = [sexo]
-            if len(responsavel_financeiro) >= 1:
+            if responsavel_financeiro is not None:
                 df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
-            if len(tel_responsavel_financeiro) >= 1:
+            if tel_responsavel_financeiro is not None:
                 df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
-            if len(responsavel_p_filhos) >= 1:
+            if responsavel_p_filhos is not None:
                 df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
-            if len(bairro_de_ida) >= 1:
+            if bairro_de_ida is not None:
                 df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
-            if len(bairro_de_volta) >= 1:
+            if bairro_de_volta is not None:
                 df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
-            if len(enviar_boleto) >= 1:
+            if enviar_boleto is not None:
                 df_user['enviar_boleto'] = [int(enviar_boleto)]
-            if len(gerar_taxa) >= 1:
+            if gerar_taxa is not None:
                 df_user['gerar_taxa'] = [int(gerar_taxa)]
-            if len(bolsista) >= 1:
+            if bolsista is not None:
                 df_user['bolsista'] = [int(bolsista)]
-            if len(nome_pai) >= 1:
+            if nome_pai is not None:
                 df_user['nome_pai'] = [nome_pai.upper()]
-            if len(email_pai) >= 1:
+            if email_pai is not None:
                 df_user['email_pai'] = [email_pai]
-            if len(celular_pai) >= 1:
+            if celular_pai is not None:
                 df_user['celular_pai'] = [celular_pai]
-            if len(tel_trabalho_pai) >= 1:
+            if tel_trabalho_pai is not None:
                 df_user['tel_trabalho_pai'] = [tel_trabalho_pai]
-            if len(cpf_pai) >= 1:
+            if cpf_pai is not None:
                 df_user['cpf_pai'] = [cpf_pai]
-            if len(profissao_pai) >= 1:
+            if profissao_pai is not None:
                 df_user['profissao_pai'] = [profissao_pai.upper()]
-            if len(nome_mae) >= 1:
+            if nome_mae is not None:
                 df_user['nome_mae'] = [nome_mae.upper()]
-            if len(email_mae) >= 1:
+            if email_mae is not None:
                 df_user['email_mae'] = [email_mae]
-            if len(celular_mae) >= 1:
+            if celular_mae is not None:
                 df_user['celular_mae'] = [celular_mae]
-            if len(tel_trabalho_mae) >= 1:
+            if tel_trabalho_mae is not None:
                 df_user['tel_trabalho_mae'] = [tel_trabalho_mae]
-            if len(cpf_mae) >= 1:
+            if cpf_mae is not None:
                 df_user['cpf_mae'] = [cpf_mae]
-            if len(profissao_mae) >= 1:
+            if profissao_mae is not None:
                 df_user['profissao_mae'] = [profissao_mae.upper()]
 
             try:
@@ -1031,4 +1038,6 @@ def salvar_funcionarios_editados2(
             return ''
 
     except Exception as err:
+        print('error')
+        print(err)
         return str(err)
