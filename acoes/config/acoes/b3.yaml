@@ -1,0 +1,58 @@
+b3:
+  acoes_monitorar:
+    VALE3:
+      symbol: VALE3
+      preco_alerta:
+        - 62
+    PRIO3:
+      symbol: PRIO3
+      preco_alerta:
+        - 999
+    CXSE3:
+      symbol: CXSE3
+      preco_alerta:
+        - 999
+    TRPL4:
+      symbol: TRPL4
+      preco_alerta:
+        - 999
+    TAEE11:
+      symbol: TAEE11
+      preco_alerta:
+        - 999
+    ABEV3:
+      symbol: ABEV3
+      preco_alerta:
+        - 999
+    SANB3:
+      symbol: SANB3
+      preco_alerta:
+        - 999
+    SANB11:
+      symbol: SANB11
+      preco_alerta:
+        - 999
+    WEGE3:
+      symbol: WEGE3
+      preco_alerta:
+        - 999
+    ECOR3:
+      symbol: ECOR3
+      preco_alerta:
+        - 999
+    CMIG3:
+      symbol: CMIG3
+      preco_alerta:
+        - 999
+    SAPR11:
+      symbol: SAPR11
+      preco_alerta:
+        - 999
+    GGBR4:
+      symbol: GGBR4
+      preco_alerta:
+        - 999
+    HYPE3:
+      symbol: HYPE3
+      preco_alerta:
+        - 999

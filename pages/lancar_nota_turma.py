@@ -48,36 +48,45 @@ content_layout = dbc.Row(
                                                     ),
                                                 ]
                                             ),
-                                            # dbc.Row(
-                                            #     id='button_area',
-                                            #     # class_name='d-grid d-md-block',  # gap-2
-                                            #     class_name='pb-2 pt-2 text-center',
-                                            #     children=[
-                                            #         dbc.Col(
-                                            #             # width=2,
-                                            #             children=[
-                                            #                 dbc.Button(
-                                            #                     id=f'btn-buscar-usuarios-{page_name}',
-                                            #                     children=['BUSCAR TURMAS'],
-                                            #                     class_name='me-2',
-                                            #                     color='primary',
-                                            #                     n_clicks=0,
-                                            #                 ),
-                                            #             ]
-                                            #         )
-                                            #     ]
-                                            # ),
 
+                                            dbc.Row("PERÍODO", class_name='pt-2',),
+                                            dbc.RadioItems(
+                                                id=f"mes-ref-{page_name}",
+                                                options=[
+                                                    {"label": "Março/Abril", "value": 1},
+                                                    {"label": "Maio/Junho", "value": 2},
+                                                    {"label": "Ago/set", "value": 3},
+                                                    {"label": "Out/nov", "value": 4},
+                                                ],
+                                                value=1,
+                                                inline=True,
+                                            ),
 
                                             dbc.Tabs(
                                                 children=[
                                                     dbc.Tab(
                                                         label="LANÇAR NOTA",
                                                         children=[
+                                                            dbc.Row(
+
+                                                            ),
                                                             dbc.Row(id=f'out-edit-func-{page_name}'),
                                                             dbc.Row(
                                                                 class_name='ml-0 pt-2',
                                                                 children=[
+                                                                    dbc.Col(
+                                                                        # width=2,
+                                                                        children=[
+                                                                            dbc.Button(
+                                                                                id=f'btn-salvar-func-edited-{page_name}',
+                                                                                children=['SALVAR TURMA'],
+                                                                                class_name='me-1',
+                                                                                color='primary',
+                                                                                n_clicks=0,
+                                                                                disabled=False
+                                                                            ),
+                                                                        ]
+                                                                    ),
 
                                                                     dbc.Col(
                                                                         # width=2,
@@ -95,19 +104,6 @@ content_layout = dbc.Row(
                                                                         ]
                                                                     ),
 
-                                                                    dbc.Col(
-                                                                        # width=2,
-                                                                        children=[
-                                                                            dbc.Button(
-                                                                                id=f'btn-salvar-func-edited-{page_name}',
-                                                                                children=['SALVAR TURMA'],
-                                                                                class_name='me-1',
-                                                                                color='primary',
-                                                                                n_clicks=0,
-                                                                                disabled=True
-                                                                            ),
-                                                                        ]
-                                                                    ),
 
                                                                 ]
                                                             ),
@@ -147,7 +143,8 @@ def layout():
                 (
                         dependecies.is_admni_user(session['email']) or
                         dependecies.is_gerente_user(session['email']) or
-                        dependecies.is_administrativo_user(session['email'])
+                        dependecies.is_administrativo_user(session['email']) or
+                        dependecies.is_professor_user(session['email'])
                 ):
                 return content_layout
     except Exception as err:
@@ -232,17 +229,18 @@ def buscar_turmas(btn):
     Output(component_id=f'out-alert-fuc-{page_name}', component_property='children'),
     State(component_id=f'data-table-edit-user-{page_name}',  component_property='data'),
     Input(component_id=f'data-table-edit-user-{page_name}',  component_property='selected_rows'),
-    # Input(component_id=f'btn-buscar-usuarios-{page_name}',  component_property='n_clicks'),
+    Input(component_id=f"mes-ref-{page_name}",  component_property='value'),
     # prevent_initial_callbacks=True,
     )
-def editar_turma(data_drom_data_table, active_cell):
+def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
     if data_drom_data_table and active_cell:
 
         df_turma = pd.DataFrame(data_drom_data_table)
 
         turma_id = df_turma['id'].iloc[active_cell[0]]
-        id_dice = int(df_turma['id_turma'].iloc[active_cell[0]])
+        turma_id_dice = df_turma['id_turma'].iloc[active_cell[0]]
+        id_turma_dice = int(df_turma['id_turma'].iloc[active_cell[0]])
 
         df_turma2  = dados.query_table(
             table_name='turma',
@@ -284,27 +282,27 @@ def editar_turma(data_drom_data_table, active_cell):
             'nome':
                 {'nome': 'nome', 'type': '', 'editable': 0},
             'numero_aulas':
-                {'nome': 'numero_aulas', 'type': '', 'editable': 1},
+                {'nome': 'numero_aulas', 'type': 'numeric', 'editable': 1},
             'numero_faltas':
-                {'nome': 'numero_faltas', 'type': '', 'editable': 1},
-            'research_01':
-                {'nome': 'research_01', 'type': '', 'editable': 1},
-            'organization_01':
-                {'nome': 'organization_01', 'type': '', 'editable': 1},
-            'interest_01':
-                {'nome': 'interest_01', 'type': '', 'editable': 1},
-            'group_activity_01':
-                {'nome': 'group_activity_01', 'type': '', 'editable': 1},
-            'speaking_01':
-                {'nome': 'speaking_01', 'type': '', 'editable': 1},
-            'frequencia_of_01':
-                {'nome': 'frequencia_of_01', 'type': '', 'editable': 1},
-            'listening_01':
-                {'nome': 'listening_01', 'type': '', 'editable': 1},
-            'readind_inter_01':
-                {'nome': 'readind_inter_01', 'type': '', 'editable': 1},
-            'writing_process_01':
-                {'nome': 'writing_process_01', 'type': '', 'editable': 1},
+                {'nome': 'numero_faltas', 'type': 'numeric', 'editable': 1},
+            'research':
+                {'nome': 'research', 'type': 'numeric', 'editable': 1},
+            'organization':
+                {'nome': 'organization', 'type': 'numeric', 'editable': 1},
+            'interest':
+                {'nome': 'interest', 'type': 'numeric', 'editable': 1},
+            'group_activity':
+                {'nome': 'group_activity', 'type': 'numeric', 'editable': 1},
+            'speaking':
+                {'nome': 'speaking', 'type': 'numeric', 'editable': 1},
+            'frequencia_of':
+                {'nome': 'frequencia_of', 'type': 'numeric', 'editable': 1},
+            'listening':
+                {'nome': 'listening', 'type': 'numeric', 'editable': 1},
+            'readind_inter':
+                {'nome': 'readind_inter', 'type': 'numeric', 'editable': 1},
+            'writing_process':
+                {'nome': 'writing_process', 'type': 'numeric', 'editable': 1},
             # 'descricao':
             #     {'nome': 'descricao', 'type': '', 'editable}: 1,
         }
@@ -317,7 +315,8 @@ def editar_turma(data_drom_data_table, active_cell):
             #     {'name': 'email'},
             # ]
             filter_list=[
-                {'op': 'eq', 'name': 'id_turma', 'value': f'{turma_id}'},
+                {'op': 'eq', 'name': 'id_turma', 'value': int(turma_id_dice)},
+                {'op': 'eq', 'name': 'mes_ref', 'value': int(mes_ref)},
             ]
         )
 
@@ -350,7 +349,7 @@ def editar_turma(data_drom_data_table, active_cell):
             how='left',
             on=['id_aluno'],
         )
-        df_merge['id_turma'] = id_dice
+        df_merge['id_turma'] = id_turma_dice
 
         dt_turma = dash_table.DataTable(
             id=f'data-table-hist-aluno-{page_name}',
@@ -389,13 +388,15 @@ def editar_turma(data_drom_data_table, active_cell):
             children=[
                 dt_turma
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
         )
+        # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+
     else:
 
         dt_func = dash_table.DataTable(id=f'data-table-edit-func-{page_name}',)
 
-        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0')
+        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto')
 
     return datatable1, '' if active_cell else ""
 
@@ -405,63 +406,42 @@ def editar_turma(data_drom_data_table, active_cell):
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
     # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-func-5-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
+    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
+    # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
     # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
-    State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
-    State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
-    State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+    # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
+    # State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
     # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+    State(component_id=f"mes-ref-{page_name}",  component_property='value'),
 
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
     )
-def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
+def salvar_nota_turma(dt_notas, mes_ref, n_clicks):
     # if n_clicks :
-    if n_clicks or dt_aluno or dt_prof or nivel or map:
+    if n_clicks:
 
-        df_prof = pd.DataFrame(dt_prof)
-        df_aluno = pd.DataFrame(dt_aluno)
+        df_notas = pd.DataFrame(dt_notas)
+        df_notas['mes_ref'] = mes_ref
+        df_notas['created_at'] = datetime.datetime.now()
+        df_notas.fillna(0, inplace=True)
 
-        profs_cadastrados = df_prof[df_prof['cadastrado'] == 'CAD']
-        alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
-
-        df_turma = pd.DataFrame()
-        df_turma['id'] = [6]
-        df_turma['id_turma'] = [id_turma_dice]
-        df_turma['nivel'] = [nivel]
-        df_turma['map'] = [map]
-
-        # append alunos novos
-        if len(alunos_cadastrados) >=1 :
-            list_aluno = []
-            for x in alunos_cadastrados['id']:
-                list_aluno.append(x)
-
-            df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
-
-        # append prof novos
-        if len(profs_cadastrados) >= 1:
-            func_prof = dados.query_table(
-                table_name='funcionario',
-                filter_list=[
-                    {'op': 'in', 'name': 'id', 'value': profs_cadastrados['id'].to_list()}
-                ],
-            )
-
-
-            list_profs = []
-            for x in func_prof['email_func']:
-                list_profs.append(x)
-
-            df_turma['id_professor'] = json.dumps({'email_user': list_profs})
+        hist_alunos = dados.query_table(
+            table_name='historico_aluno',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_turma', 'value': int(df_notas['id_turma'].unique()[0])},
+                {'op': 'eq', 'name': 'mes_ref', 'value': int(df_notas['mes_ref'].unique()[0])},
+            ]
+        )
 
         try:
-            dados.update_table(
-                values=df_turma.to_dict(orient='records')[0],
-                table_name='turma',
-                pk_value=id_turma_dice,
-                pk_name='id_turma'
+            # removendo notas para inserir novas notas
+            dados.remove_from_table(
+                table_name='historico_aluno',
+                filter_list=[
+                    {'op': 'in', 'name': 'id', 'value': hist_alunos['id'].to_list()},
+                ]
             )
+            dados.insert_into_table(df=df_notas, table_name='historico_aluno')
 
             return 'TURMA ATUALIZADA'
         except Exception as err:

@@ -213,10 +213,3 @@ class Dados(object):
                 print(f'Erro no update do Produto {pk_value}')
                 print(f'Tabela: {table.__table__}')
                 print(f'{err}')
-
-
-
-
-
-
-

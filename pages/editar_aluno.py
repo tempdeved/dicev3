@@ -493,7 +493,8 @@ def editar_aluno(data_drom_data_table, active_cell):
                                         {'label': 'ativo'.upper(), 'value': 'ativo'.upper()},
                                         {'label': 'inativo'.upper(), 'value': 'inativo'.upper()},
                                         {'label': 'jubilado'.upper(), 'value': 'jubilado'.upper()},
-                                        {'label': 'encerrado'.upper(), 'value': 'encerrado'.upper()},
+                                        {'label': 'cancelado'.upper(), 'value': 'cancelado'.upper()},
+                                        {'label': 'trancado'.upper(), 'value': 'trancado'.upper()},
                                     ],
                                     value=df_user["status"][0],
                                 )
@@ -697,50 +698,50 @@ def editar_aluno(data_drom_data_table, active_cell):
                 class_name='pt-2 m-0 px-0'
             ),
 
-            dbc.Row('responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'responsavel_financeiro-user-{page_name}',value=df_user["responsavel_financeiro"][0]),
-
-            dbc.Row('tel_responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'tel_responsavel_financeiro-user-{page_name}',value=df_user["tel_responsavel_financeiro"][0]),
-
-            dbc.Row('responsavel_p_filhos'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'responsavel_p_filhos-user-{page_name}',value=df_user["responsavel_p_filhos"][0]),
-
-            dbc.Row('bairro_de_ida'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'bairro_de_ida-user-{page_name}',value=df_user["bairro_de_ida"][0]),
-
-            dbc.Row('bairro_de_volta'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Input(id=f'bairro_de_volta-user-{page_name}',value=df_user["bairro_de_volta"][0]),
-
-            dbc.Row('enviar_boleto'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Row(
-                children=[
-                    dbc.Select(
-                        id=f'enviar-boleto-user-{page_name}',
-                        options=[
-                            {'label': 'sim'.upper(), 'value': 1},
-                            {'label': 'não'.upper(), 'value': 0},
-                        ],
-                        value=df_user["enviar_boleto"][0]
-                    )
-                ],
-                class_name='pt-2 m-0 px-0'
-            ),
-
-            dbc.Row('gerar_taxa'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Row(
-                children=[
-                    dbc.Select(
-                        id=f'gerar-taxa-user-{page_name}',
-                        options=[
-                            {'label': 'sim'.upper(), 'value': 1},
-                            {'label': 'não'.upper(), 'value': 0},
-                        ],
-                        value=df_user["gerar_taxa"][0]
-                    )
-                ],
-                class_name='pt-2 m-0 px-0'
-            ),
+            # dbc.Row('responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Input(id=f'responsavel_financeiro-user-{page_name}',value=df_user["responsavel_financeiro"][0]),
+            #
+            # dbc.Row('tel_responsavel_financeiro'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Input(id=f'tel_responsavel_financeiro-user-{page_name}',value=df_user["tel_responsavel_financeiro"][0]),
+            #
+            # dbc.Row('responsavel_p_filhos'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Input(id=f'responsavel_p_filhos-user-{page_name}',value=df_user["responsavel_p_filhos"][0]),
+            #
+            # dbc.Row('bairro_de_ida'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Input(id=f'bairro_de_ida-user-{page_name}',value=df_user["bairro_de_ida"][0]),
+            #
+            # dbc.Row('bairro_de_volta'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Input(id=f'bairro_de_volta-user-{page_name}',value=df_user["bairro_de_volta"][0]),
+            #
+            # dbc.Row('enviar_boleto'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Row(
+            #     children=[
+            #         dbc.Select(
+            #             id=f'enviar-boleto-user-{page_name}',
+            #             options=[
+            #                 {'label': 'sim'.upper(), 'value': 1},
+            #                 {'label': 'não'.upper(), 'value': 0},
+            #             ],
+            #             value=df_user["enviar_boleto"][0]
+            #         )
+            #     ],
+            #     class_name='pt-2 m-0 px-0'
+            # ),
+            #
+            # dbc.Row('gerar_taxa'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Row(
+            #     children=[
+            #         dbc.Select(
+            #             id=f'gerar-taxa-user-{page_name}',
+            #             options=[
+            #                 {'label': 'sim'.upper(), 'value': 1},
+            #                 {'label': 'não'.upper(), 'value': 0},
+            #             ],
+            #             value=df_user["gerar_taxa"][0]
+            #         )
+            #     ],
+            #     class_name='pt-2 m-0 px-0'
+            # ),
 
             dbc.Row('bolsista'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
@@ -836,13 +837,13 @@ def editar_aluno(data_drom_data_table, active_cell):
     State(component_id=f'irmaos-user-{page_name}', component_property='value'),
     State(component_id=f'dat-retorno-user-{page_name}', component_property='date'),
     State(component_id=f'sexo-user-{page_name}', component_property='value'),
-    State(component_id=f'responsavel_financeiro-user-{page_name}', component_property='value'),
-    State(component_id=f'tel_responsavel_financeiro-user-{page_name}', component_property='value'),
-    State(component_id=f'responsavel_p_filhos-user-{page_name}', component_property='value'),
-    State(component_id=f'bairro_de_ida-user-{page_name}', component_property='value'),
-    State(component_id=f'bairro_de_volta-user-{page_name}', component_property='value'),
-    State(component_id=f'enviar-boleto-user-{page_name}', component_property='value'),
-    State(component_id=f'gerar-taxa-user-{page_name}', component_property='value'),
+    # State(component_id=f'responsavel_financeiro-user-{page_name}', component_property='value'),
+    # State(component_id=f'tel_responsavel_financeiro-user-{page_name}', component_property='value'),
+    # State(component_id=f'responsavel_p_filhos-user-{page_name}', component_property='value'),
+    # State(component_id=f'bairro_de_ida-user-{page_name}', component_property='value'),
+    # State(component_id=f'bairro_de_volta-user-{page_name}', component_property='value'),
+    # State(component_id=f'enviar-boleto-user-{page_name}', component_property='value'),
+    # State(component_id=f'gerar-taxa-user-{page_name}', component_property='value'),
     State(component_id=f'bolsista-user-{page_name}', component_property='value'),
     State(component_id=f'nome_pai-user-{page_name}', component_property='value'),
     State(component_id=f'email_pai-user-{page_name}', component_property='value'),
@@ -882,13 +883,13 @@ def salvar_funcionarios_editados2(
         irmaos,
         dat_retorno,
         sexo,
-        responsavel_financeiro,
-        tel_responsavel_financeiro,
-        responsavel_p_filhos,
-        bairro_de_ida,
-        bairro_de_volta,
-        enviar_boleto,
-        gerar_taxa,
+        # responsavel_financeiro,
+        # tel_responsavel_financeiro,
+        # responsavel_p_filhos,
+        # bairro_de_ida,
+        # bairro_de_volta,
+        # enviar_boleto,
+        # gerar_taxa,
         bolsista,
         nome_pai,
         email_pai,
@@ -956,20 +957,20 @@ def salvar_funcionarios_editados2(
                 df_user['retorno'] = [dat_retorno]
             if sexo is not None:
                 df_user['sexo'] = [sexo]
-            if responsavel_financeiro is not None:
-                df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
-            if tel_responsavel_financeiro is not None:
-                df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
-            if responsavel_p_filhos is not None:
-                df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
-            if bairro_de_ida is not None:
-                df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
-            if bairro_de_volta is not None:
-                df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
-            if enviar_boleto is not None:
-                df_user['enviar_boleto'] = [int(enviar_boleto)]
-            if gerar_taxa is not None:
-                df_user['gerar_taxa'] = [int(gerar_taxa)]
+            # if responsavel_financeiro is not None:
+            #     df_user['responsavel_financeiro'] = [responsavel_financeiro.upper()]
+            # if tel_responsavel_financeiro is not None:
+            #     df_user['tel_responsavel_financeiro'] = [tel_responsavel_financeiro]
+            # if responsavel_p_filhos is not None:
+            #     df_user['responsavel_p_filhos'] = [responsavel_p_filhos.upper()]
+            # if bairro_de_ida is not None:
+            #     df_user['bairro_de_ida'] = [bairro_de_ida.upper()]
+            # if bairro_de_volta is not None:
+            #     df_user['bairro_de_volta'] = [bairro_de_volta.upper()]
+            # if enviar_boleto is not None:
+            #     df_user['enviar_boleto'] = [int(enviar_boleto)]
+            # if gerar_taxa is not None:
+            #     df_user['gerar_taxa'] = [int(gerar_taxa)]
             if bolsista is not None:
                 df_user['bolsista'] = [int(bolsista)]
             if nome_pai is not None:

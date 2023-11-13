@@ -383,7 +383,7 @@ def buscar_turmas(btn):
         field_list=[
             {'name': 'id'},
             {'name': 'id_turma'},
-            {'name': 'semestre'},
+            # {'name': 'semestre'},
             {'name': 'status'},
             {'name': 'nivel'},
             {'name': 'inicio'},
@@ -394,8 +394,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status', 'semestre'],
-        ascending=[False, True, True],
+        by=['id', 'status'],
+        ascending=[False, True],
         inplace=True
     )
 
@@ -469,16 +469,25 @@ def editar_turma(data_drom_data_table, active_cell):
         )
 
 
-        df_prof_filted = pd.DataFrame(
-            columns=['id', 'nome_completo']
-        )
-        prof_name = ['']
-        if df_turma2['id_professor'].isna()[0] == False:
-            list_prof = json.loads(df_turma2['id_professor'][0])['email_user']
-            df_prof = dados.query_table(table_name='funcionario')
+        # df_prof_filted = pd.DataFrame(
+        #     columns=['id', 'nome_completo']
+        # )
 
-            # df_prof_filted = df_prof[df_prof['email_func'].isin(list_prof)]
-            # df_prof_filted = df_prof_filted[['id', 'nome_completo']]
+        df_prof = dados.query_table(
+            table_name='funcionario',
+            filter_list=[
+                {'op': 'eq', 'name': 'tipo','value': 'Coordenador'},
+                {'op': 'eq', 'name': 'tipo','value': 'Professor'},
+                {'op': 'eq', 'name': 'tipo','value': 'Gerente'},
+            ]
+        )
+
+        # prof_name = ['']
+
+        # verifica se existe prod cadastrado
+        if df_turma2['id_professor'].isna()[0] == False:
+
+            list_prof = json.loads(df_turma2['id_professor'][0])['email_user']
 
             df_prof_filted = df_prof[df_prof['email_func'].isin(
                 list_prof
@@ -488,12 +497,99 @@ def editar_turma(data_drom_data_table, active_cell):
 
             prof_name = df_prof_filted['nome_completo'].to_list()
 
+            profs_cadastrados = df_prof_filted['id'].to_list()
+
+            df_prof['cadastrado'] = df_prof['id'].apply(lambda x: 'CAD' if x in profs_cadastrados else 'NAO CAD')
+
+            df_prof.sort_values(
+                by=['cadastrado', 'nome_completo'],
+                ascending=[True, True],
+                inplace=True
+            )
+
+            df_prof_filted = df_prof[['id', 'nome_completo', 'cadastrado']].copy()
+            dt_prof = dash_table.DataTable(
+                id=f'data-table-edit-profs-{page_name}',
+                data=df_prof_filted.to_dict('records'),
+                columns=[
+                    {
+                        "name": i.replace('_', ' ').upper(),
+                        "id": i,
+                        "editable": True if i == 'cadastrado' else False,
+                        "presentation": 'dropdown' if i == 'cadastrado' else '',
+                    } for i in df_prof_filted.columns],
+                dropdown={
+                    'cadastrado': {
+                        'options': [
+                            {'label': "CAD", 'value': "CAD"},
+                            {'label': "NAO CAD", 'value': "NAO CAD"},
+                        ]
+                    }
+                },
+                style_cell={'textAlign': 'center'},
+                page_size=30,
+                filter_action='native',
+                sort_mode="multi",
+                sort_action="native",
+                page_action="native",
+                editable=False,
+                style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+
+            )
+        else:
+            # df_prof = dados.query_table(table_name='funcionario')
+
+            df_prof_filted = df_prof.copy()
+
+            df_prof_filted = df_prof_filted[['id', 'nome_completo']]
+
+            prof_name = df_prof['nome_completo'].to_list()
+
+            profs_cadastrados = df_prof_filted['id'].to_list()
+
+            df_prof_filted['cadastrado'] = df_prof['id'].apply(lambda x: 'CAD' if x in profs_cadastrados else 'NAO CAD')
+
+            df_prof_filted.sort_values(
+                by=['cadastrado', 'nome_completo'],
+                ascending=[True, True],
+                inplace=True
+            )
+
+            # df_prof_filted = df_prof[['id', 'nome_completo', 'cadastrado']].copy()
+            dt_prof = dash_table.DataTable(
+                id=f'data-table-edit-profs-{page_name}',
+                data=df_prof_filted.to_dict('records'),
+                columns=[
+                    {
+                        "name": i.replace('_', ' ').upper(),
+                        "id": i,
+                        "editable": True if i == 'cadastrado' else False,
+                        "presentation": 'dropdown' if i == 'cadastrado' else '',
+                    } for i in df_prof_filted.columns],
+                dropdown={
+                    'cadastrado': {
+                        'options': [
+                            {'label': "CAD", 'value': "CAD"},
+                            {'label': "NAO CAD", 'value': "NAO CAD"},
+                        ]
+                    }
+                },
+                style_cell={'textAlign': 'center'},
+                page_size=30,
+                filter_action='native',
+                sort_mode="multi",
+                sort_action="native",
+                page_action="native",
+                editable=False,
+                style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+
+            )
 
 
 
         df_coord_filted = pd.DataFrame(columns=['id', 'nome_completo'])
 
-        coord_name = ''
+        # coord_name = ''
 
         if df_turma2['id_coordenador'].isna()[0] == False:
             list_coord = json.loads(df_turma2['id_coordenador'][0])['email_user']
@@ -507,7 +603,7 @@ def editar_turma(data_drom_data_table, active_cell):
 
             df_coord_filted = df_coord[['id', 'nome_completo']]
 
-            coord_name = df_coord_filted['nome_completo'].to_list()
+            # coord_name = df_coord_filted['nome_completo'].to_list()
 
 
 
@@ -548,98 +644,8 @@ def editar_turma(data_drom_data_table, active_cell):
             df_alunos_filted = df_alunos[['id', 'nome', 'status', 'telefone1']]
 
 
-        # dt_func1 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-1-{page_name}',
-        #     data=df_turma.to_dict('records'),
-        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_turma.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=False,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
 
-        profs_cadastrados = df_prof_filted['id'].to_list()
 
-        df_prof['cadastrado'] = df_prof['id'].apply(lambda x: 'CAD' if x in profs_cadastrados else 'NAO CAD')
-
-        df_prof.sort_values(
-            by=['cadastrado', 'nome_completo'],
-            ascending=[True, True],
-            inplace=True
-        )
-
-        df_prof_filted = df_prof[['id', 'nome_completo', 'cadastrado']]
-        df_profs = dash_table.DataTable(
-            id=f'data-table-edit-profs-{page_name}',
-            data=df_prof_filted.to_dict('records'),
-            columns=[
-                {
-                    "name": i.replace('_', ' ').upper(),
-                    "id": i,
-                    "editable": True if i == 'cadastrado' else False,
-                    "presentation": 'dropdown' if i == 'cadastrado' else '',
-                 } for i in df_prof_filted.columns],
-            dropdown={
-                'cadastrado': {
-                    'options': [
-                        {'label': "CAD", 'value': "CAD"},
-                        {'label': "NAO CAD", 'value': "NAO CAD"},
-                    ]
-                }
-            },
-            style_cell={'textAlign': 'center'},
-            page_size=30,
-            filter_action='native',
-            sort_mode="multi",
-            sort_action="native",
-            page_action="native",
-            editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-        )
-
-        #
-        # dt_func2 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-2-{page_name}',
-        #     data=df_prof_filted.to_dict('records'),
-        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_prof_filted.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=False,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
-        # dt_func22 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-2-new-{page_name}',
-        #     data=df_prof_filted2.to_dict('records'),
-        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_prof_filted2.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=False,
-        #
-        #     filter_action='native',
-        #     page_current=0,
-        #     page_size=1,
-        #     row_selectable="multi",
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
-        dt_func3 = dash_table.DataTable(
-            id=f'data-table-edit-func-3-{page_name}',
-            data=df_coord_filted.to_dict('records'),
-            columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_coord_filted.columns],
-            style_cell={'textAlign': 'center'},
-            editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-        )
-        # dt_func4 = dash_table.DataTable(
-        #     id=f'data-table-edit-func-4-{page_name}',
-        #     data=df_hr_filted.to_dict('records'),
-        #     columns=[{"name": i.replace('_', ' ').upper(), "id": i} for i in df_hr_filted.columns],
-        #     style_cell={'textAlign': 'center'},
-        #     editable=False,
-        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-        #
-        # )
         list_of_hour = []
         if len(df_hr_filted) >=1 :
             for x, row in df_hr_filted.iterrows():
@@ -888,14 +894,11 @@ def editar_turma(data_drom_data_table, active_cell):
                     children=[
                         dbc.AccordionItem(
                             children=[
-
                                 dbc.Row(
-                                    df_profs,
-                                    class_name='justify-content-center overflow-auto'
-                                               'col-lg-12 col-md-12 col-sm-12 p-0 m-0 p-0 pt-2 px-5'
+                                    dt_prof,
+                                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
                                 ),
                             ],
-
                             className='m-0 p-0',
                             style={'background-color': '#FAFAFA'},
                             title="PROFESSOR",
@@ -917,8 +920,7 @@ def editar_turma(data_drom_data_table, active_cell):
                             children=[
                                 dbc.Row(
                                     dt_func5,
-                                    class_name='justify-content-center overflow-auto'
-                                               'col-lg-12 col-md-12 col-sm-12 p-0 m-0 p-0 pt-2 px-5'
+                                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
                                 ),
                             ],
 
@@ -1011,7 +1013,12 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
         df_prof = pd.DataFrame(dt_prof)
         df_aluno = pd.DataFrame(dt_aluno)
 
-        profs_cadastrados = df_prof[df_prof['cadastrado'] == 'CAD']
+        profs_cadastrados = []
+        # verifica se possui prof para ser cadastrado
+        if df_prof.empty == False:
+            profs_cadastrados = df_prof[df_prof['cadastrado'] == 'CAD']
+
+
         alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
 
         df_turma = pd.DataFrame()
@@ -1027,6 +1034,8 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
                 list_aluno.append(x)
 
             df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
+        else:
+            df_turma['id_aluno'] = [None]
 
         # append prof novos
         if len(profs_cadastrados) >= 1:

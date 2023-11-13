@@ -1,0 +1,10 @@
+tradingview:
+  url_base: 'https://br.tradingview.com'
+
+  #  /?symbol=BMFBOVESPA%3AVALE3'
+
+  endpoint:
+    symbols:
+      metodo: get
+      url: chart
+      params: symbol

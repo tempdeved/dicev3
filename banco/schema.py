@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     create_engine, Column, Integer, Float, VARCHAR, DATETIME, ForeignKey, Text, UniqueConstraint,
-    DATE, BOOLEAN, TEXT,ARRAY, INTEGER, JSON
+    DATE, BOOLEAN, Numeric ,TEXT,ARRAY, INTEGER, JSON
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
@@ -205,21 +205,24 @@ class HistoricoAluno(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     created_at = Column(DATE)
 
-    id_turma = Column(ForeignKey('turma.id'))
-    # id_turma = Column(ForeignKey('turma2.id'))
-    id_aluno = Column(ForeignKey('aluno.id'))
+    id_turma = Column(Integer, primary_key=True)
 
-    numero_aulas = Column(Integer)
-    numero_faltas = Column(Integer)
-    research_01 = Column(Integer)
-    organization_01 = Column(Integer)
-    interest_01 = Column(Integer)
-    group_activity_01 = Column(Integer)
-    speaking_01 = Column(Integer)
-    frequencia_of_01 = Column(Integer)
-    listening_01 = Column(Integer)
-    readind_inter_01 = Column(Integer)
-    writing_process_01 = Column(Integer)
+    id_aluno = Column(Integer, primary_key=True)
+
+    # semestre = Column(VARCHAR(20), primary_key=True)
+    mes_ref = Column(INTEGER, primary_key=True)
+
+    numero_aulas = Column(Float)
+    numero_faltas = Column(Float)
+    research = Column(Float)
+    organization = Column(Float)
+    interest = Column(Float)
+    group_activity = Column(Float)
+    speaking = Column(Float)
+    frequencia_of = Column(Float)
+    listening = Column(Float)
+    readind_inter = Column(Float)
+    writing_process = Column(Float)
 
 
     descricao = Column(TEXT)
@@ -229,7 +232,7 @@ config = {
     'credentials': dict(
         # user='dice3',
         # password='D1c9-3#ngl&6sh1a',
-        # host='3.80.101.37',
+        # host='3.87.244.27',
         # port='3306',
         # database='dicev3',
         user='root',
