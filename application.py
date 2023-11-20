@@ -338,6 +338,6 @@ if __name__ == '__main__':
     # prod
     # application.run(debug=False, port=5000)
     # testes no ec2 do sintegre
-    # application.run(debug=False, port=5010, host='0.0.0.0')
-    application.run(debug=False, port=5000)
+    application.run(debug=False, port=5010, host='0.0.0.0')
+    # application.run(debug=False, port=5000)
     # app.run_server(debug=False)
