@@ -176,7 +176,7 @@ side_bar = Sidebar().layout(
                 dcc.Link(children='editar aluno'.title(), href='/EditarAluno'),
 
                 # lançar REMARKS junto com nota
-                # dcc.Link(children='lançar nota aluno'.title(), href='/lancar_nota_aluno'),
+                # dcc.Link(children='lançar nota aluno'.title(), href='/Remarks'),
             ]
         ),
         ListGroup().layout(
@@ -186,11 +186,15 @@ side_bar = Sidebar().layout(
                 dcc.Link(children='criar turma'.title(), href='/CriarTurma'),
                 dcc.Link(children='editar turma'.title(), href='/EditarTurma'),
                 dcc.Link(children='lançar nota turma'.title(), href='/LancarNotaTurma'),
+                dcc.Link(children='remarks'.title(), href='/Remarks'),
             ]
         ),
         ListGroup().layout(
             group_title='Relatório',
             group_elements=[
+
+                # boletim
+                dcc.Link(children='alunos'.title(), href='/RelatorioAlunoSimplies'),
 
                 # boletim
                 dcc.Link(children='--boletim aluno'.title(), href='/r_boletim_aluno'),

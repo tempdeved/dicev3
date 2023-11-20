@@ -63,7 +63,6 @@ content_layout = dbc.Row(
                                                                 options=[
                                                                     {'label': 'ativo'.upper(), 'value': 'ativo'.upper()},
                                                                     {'label': 'inativo'.upper(), 'value': 'inativo'.upper()},
-                                                                    {'label': 'jubilado'.upper(), 'value': 'jubilado'.upper()},
                                                                     {'label': 'cancelado'.upper(), 'value': 'cancelado'.upper()},
                                                                     {'label': 'trancado'.upper(), 'value': 'trancado'.upper()},
                                                                 ],
@@ -434,6 +433,14 @@ def create_aluno(
 
             df_turma['id_aluno'] = json.dumps({'id_aluno': turma_alunos})
 
+        df_turma_aluno = pd.DataFrame(
+            data={
+                'id_aluno': [max],
+                'id_turma': [df_turma['id_turma'][0]],
+
+            }
+        )
+
         try:
             df_new_aluno.dropna(inplace=True, axis=1)
             dados.insert_into_table(df=df_new_aluno, table_name='aluno')
@@ -443,6 +450,10 @@ def create_aluno(
                 pk_value=turma,
                 pk_name='id'
             )
+
+
+            # inserir alunos na turma Tabela ralacional
+            dados.insert_into_table(table_name='turma_aluno', df=df_turma_aluno,)
 
             msg = f'{n_clicks} - Usuário Criado'
         except Exception as err:

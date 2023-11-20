@@ -5,6 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
+from config.config import Config
 
 Base = declarative_base()
 
@@ -174,6 +175,13 @@ class Horario(Base):
 #     map = Column(VARCHAR(250))
 #     idioma = Column(VARCHAR(250))
 
+class TurmaAluno(Base):
+    __tablename__ = 'turma_aluno'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    id_turma = Column(Integer, index=True)
+    id_aluno = Column(Integer, index=True)
+
+
 class Turma(Base):
     __tablename__ = 'turma'
 
@@ -227,21 +235,22 @@ class HistoricoAluno(Base):
 
     descricao = Column(TEXT)
 
-config = {
-    'string_engine': r'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}',
-    'credentials': dict(
-        # user='dice3',
-        # password='D1c9-3#ngl&6sh1a',
-        # host='3.87.244.27',
-        # port='3306',
-        # database='dicev3',
-        user='root',
-        password='',
-        host='127.0.0.1',
-        database='dicev3',
-        port='3306',
-    ),
-}
+config = Config().config['ambiente']['aws']
+# config = {
+#     'string_engine': r'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}',
+#     'credentials': dict(
+#         user='dice3',
+#         password='D1c9-3#ngl&6sh1a',
+#         host='52.1.249.237',
+#         port='3306',
+#         database='dicev3',
+#         # user='root',
+#         # password='',
+#         # host='127.0.0.1',
+#         # database='dicev3',
+#         # port='3306',
+#     ),
+# }
 
 engine = create_engine(
     config["string_engine"].format(**config["credentials"]),

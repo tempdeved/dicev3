@@ -18,7 +18,7 @@ from banco.dados import Dados
 from config.config import Config
 
 # page_name = __name__[6:].replace('.', '_')
-page_name = 'LancarNotaTurma'
+page_name = 'Remarks'
 dash.register_page(__name__, path=f'/{page_name}')
 # require_login(__name__)
 
@@ -65,12 +65,14 @@ content_layout = dbc.Row(
                                             dbc.Tabs(
                                                 children=[
                                                     dbc.Tab(
-                                                        label="LANÇAR NOTA",
+                                                        label="REMARK",
                                                         children=[
                                                             dbc.Row(
 
                                                             ),
                                                             dbc.Row(id=f'out-edit-func-{page_name}'),
+                                                            dbc.Row(),
+                                                            dbc.Row(id=f'out-remark-edit{page_name}'),
                                                             dbc.Row(
                                                                 class_name='ml-0 pt-2',
                                                                 children=[
@@ -79,7 +81,7 @@ content_layout = dbc.Row(
                                                                         children=[
                                                                             dbc.Button(
                                                                                 id=f'btn-salvar-func-edited-{page_name}',
-                                                                                children=['SALVAR TURMA'],
+                                                                                children=['SALVAR REMARK'],
                                                                                 class_name='me-1',
                                                                                 color='primary',
                                                                                 n_clicks=0,
@@ -246,7 +248,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             table_name='turma',
             # field_list=[
             #     {'name': 'email'},
-            # ]
+            # ],
             filter_list=[
                 {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
             ]
@@ -263,8 +265,8 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
         df_all_aluno  = dados.query_table(
             table_name='aluno',
             # field_list=[
-            #     {'name': 'email'},
-            # ]
+            #     {'name': 'descricao'},
+            # ],
             filter_list=[
                 {'op': 'in', 'name': 'id', 'value': list_alunos},
             ]
@@ -275,56 +277,37 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             #     {'nome': 'id', 'type': 'nmeric, 'editableu: 1'},
             # 'created_at':
             #     {'nome': 'created_at', 'type': '', 'editable': 1},
-            'id_turma':
-                {'nome': 'id_turma', 'type': '', 'editable': 0},
-            'id_aluno':
-                {'nome': 'id_aluno', 'type': '', 'editable': 0},
+            # 'id_turma':
+            #     {'nome': 'id_turma', 'type': '', 'editable': 0, 'width': '600px'},
+            'id_hist':
+                {'nome': 'id_hist', 'type': '', 'editable': 0, 'width': '600px'},
             'nome':
-                {'nome': 'nome', 'type': '', 'editable': 0},
-            'numero_aulas':
-                {'nome': 'numero_aulas', 'type': 'numeric', 'editable': 1},
-            'numero_faltas':
-                {'nome': 'numero_faltas', 'type': 'numeric', 'editable': 1},
-            'research':
-                {'nome': 'research', 'type': 'numeric', 'editable': 1},
-            'organization':
-                {'nome': 'organization', 'type': 'numeric', 'editable': 1},
-            'interest':
-                {'nome': 'interest', 'type': 'numeric', 'editable': 1},
-            'group_activity':
-                {'nome': 'group_activity', 'type': 'numeric', 'editable': 1},
-            'speaking':
-                {'nome': 'speaking', 'type': 'numeric', 'editable': 1},
-            'frequencia_of':
-                {'nome': 'frequencia_of', 'type': 'numeric', 'editable': 1},
-            'listening':
-                {'nome': 'listening', 'type': 'numeric', 'editable': 1},
-            'readind_inter':
-                {'nome': 'readind_inter', 'type': 'numeric', 'editable': 1},
-            'writing_process':
-                {'nome': 'writing_process', 'type': 'numeric', 'editable': 1},
+                {'nome': 'nome', 'type': '', 'editable': 0, 'width': '600px'},
             # 'descricao':
-            #     {'nome': 'descricao', 'type': '', 'editable}: 1,
+            #     {'nome': 'descricao', 'type': '', 'editable': 1, 'width': '50px'},
         }
 
         list_columns = [x for x in hist_columns]
 
         df_hist_turma  = dados.query_table(
             table_name='historico_aluno',
-            # field_list=[
-            #     {'name': 'email'},
-            # ]
+            field_list=[
+                {'name': 'id'},
+                {'name': 'id_aluno'},
+                {'name': 'descricao'},
+            ],
             filter_list=[
                 {'op': 'eq', 'name': 'id_turma', 'value': int(turma_id_dice)},
                 {'op': 'eq', 'name': 'mes_ref', 'value': int(mes_ref)},
             ]
         )
+        df_hist_turma.rename(columns={'id':'id_hist'}, inplace=True)
 
-        aux = pd.DataFrame(
-            data={
-                'id_aluno': list_alunos
-            }
-        )
+        # aux = pd.DataFrame(
+        #     data={
+        #         'id_aluno': list_alunos
+        #     }
+        # )
 
         df_all_aluno.rename(columns={'id': 'id_aluno'}, inplace=True)
 
@@ -360,9 +343,9 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                     "id": hist_columns[i]['nome'],
                     "type": hist_columns[i]['type'],
                     "editable": True if hist_columns[i]['editable'] == 1 else False,
-                    "presentation": 'dropdown' if i == 'cadastrado' else '',
+                    # "presentation": 'dropdown' if i == 'cadastrado' else '',
                  } for i in list_columns
-        ],
+            ],
             # dropdown={
             #     'cadastrado': {
             #         'options': [
@@ -379,19 +362,30 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             page_action="native",
             # editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-
-            fixed_columns={'headers': True, 'data': 3},
-            style_table={'minWidth': '100%'},
+            style_data={
+                'whiteSpace': 'normal',
+                # 'height': 'auto'
+            },
+            # fixed_columns={'headers': True, 'data': 3},
+            # style_table={'minWidth': '100%'},
             style_cell={
                 # all three widths are needed
                 'textAlign': 'center',
                 # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
+                # 'overflow': 'hidden',
+                # 'textOverflow': 'ellipsis',
+                # 'word-wrap': 'break-word'
             },
+            row_selectable="single",
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': hist_columns[i]['nome'].replace('_', ' ').upper()},
+                    'width': hist_columns[i]['width'],
+                    # 'textOverflow': hist_columns[i]['textOverflow']
+                } for i in list_columns
+            ]
 
         )
-
 
 
         datatable1 = dbc.Row(
@@ -411,49 +405,126 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
     return datatable1, '' if active_cell else ""
 
 
-# id=f'out-alert-edited-fuc-{page_name}'
+@callback(
+    Output(component_id=f'out-remark-edit{page_name}', component_property='children'),
+    State(component_id=f"mes-ref-{page_name}", component_property='value'),
+    State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
+    State(component_id=f'data-table-hist-aluno-{page_name}', component_property='data'),
+    Input(component_id=f'data-table-hist-aluno-{page_name}', component_property='selected_rows'),
+)
+def edit_remart(mes_ref, dt_turma, dt_alu_tur, active_cell):
+
+    if dt_alu_tur and active_cell:
+        df_alu_turma = pd.DataFrame(dt_alu_tur)
+        df_turma = pd.DataFrame(dt_turma)
+
+        # turma_id =  df_turma['id_turma'].iloc[active_cell[0]]
+        # turma_id_dice = df_turma['id_turma'].iloc[active_cell[0]]
+        id_hist = int(df_alu_turma['id_hist'].iloc[active_cell[0]])
+        nome_aluno = str(df_alu_turma['nome'].iloc[active_cell[0]])
+
+        df_hist_turma  = dados.query_table(
+            table_name='historico_aluno',
+            field_list=[
+                {'name': 'id'},
+                {'name': 'descricao'},
+            ],
+            filter_list=[
+                {'op': 'eq', 'name': 'id', 'value': int(id_hist)},
+            ]
+        )
+        descricao = df_hist_turma['descricao'][0]
+
+        editable_remark = dbc.Row(
+            children=[
+                dbc.Row(
+                    children=[
+                     html.H1(nome_aluno)
+                    ],
+                    className='pt-5',
+                    style={
+                        'background-color': '#ffffff'
+                    },
+                ),
+                dbc.Row(children=[
+                    dbc.Textarea(
+                        id=f"aluno-descricao-{page_name}",
+                        size="lg",
+                        placeholder="",
+                        value=descricao,
+                        style={
+                            'width': '100%',
+                            'height': '500px'
+                        },
+
+
+                    )
+                ],
+                    className='py-2'
+                ),
+
+            ],
+        )
+    else:
+        editable_remark = ''
+
+    return editable_remark
+
 
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
-    # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
     State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
-    # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
-    # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
-    # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
-    # State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
-    # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+    State(component_id=f'data-table-hist-aluno-{page_name}', component_property='selected_rows'),
     State(component_id=f"mes-ref-{page_name}",  component_property='value'),
+    State(component_id=f"aluno-descricao-{page_name}",  component_property='value'),
 
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
     )
-def salvar_nota_turma(dt_notas, mes_ref, n_clicks):
+def salvar_nota_turma(dt_notas, active_cell, mes_ref, descricao, n_clicks):
     # if n_clicks :
     if n_clicks:
 
-        df_notas = pd.DataFrame(dt_notas)
-        df_notas['mes_ref'] = mes_ref
-        df_notas['created_at'] = datetime.datetime.now()
-        df_notas.fillna(0, inplace=True)
+        df_hist = pd.DataFrame(dt_notas)
 
-        hist_alunos = dados.query_table(
-            table_name='historico_aluno',
-            filter_list=[
-                {'op': 'eq', 'name': 'id_turma', 'value': int(df_notas['id_turma'].unique()[0])},
-                {'op': 'eq', 'name': 'mes_ref', 'value': int(df_notas['mes_ref'].unique()[0])},
-            ]
+        id_hist = int(df_hist['id_hist'].iloc[active_cell[0]])
+        nome_aluno = df_hist['nome'].iloc[active_cell[0]]
+
+        df_notas = pd.DataFrame(
+            data={
+                'id': [id_hist],
+                'descricao': [descricao],
+            }
         )
+
+
+        # df_notas['mes_ref'] = mes_ref
+        # df_notas['created_at'] = datetime.datetime.now()
+        # df_notas.fillna(0, inplace=True)
+
+        # hist_alunos = dados.query_table(
+        #     table_name='historico_aluno',
+        #     filter_list=[
+        #         {'op': 'eq', 'name': 'id_turma', 'value': int(df_notas['id_turma'].unique()[0])},
+        #         {'op': 'eq', 'name': 'mes_ref', 'value': int(df_notas['mes_ref'].unique()[0])},
+        #     ]
+        # )
 
         try:
             # removendo notas para inserir novas notas
-            dados.remove_from_table(
+            # dados.remove_from_table(
+            #     table_name='historico_aluno',
+            #     filter_list=[
+            #         {'op': 'in', 'name': 'id', 'value': hist_alunos['id'].to_list()},
+            #     ]
+            # );
+            dados.update_table(
+                values=df_notas.to_dict(orient='records')[0],
                 table_name='historico_aluno',
-                filter_list=[
-                    {'op': 'in', 'name': 'id', 'value': hist_alunos['id'].to_list()},
-                ]
+                pk_value=id_hist,
+                pk_name='id'
             )
-            dados.insert_into_table(df=df_notas, table_name='historico_aluno')
 
-            return 'TURMA ATUALIZADA'
+            return f'{nome_aluno} ATUALIZADA'
         except Exception as err:
             return str(err)
 

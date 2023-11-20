@@ -21,7 +21,7 @@ from banco.dados import Dados
 from config.config import Config
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='EditarAluno'
+page_name='RelatorioAlunoSimplies'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
@@ -245,32 +245,32 @@ content_layout = dbc.Row(
                                             #     ]
                                             # ),
                                             dbc.Row(id=f'out-edit-func-{page_name}'),
-                                            dbc.Row(
-                                                children=[
-                                                    dbc.Row(
-                                                        # id='button_area',
-                                                        # class_name='d-grid d-md-block',  # gap-2
-                                                        class_name='pt-2',
-                                                        children=[
-                                                            dbc.Col(
-                                                                # width=2,
-                                                                children=[
-                                                                    dbc.Button(
-                                                                        id=f'btn-salvar-func-edited-{page_name}',
-                                                                        children=['Salvar Aluno'],
-                                                                        # class_name='p-5',
-                                                                        color='primary',
-                                                                        n_clicks=0,
-                                                                    ),
-                                                                ]
-                                                            )
-                                                        ]
-                                                    ),
-                                                ]
-                                            ),
+                                            # dbc.Row(
+                                            #     children=[
+                                            #         dbc.Row(
+                                            #             # id='button_area',
+                                            #             # class_name='d-grid d-md-block',  # gap-2
+                                            #             class_name='pt-2',
+                                            #             children=[
+                                            #                 dbc.Col(
+                                            #                     # width=2,
+                                            #                     children=[
+                                            #                         dbc.Button(
+                                            #                             id=f'btn-salvar-func-edited-{page_name}',
+                                            #                             children=['Salvar Aluno'],
+                                            #                             # class_name='p-5',
+                                            #                             color='primary',
+                                            #                             n_clicks=0,
+                                            #                         ),
+                                            #                     ]
+                                            #                 )
+                                            #             ]
+                                            #         ),
+                                            #     ]
+                                            # ),
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Editar ALuno"
+                                        title="Relatório Aluno Simples"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -378,6 +378,16 @@ def create_user(user_type, user_name, user_email, user_passdw, user_status, n_cl
 def capturar_alunos(main_contianer):
 
 
+
+
+    df_turma_aluno  = dados.query_table(
+        table_name='turma_aluno',
+        # field_list=[
+        #     {'name': 'email'},
+        #     {'name': 'status'},
+        # ]
+    )
+
     df_aluno  = dados.query_table(
         table_name='aluno',
         # field_list=[
@@ -386,45 +396,106 @@ def capturar_alunos(main_contianer):
         # ]
     )
 
-    df_aluno.sort_values(
-        by=['created_at', 'status', 'nome'],
+    df_turma  = dados.query_table(
+        table_name='turma',
+        field_list=[
+            {'name': 'id_turma'},
+            {'name': 'status'},
+            {'name': 'nivel'},
+            {'name': 'inicio'},
+            {'name': 'fim'},
+        ]
+    )
+
+    # rename turma
+    df_turma.rename(
+        columns={
+            'status':'status turma',
+            'inicio':'inicio turma',
+            'fim':'fim turma',
+        },
+        inplace=True
+    )
+
+    # rename aluno
+    df_aluno.rename(columns={'id':'id_aluno', 'status':'status aluno'}, inplace=True)
+
+    df_merge = pd.merge(
+        left=df_turma_aluno,
+        right=df_aluno,
+        on=['id_aluno'],
+        how='left',
+    )
+
+    df_merge2 = pd.merge(
+        left=df_merge,
+        right=df_turma,
+        on=['id_turma'],
+        how='left',
+    )
+
+    df_merge2.sort_values(
+        by=['id_turma', 'status turma', 'nome'],
         ascending=[False, True, True],
         inplace=True
     )
 
-    filter_columns = ['id', 'nome', 'status', 'dat_nasc', 'telefone1', 'inicio', 'tel_responsavel_financeiro']
+    # LAGOA
+    # Codigo_Turma	Tur_Status	Texto40	Alu_Nome	Alu_Tel	Texto42	Texto41	Alu_Idade
 
-    colulmn_type = {
-        'id':'numeric',
-        'nome':'text',
-        'status':'text',
-        'dat_nasc':'',
-        'telefone1':'',
-        'inicio':'',
-        'tel_responsavel_financeiro':'',
+    columns = {
+        'id_turma':
+            {'nome': 'id_turma', 'type': 'numeric', 'editable': 0},
+        'status turma':
+            {'nome': 'status turma', 'type': 'text', 'editable': 0},
+        'id_aluno':
+            {'nome': 'id_aluno', 'type': 'numeric', 'editable': 0},
+        'nome':
+            {'nome': 'nome', 'type': 'text', 'editable': 0},
+        'status aluno':
+            {'nome': 'status aluno', 'type': 'text', 'editable': 0},
+        'telefone1':
+            {'nome': 'telefone1', 'type': 'text', 'editable': 0},
+        'responsavel_financeiro':
+            {'nome': 'responsavel_financeiro', 'type': 'text', 'editable': 0},
+        'tel_responsavel_financeiro':
+            {'nome': 'tel_responsavel_financeiro', 'type': 'text', 'editable': 0},
     }
+    list_columns = [x for x in columns]
+    # filter_columns = ['id', 'nome', 'status', 'dat_nasc', 'telefone1', 'inicio', 'tel_responsavel_financeiro']
+
+    # colulmn_type = {
+    #     'id':'numeric',
+    #     'nome':'text',
+    #     'status':'text',
+    #     'dat_nasc':'',
+    #     'telefone1':'',
+    #     'inicio':'',
+    #     'tel_responsavel_financeiro':'',
+    # }
 
     # Criando visualização em dashDataTable dos dados formatados
     dt_user = dash_table.DataTable(
         id=f'data-table-edit-user-{page_name}',
-        data=df_aluno[filter_columns].to_dict('records'),
+        data=df_merge2[list_columns].to_dict('records'),
         columns=[
             {
-                "name": i.replace('_', ' ').upper(),
-                "id": i,
-                'type': colulmn_type[i]
-             } for i in df_aluno[filter_columns]   .columns],
+                "name": columns[i]['nome'].replace('_', ' ').upper(),
+                "id": columns[i]['nome'],
+                "type": columns[i]['type'],
+             } for i in list_columns
+        ],
         page_current=0,
-        page_size=5,
+        page_size=30,
         style_cell={'textAlign': 'center'},
         editable=False,
         filter_action='native',
         sort_mode="multi",
         sort_action="native",
         page_action="native",
-        row_selectable="single",
-        # export_columns='all',
-        # export_format='xlsx',
+        # row_selectable="single",
+        export_columns='all',
+        export_format='xlsx',
         # row_selectable="multi",
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
 

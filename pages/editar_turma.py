@@ -1009,7 +1009,7 @@ def editar_turma(data_drom_data_table, active_cell):
 def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
     # if n_clicks :
     if n_clicks or dt_aluno or dt_prof or nivel or map:
-
+        id_turma_dice = int(id_turma_dice)
         df_prof = pd.DataFrame(dt_prof)
         df_aluno = pd.DataFrame(dt_aluno)
 
@@ -1022,7 +1022,7 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
         alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
 
         df_turma = pd.DataFrame()
-        df_turma['id'] = [6]
+        # df_turma['id'] = [id]
         df_turma['id_turma'] = [id_turma_dice]
         df_turma['nivel'] = [nivel]
         df_turma['map'] = [map]
@@ -1034,8 +1034,22 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
                 list_aluno.append(x)
 
             df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
+
+            # tabela relacionamento
+            df_turma_aluno = pd.DataFrame(
+                data={
+                    'id_aluno' : list_aluno
+                }
+            )
+            df_turma_aluno['id_turma'] = id_turma_dice
         else:
             df_turma['id_aluno'] = [None]
+
+            df_turma_aluno = pd.DataFrame(
+                data={
+                    'id_turma': [id_turma_dice]
+                }
+            )
 
         # append prof novos
         if len(profs_cadastrados) >= 1:
@@ -1053,6 +1067,8 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
 
             df_turma['id_professor'] = json.dumps({'email_user': list_profs})
 
+
+
         try:
             dados.update_table(
                 values=df_turma.to_dict(orient='records')[0],
@@ -1061,9 +1077,20 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
                 pk_name='id_turma'
             )
 
-            return 'TURMA ATUALIZADA'
+            # delete alunos da turma
+            dados.remove_from_table(
+                table_name='turma_aluno',
+                filter_list=[
+                    {'op': 'eq', 'name': 'id_turma', 'value': id_turma_dice},
+                ]
+            )
+            # inserir alunos na turma
+            dados.insert_into_table(table_name='turma_aluno', df=df_turma_aluno,)
+
+            return f'TURMA ATUALIZADA: {df_turma_aluno["id_aluno"].to_list()}'
+
         except Exception as err:
             return str(err)
 
     else:
-        return "SELECIONE UMA TURMA"
+        return ""

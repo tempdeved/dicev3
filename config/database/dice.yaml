@@ -11,7 +11,7 @@ ambiente:
 
 #        user: 'dice3'
 #        password: 'D1c9-3#ngl&6sh1a'
-#        host: 3.87.244.27
+#        host: 54.226.251.240
 #        port: 3306
 #        database: dicev3
 
@@ -28,7 +28,7 @@ ambiente:
 #       NAT - Uso inteiro/Ambiente de Desenvolvimento
       user: 'dice3'
       password: 'D1c9-3#ngl&6sh1a'
-      host: 3.87.244.27
+      host: 54.226.251.240
       port: 3306
       database: dicev3
 
