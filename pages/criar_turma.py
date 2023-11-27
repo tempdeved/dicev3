@@ -292,6 +292,7 @@ def form_create_turma(datepicker):
                                 page_action="native",
                                 row_selectable="multi",
                                 style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+                                style_as_list_view=True,
 
                             )
                         ],
@@ -652,9 +653,21 @@ def create_turma(
                 list_aluno.append(x)
             df_new_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
 
+            # tabela relacionamento
+            df_turma_aluno = pd.DataFrame(
+                data={
+                    'id_aluno': list_aluno
+                }
+            )
+            df_turma_aluno['id_turma'] = id_turma
+
         try:
             df_new_turma.dropna(axis=1, inplace=True)
             dados.insert_into_table(df=df_new_turma, table_name='turma')
+
+            if len(df_turma_aluno) >= 1:
+                dados.insert_into_table(df=df_turma_aluno, table_name='turma_aluno')
+
             msg = f'{n_clicks} - Turma Criada'
         except Exception as err:
             msg = f'Erro: {err}'

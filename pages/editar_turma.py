@@ -417,6 +417,7 @@ def buscar_turmas(btn):
         # export_format='xlsx',
         # export_columns='all',
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        style_as_list_view=True,
 
     )
     datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
@@ -534,6 +535,7 @@ def editar_turma(data_drom_data_table, active_cell):
                 page_action="native",
                 editable=False,
                 style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+                style_as_list_view=True,
 
             )
         else:
@@ -582,6 +584,7 @@ def editar_turma(data_drom_data_table, active_cell):
                 page_action="native",
                 editable=False,
                 style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+                style_as_list_view=True,
 
             )
 
@@ -709,6 +712,7 @@ def editar_turma(data_drom_data_table, active_cell):
             page_action="native",
             editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+            style_as_list_view=True,
         )
 
         # from collections import OrderedDict

@@ -1,0 +1,295 @@
+relatorio_simples:
+  radio_itens:
+    1:
+      table_name: aluno
+      filted_columns:
+        nome:
+          id: nome
+          nome: nome
+          type: text
+          editable: 0
+        status:
+          id: status
+          nome: status
+          type: text
+          editable: 0
+        dat_nasc:
+          id: dat_nasc
+          nome: dat_nasc
+          type: text
+          editable: 0
+        inicio:
+          id: inicio
+          nome: inicio
+          type: text
+          editable: 0
+        cidade_nascimento:
+          id: cidade_nascimento
+          nome: cidade_nascimento
+          type: text
+          editable: 0
+        endereco:
+          id: endereco
+          nome: endereco
+          type: text
+          editable: 0
+        numero:
+          id: numero
+          nome: numeric
+          type: text
+          editable: 0
+        complemento:
+          id: complemento
+          nome: complemento
+          type: text
+          editable: 0
+        bairro:
+          id: bairro
+          nome: bairro
+          type: text
+          editable: 0
+        cidade:
+          id: cidade
+          nome: cidade
+          type: text
+          editable: 0
+        uf:
+          id: uf
+          nome: uf
+          type: text
+          editable: 0
+        cep:
+          id: cep
+          nome: cep
+          type: text
+          editable: 0
+        telefone1:
+          id: telefone1
+          nome: telefone1
+          type: text
+          editable: 0
+        moradia:
+          id: moradia
+          nome: moradia
+          type: text
+          editable: 0
+        n_irmaos:
+          id: n_irmaos
+          nome: n_irmaos
+          type: numeric
+          editable: 0
+        retorno:
+          id: retorno
+          nome: retorno
+          type: text
+          editable: 0
+
+        sexo:
+          id: sexo
+          nome: sexo
+          type: text
+          editable: 0
+        responsavel_financeiro:
+          id: responsavel_financeiro
+          nome: resp. financ
+          type: text
+          editable: 0
+        tel_responsavel_financeiro:
+          id: tel_responsavel_financeiro
+          nome: tel resp. financ
+          type: text
+          editable: 0
+        responsavel_p_filhos:
+          id: responsavel_p_filhos
+          nome: responsavel_p_filhos
+          type: text
+          editable: 0
+#
+#        id: #bairro_de_ida:
+#        nome: bairro_de_ida
+#        type: text
+#        editable: 0
+#
+#        id: #bairro_de_volta:
+#        nome: bairro_de_volta
+#        type: text
+#        editable: 0
+#
+#        id: #enviar_boleto:
+#        nome: enviar_boleto
+#        type: text
+#        editable: 0
+#
+#        id: #gerar_taxa:
+#        nome: gerar_taxa
+#        type: text
+#        editable: 0
+        bolsista:
+          id: bolsista
+          nome: bolsista
+          type: text
+          editable: 0
+
+        nome_pai:
+          id: nome_pai
+          nome: nome_pai
+          type: text
+          editable: 0
+        email_pai:
+          id: email_pai
+          nome: email_pai
+          type: text
+          editable: 0
+        celular_pai:
+          id: celular_pai
+          nome: celular_pai
+          type: text
+          editable: 0
+        tel_trabalho_pai:
+          id: tel_trabalho_pai
+          nome: tel_trabalho_pai
+          type: text
+          editable: 0
+        cpf_pai:
+          id: cpf_pai
+          nome: cpf_pai
+          type: text
+          editable: 0
+        profissao_pai:
+          id: profissao_pai
+          nome: profissao_pai
+          type: text
+          editable: 0
+        nome_mae:
+          id: nome_mae
+          nome: nome_mae
+          type: text
+          editable: 0
+        email_mae:
+          id: email_mae
+          nome: email_mae
+          type: text
+          editable: 0
+        celular_mae:
+          id: celular_mae
+          nome: celular_mae
+          type: text
+          editable: 0
+        tel_trabalho_mae:
+          id: tel_trabalho_mae
+          nome: tel_trabalho_mae
+          type: text
+          editable: 0
+        cpf_mae:
+          id: cpf_mae
+          nome: cpf_mae
+          type: text
+          editable: 0
+        profissao_mae:
+          id: profissao_mae
+          nome: profissao_mae
+          type: text
+          editable: 0
+#        senha:
+      id: senha
+#          nome: senha
+#          type: text
+#          editable: 0
+      default_columns:
+        - nome
+        - status
+        - dat_nasc
+        - inicio
+#        - numero
+#        - bairro
+#        - n_irmaos
+        - responsavel_financeiro
+        - tel_responsavel_financeiro
+    2:
+      table_name: turma_aluno
+      filted_columns:
+        id_turma:
+          id: id_turma
+          nome: id_turma
+          type: numeric
+          editable: 0
+        status_turma:
+          id: status_turma
+          nome: status_turma
+          type: text
+          editable: 0
+        nivel:
+          id: nivel
+          nome: nivel
+          type: text
+          editable: 0
+        inicio_turma:
+          id: inicio_turma
+          nome: inicio
+          type: text
+          editable: 0
+        fim_turma:
+          id: fim_turma
+          nome: fim
+          type: text
+          editable: 0
+        map:
+          id: map
+          nome: map
+          type: text
+          editable: 0
+        idioma:
+          id: idioma
+          nome: idioma
+          type: text
+          editable: 0
+        id_aluno:
+          id: id_aluno
+          nome: id_aluno
+          type: numeric
+          editable: 0
+        nome:
+          id: nome
+          nome: nome
+          type: text
+          editable: 0
+        status_aluno:
+          id: status_aluno
+          nome: status aluno
+          type: text
+          editable: 0
+        dat_nasc:
+          id: dat_nasc
+          nome: dat_nasc
+          type: text
+          editable: 0
+        inicio_aluno:
+          id: inicio_aluno
+          nome: inicio
+          type: text
+          editable: 0
+        responsavel_financeiro:
+          id: responsavel_financeiro
+          nome: resp. financ
+          type: text
+          editable: 0
+        tel_responsavel_financeiro:
+          id: tel_responsavel_financeiro
+          nome: tel resp. financ
+          type: text
+          editable: 0
+      default_columns:
+        - id_turma
+        - status_turma
+        - nivel
+        - inicio_turma
+        - fim_turma
+#        - map
+        - idioma
+#        - id_aluno
+        - nome
+        - status_aluno
+#        - dat_nasc
+#        - inicio_aluno
+        - responsavel_financeiro
+        - tel_responsavel_financeiro

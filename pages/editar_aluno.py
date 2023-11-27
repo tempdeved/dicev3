@@ -283,6 +283,7 @@ content_layout = dbc.Row(
                 dbc.Row(id=f'out-alert-user-{page_name}'),
                 dbc.Row(id=f'out-alert-fuc-{page_name}'),
                 dbc.Row(id=f'out-alert-edited-fuc-{page_name}'),
+                dbc.Row(id=f'out-alert-status-fuc-{page_name}'),
             ]
         )
     ],
@@ -427,6 +428,7 @@ def capturar_alunos(main_contianer):
         # export_format='xlsx',
         # row_selectable="multi",
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        style_as_list_view=True,
 
     )
     datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
@@ -447,12 +449,19 @@ def editar_aluno(data_drom_data_table, active_cell):
     if data_drom_data_table and active_cell:
 
         df_user = pd.DataFrame(data_drom_data_table)
-        id_aluno = df_user['id'].iloc[active_cell[0]]
+        id_aluno = int(df_user['id'].iloc[active_cell[0]])
 
         df_user = dados.query_table(
             table_name='aluno',
             filter_list=[
                 {'op': 'eq', 'name': 'id', 'value': int(id_aluno)}
+            ]
+        )
+
+        df_status = dados.query_table(
+            table_name='status_aluno',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_aluno', 'value': id_aluno}
             ]
         )
 
@@ -463,6 +472,30 @@ def editar_aluno(data_drom_data_table, active_cell):
         path_no_foto = f'static/images/logo/no_foto.png'
 
         foto_user = path_file if os.path.isfile(path_file) else path_no_foto
+
+        status_obs = ''
+
+        df_status.sort_values(
+            by=['id'],
+            ascending=[False],
+            inplace=True
+        )
+
+        for x_row, row in df_status.iterrows():
+
+            t = '- - -  - - - - - - - - - - - - - - - - - - - - \n'
+
+            line = f'' \
+                   f'INICIO: {row["inicio"] if row["inicio"] else "xxx"} - ' \
+                   f'FIM: {row["fim"] if row["fim"] else "xxx"} - ' \
+                   f'STATUS: {row["status"]} \n'
+
+            obs = f'{row["obs"]} \n'
+
+            status_obs = status_obs + t
+            status_obs = status_obs + line
+            status_obs = status_obs + obs
+
 
         # campos = []
 
@@ -501,27 +534,125 @@ def editar_aluno(data_drom_data_table, active_cell):
                             class_name='pt-2 m-0 px-0'
                         ),
 
-                        dbc.Row('Data Nascimento'.replace('_', ' ').title(), class_name='pt-2 '),
+                        # Adiciona Status
                         dbc.Row(
                             children=[
-                                dcc.DatePickerSingle(
-                                    id=f'dat-nasc-user-{page_name}',
-                                    min_date_allowed=datetime.date(1900, 8, 12),
-                                    # max_date_allowed=datetime.,
-                                    initial_visible_month=df_user["dat_nasc"][0],
-                                    # initial_visible_month=datetime.datetime.today(),
-                                    # date=datetime.datetime.today(),
-                                    month_format='MMMM Y',
-                                    # display_format='DD-MM-YYYY',
-                                    display_format='YYYY-MM-DD',
-                                    # placeholder='YY-MM-DD',
-                                )
-                            ],
-                            class_name='col-lg-12 col-sm-12 mb-3 '
-                        ),
-                        dbc.Input(
-                            value=df_user["dat_nasc"][0],
-                            disabled=True
+                                dbc.Row(
+                                    children=[
+                                        dbc.Col(
+                                            children=[
+
+                                                dbc.Row('inicio'.replace('_', ' ').title(),
+                                                        class_name='pt-2 '),
+                                                dbc.Row(
+                                                    dcc.DatePickerSingle(
+                                                        id=f'dat-inicio-status-{page_name}',
+                                                        min_date_allowed=datetime.date(1900, 8, 12),
+                                                        # max_date_allowed=datetime.,
+                                                        # initial_visible_month=df_user["dat_nasc"][0],
+                                                        initial_visible_month=datetime.datetime.today(),
+                                                        # date=datetime.datetime.today(),
+                                                        month_format='MMMM Y',
+                                                        # display_format='DD-MM-YYYY',
+                                                        display_format='YYYY-MM-DD',
+                                                        # placeholder='YY-MM-DD',
+                                                    )
+                                                ),
+
+                                            ],
+                                        ),dbc.Col(
+                                            children=[
+
+                                                dbc.Row('fim'.replace('_', ' ').title(),
+                                                        class_name='pt-2 '),
+                                                dbc.Row(
+                                                    dcc.DatePickerSingle(
+                                                        id=f'dat-fim-status-{page_name}',
+                                                        min_date_allowed=datetime.date(1900, 8, 12),
+                                                        # max_date_allowed=datetime.,
+                                                        # initial_visible_month=df_user["dat_nasc"][0],
+                                                        initial_visible_month=datetime.datetime.today(),
+                                                        # date=datetime.datetime.today(),
+                                                        month_format='MMMM Y',
+                                                        # display_format='DD-MM-YYYY',
+                                                        display_format='YYYY-MM-DD',
+                                                        # placeholder='YY-MM-DD',
+                                                    )
+                                                ),
+                                            ],
+                                        ),
+
+                                    ],
+                                    class_name='col-lg-12 col-sm-12 mb-3 '
+                                ),
+
+                                dbc.Row('obs.'.replace('_', ' ').title(), class_name='pt-2 '),
+
+                                dbc.Row(
+                                    dbc.Textarea(
+                                        id=f"status-obs-{page_name}",
+                                        size="sm",
+                                        placeholder="",
+                                        # value='obs..',
+                                        # style={
+                                        #     'width': '100%',
+                                        #     'height': '500px'
+                                        # },
+
+                                    )
+                                ),
+                                dbc.Row(
+                                    class_name='py-2',
+                                    children=[
+                                        dbc.Textarea(
+                                            id=f"status-obs-block-{page_name}",
+                                            size="sm",
+                                            placeholder="",
+                                            value=status_obs,
+                                            disabled=True,
+                                            style={
+                                                'width': '100%',
+                                                'height': '100px'
+                                            },
+
+                                        )
+                                    ],
+
+                                ),
+
+                                dbc.Row(
+                                    class_name='pt-2',
+                                    children=[
+                                        dbc.Col(
+                                            # width=2,
+                                            children=[
+                                                dbc.Button(
+                                                    id=f'btn-atualiza-status-{page_name}',
+                                                    children=['Adicionar Status'],
+                                                    # class_name='p-5',
+                                                    color='primary',
+                                                    n_clicks=0,
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.Col(
+                                            # width=2,
+                                            children=[
+                                                html.A(
+                                                    dbc.Button(
+                                                        id=f'btn-limpar-campos-{page_name}',
+                                                        children=['ATUALIZAR'],
+                                                        class_name='me-1',
+                                                        color='light',
+                                                        n_clicks=0,
+
+                                                    ),
+                                                    href=f'/{page_name}'),
+                                            ]
+                                        ),
+                                    ]
+                                ),
+                            ]
                         ),
                         ]
                     ),
@@ -536,7 +667,7 @@ def editar_aluno(data_drom_data_table, active_cell):
                                         alt=f'Aluno {df_user["nome"][0]}',
                                         className='perfil_avatar py-2 mx-auto text-center',
                                         # width=10
-                                        style={'height': '300px', 'width': '300px'},
+                                        style={'height': '400px', 'width': '400px'},
                                     ),
                                 ],
                                 class_name='px-0 justify-content-center'
@@ -567,7 +698,29 @@ def editar_aluno(data_drom_data_table, active_cell):
                 ],
             ),
 
+            dbc.Row('Data Nascimento'.replace('_', ' ').title(), class_name='pt-2 '),
+            dbc.Row(
+                children=[
+                    dcc.DatePickerSingle(
+                        id=f'dat-nasc-user-{page_name}',
+                        min_date_allowed=datetime.date(1900, 8, 12),
+                        # max_date_allowed=datetime.,
+                        initial_visible_month=df_user["dat_nasc"][0],
+                        # initial_visible_month=datetime.datetime.today(),
+                        # date=datetime.datetime.today(),
+                        month_format='MMMM Y',
+                        # display_format='DD-MM-YYYY',
+                        display_format='YYYY-MM-DD',
+                        # placeholder='YY-MM-DD',
+                    )
+                ],
+                class_name='col-lg-12 col-sm-12 mb-3 '
+            ),
 
+            dbc.Input(
+                value=df_user["dat_nasc"][0],
+                disabled=True
+            ),
 
             dbc.Row('Cidade Nascimento'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
@@ -580,7 +733,7 @@ def editar_aluno(data_drom_data_table, active_cell):
                 ),
                 className='pt-2 m-0 px-0'
             ),
-            
+
             dbc.Row('endereco'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Input(id=f'endereco-user-{page_name}',
                       value=df_user["endereco"][0],
@@ -635,25 +788,25 @@ def editar_aluno(data_drom_data_table, active_cell):
             dbc.Row('moradia'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Input(id=f'moradia-user-{page_name}',value=df_user["moradia"][0]),
 
-            dbc.Row('inicio'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Row(
-                children=[
-                    dcc.DatePickerSingle(
-                        id=f'dat-inicio-user-{page_name}',
-                        min_date_allowed=datetime.date(1900, 8, 12),
-                        # max_date_allowed=datetime.,
-                        initial_visible_month=df_user["inicio"][0],
-                        # initial_visible_month=datetime.datetime.today(),
-                        # date=datetime.datetime.today(),
-                        month_format='MMMM Y',
-                        # display_format='DD-MM-YYYY',
-                        display_format='YYYY-MM-DD',
-                        # placeholder='YY-MM-DD',
-                    )
-                ],
-                class_name='col-lg-12 col-sm-12 mb-3 '
-            ),
-            dbc.Input(value=df_user["inicio"][0], disabled=True),
+            # dbc.Row('inicio'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Row(
+            #     children=[
+            #         dcc.DatePickerSingle(
+            #             id=f'dat-inicio-user-{page_name}',
+            #             min_date_allowed=datetime.date(1900, 8, 12),
+            #             # max_date_allowed=datetime.,
+            #             initial_visible_month=df_user["inicio"][0],
+            #             # initial_visible_month=datetime.datetime.today(),
+            #             # date=datetime.datetime.today(),
+            #             month_format='MMMM Y',
+            #             # display_format='DD-MM-YYYY',
+            #             display_format='YYYY-MM-DD',
+            #             # placeholder='YY-MM-DD',
+            #         )
+            #     ],
+            #     class_name='col-lg-12 col-sm-12 mb-3 '
+            # ),
+            # dbc.Input(value=df_user["inicio"][0], disabled=True),
 
             dbc.Row('n_irmaos'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Input(
@@ -662,25 +815,25 @@ def editar_aluno(data_drom_data_table, active_cell):
                 type='number'
             ),
 
-            dbc.Row('retorno'.replace('_', ' ').title(), class_name='pt-2 '),
-            dbc.Row(
-                children=[
-                    dcc.DatePickerSingle(
-                        id=f'dat-retorno-user-{page_name}',
-                        min_date_allowed=datetime.date(1900, 8, 12),
-                        # max_date_allowed=datetime.,
-                        initial_visible_month=df_user["retorno"][0],
-                        # initial_visible_month=datetime.datetime.today(),
-                        # date=datetime.datetime.today(),
-                        month_format='MMMM Y',
-                        # display_format='DD-MM-YYYY',
-                        display_format='YYYY-MM-DD',
-                        # placeholder='YY-MM-DD',
-                    )
-                ],
-                class_name='col-lg-12 col-sm-12 mb-3 '
-            ),
-            dbc.Input(value=df_user["retorno"][0], disabled=True),
+            # dbc.Row('retorno'.replace('_', ' ').title(), class_name='pt-2 '),
+            # dbc.Row(
+            #     children=[
+            #         dcc.DatePickerSingle(
+            #             id=f'dat-retorno-user-{page_name}',
+            #             min_date_allowed=datetime.date(1900, 8, 12),
+            #             # max_date_allowed=datetime.,
+            #             initial_visible_month=df_user["retorno"][0],
+            #             # initial_visible_month=datetime.datetime.today(),
+            #             # date=datetime.datetime.today(),
+            #             month_format='MMMM Y',
+            #             # display_format='DD-MM-YYYY',
+            #             display_format='YYYY-MM-DD',
+            #             # placeholder='YY-MM-DD',
+            #         )
+            #     ],
+            #     class_name='col-lg-12 col-sm-12 mb-3 '
+            # ),
+            # dbc.Input(value=df_user["retorno"][0], disabled=True),
 
             dbc.Row('sexo'.replace('_', ' ').title(), class_name='pt-2 '),
             dbc.Row(
@@ -812,6 +965,71 @@ def editar_aluno(data_drom_data_table, active_cell):
 
 
 @callback(
+    Output(component_id=f'out-alert-status-fuc-{page_name}', component_property='children'),
+
+    # pegar id
+    State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
+    State(component_id=f'data-table-edit-user-{page_name}', component_property='selected_rows'),
+
+    # staus
+    State(component_id=f'status-user-{page_name}', component_property='value'),
+    State(component_id=f"dat-inicio-status-{page_name}", component_property='date'),
+    State(component_id=f"dat-fim-status-{page_name}", component_property='date'),
+    State(component_id=f"status-obs-{page_name}", component_property='value'),
+
+    # botao
+    Input(component_id=f'btn-atualiza-status-{page_name}', component_property='n_clicks')
+)
+def adicionar_status(
+        data_drom_data_table,
+        active_cell,
+        status,
+        dat_ini,
+        dat_fim,
+        obs,
+        n_clicks
+):
+    print(n_clicks)
+    try:
+        if n_clicks:
+            df_user_resume = pd.DataFrame(data_drom_data_table)
+            id_aluno = int(df_user_resume['id'].iloc[active_cell[0]])
+
+            df_status = pd.DataFrame(
+                data={
+                    'id_aluno': [id_aluno],
+                    'status': [status],
+                    'inicio': [dat_ini],
+                    'fim': [dat_fim],
+                    'obs': [obs],
+                }
+            )
+
+            dados.insert_into_table(
+                table_name='status_aluno',
+                df=df_status
+            )
+
+            # atualizando aluno
+            df_status.rename(columns={'id_aluno': 'id'}, inplace=True)
+            dados.update_table(
+                values=df_status[['id', 'status']].to_dict(orient='records')[0],
+                table_name='aluno',
+                pk_value=id_aluno,
+                pk_name='id'
+            )
+
+            result = 'Status adicionado'
+        else:
+            result = ''
+
+    except Exception as err:
+        result = err
+
+    return result
+
+
+@callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
 
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
@@ -832,9 +1050,9 @@ def editar_aluno(data_drom_data_table, active_cell):
     State(component_id=f'cep-user-{page_name}', component_property='value'),
     State(component_id=f'telefone1-user-{page_name}', component_property='value'),
     State(component_id=f'moradia-user-{page_name}', component_property='value'),
-    State(component_id=f'dat-inicio-user-{page_name}', component_property='date'),
+    # State(component_id=f'dat-inicio-user-{page_name}', component_property='date'),
     State(component_id=f'irmaos-user-{page_name}', component_property='value'),
-    State(component_id=f'dat-retorno-user-{page_name}', component_property='date'),
+    # State(component_id=f'dat-retorno-user-{page_name}', component_property='date'),
     State(component_id=f'sexo-user-{page_name}', component_property='value'),
     # State(component_id=f'responsavel_financeiro-user-{page_name}', component_property='value'),
     # State(component_id=f'tel_responsavel_financeiro-user-{page_name}', component_property='value'),
@@ -878,9 +1096,9 @@ def salvar_funcionarios_editados2(
         cep,
         telefone1,
         moradia,
-        dat_inicio,
+        # dat_inicio,
         irmaos,
-        dat_retorno,
+        # dat_retorno,
         sexo,
         # responsavel_financeiro,
         # tel_responsavel_financeiro,
@@ -948,12 +1166,12 @@ def salvar_funcionarios_editados2(
                 df_user['telefone1'] = [telefone1]
             if moradia is not None:
                 df_user['moradia'] = [moradia.upper()]
-            if dat_inicio is not None:
-                df_user['inicio'] = [dat_inicio]
+            # if dat_inicio is not None:
+            #     df_user['inicio'] = [dat_inicio]
             if irmaos is not None:
                 df_user['n_irmaos'] = [irmaos]
-            if dat_retorno is not None:
-                df_user['retorno'] = [dat_retorno]
+            # if dat_retorno is not None:
+            #     df_user['retorno'] = [dat_retorno]
             if sexo is not None:
                 df_user['sexo'] = [sexo]
             # if responsavel_financeiro is not None:
@@ -1028,7 +1246,7 @@ def salvar_funcionarios_editados2(
                 )
 
 
-                return 'Aluno Salvo'
+                return f'Aluno Salvo: {nome}'
 
             except Exception as err:
                 return str(err)

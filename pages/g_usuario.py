@@ -1,8 +1,6 @@
 import datetime
 import dash
-import mysql.connector.errors
 import pandas as pd
-import sqlalchemy.exc
 
 import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State
@@ -483,6 +481,7 @@ def capturar_funcionarios(main_contianer):
             row_selectable="single",
             # row_selectable="multi",
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+            style_as_list_view=True,
 
         )
         datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
@@ -549,6 +548,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
             style_cell={'textAlign': 'center'},
             editable=True,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+            style_as_list_view=True,
 
         )
 
@@ -559,6 +559,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
             style_cell={'textAlign': 'center'},
             editable=True,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+            style_as_list_view=True,
 
         )
         dt_func3 = dash_table.DataTable(
@@ -568,6 +569,7 @@ def salvar_funcionarios_editados(data_drom_data_table, active_cell):
             style_cell={'textAlign': 'center'},
             editable=True,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+            style_as_list_view=True,
 
         )
 

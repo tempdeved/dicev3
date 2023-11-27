@@ -34,14 +34,14 @@ app.layout = html.Div([
                 children=[
                     dcc.Link('Edson', href='/test1'),
                     dcc.Link('Edson2', href='/test2'),
-                    dcc.Link(
-                        children=[
-                            html.I(className='fa fa-bars')
-                        ],
-                        href='javascript:void(0);',
-                        # href='',
-                        className='icon',
-                    ),
+                    # dcc.Link(
+                    #     children=[
+                    #         html.I(className='fa fa-bars')
+                    #     ],
+                    #     href='javascript:void(0);',
+                    #     # href='',
+                    #     className='icon',
+                    # ),
                     html.A(
                         children=[
                             html.I(className='fa fa-bars')

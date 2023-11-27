@@ -1,6 +1,6 @@
 .dash-spreadsheet-menu {
 margin: 1% 0 1% 0;
-justify-content: center;
+justify-content: left;
 }
 
 .export {
@@ -18,11 +18,18 @@ box-shadow: 0px 1px 3px lightgrey;
 background-color: lightgrey;
 }
 
+.export {
+font-size: 0;
+}
+
+.export:before { content: "Download Excel"; font-size: 20px; }
+
 -------------
 
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
 }
 
 .topnav {
@@ -74,4 +81,61 @@ body {
     display: block;
     text-align: left;
   }
+}
+
+
+body.dark {
+    background: gray;
+}
+
+body.dark button {
+    background-color: silver;
+}
+
+#nav {
+    width: 300px;
+    border-radius: 20px;
+    border: 1pt solid black;
+    height: 100vh;
+    position: absolute;
+    left:-30px;
+    top: 0px;
+    padding-left: 30px;
+    background-color: gray;
+    z-index: 2;
+    box-shadow: 5px 0px 15px black;
+    transition: 0.5s all;
+}
+
+#nav.close {
+    width: 100px;
+}
+
+#page-content {
+    position: absolute;
+    left: 300px;
+    background: #F5F5F5;
+    padding-left: 40px;
+    padding-top: 5px;
+    top: 0px;
+    height: 100vh;
+    width: 100%;
+    min-width: calc(100vw-300px);
+    transition: 0.5s all;
+}
+
+#page-content.close {
+    left: 100px;
+}
+
+.dark #page-content {
+    background-color: gray;
+}
+
+.dark #nav {
+    background-color: #333;
+}
+
+.dark button {
+    color: silver;
 }

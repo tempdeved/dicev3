@@ -212,5 +212,5 @@ def dum_horario():
 
 
 if __name__ == '__main__':
-    # dump_alunos()
+    dump_alunos()
     dum_horario()

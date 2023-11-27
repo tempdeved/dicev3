@@ -182,6 +182,17 @@ class TurmaAluno(Base):
     id_aluno = Column(Integer, index=True)
 
 
+class StatusAluno(Base):
+    __tablename__ = 'status_aluno'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    id_aluno = Column(Integer, index=True)
+    status = Column(VARCHAR(250))
+    inicio = Column(DATE)
+    fim = Column(DATE)
+    obs = Column(TEXT)
+
+
+
 class Turma(Base):
     __tablename__ = 'turma'
 
