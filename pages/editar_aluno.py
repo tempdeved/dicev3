@@ -483,14 +483,14 @@ def editar_aluno(data_drom_data_table, active_cell):
 
         for x_row, row in df_status.iterrows():
 
-            t = '- - -  - - - - - - - - - - - - - - - - - - - - \n'
+            t = '- - -  - - - - - - - - - - - - - - - - - - - - - - - - - - \n'
 
             line = f'' \
                    f'INICIO: {row["inicio"] if row["inicio"] else "xxx"} - ' \
                    f'FIM: {row["fim"] if row["fim"] else "xxx"} - ' \
                    f'STATUS: {row["status"]} \n'
 
-            obs = f'{row["obs"]} \n'
+            obs = f'OBS: {row["obs"]} \n'
 
             status_obs = status_obs + t
             status_obs = status_obs + line
