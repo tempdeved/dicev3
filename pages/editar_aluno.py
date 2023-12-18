@@ -954,6 +954,9 @@ def editar_aluno(data_drom_data_table, active_cell):
             children=campos,
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
         )
+
+        datatable1
+
     else:
 
         dt_func = dash_table.DataTable(

@@ -455,7 +455,7 @@ def salvar_nota_turma(dt_notas, mes_ref, n_clicks):
             )
             dados.insert_into_table(df=df_notas, table_name='historico_aluno')
 
-            return 'TURMA ATUALIZADA'
+            return f'TURMA ATUALIZADA {mes_ref}'
         except Exception as err:
             return str(err)
 

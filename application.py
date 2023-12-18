@@ -194,6 +194,7 @@ side_bar = Sidebar().layout(
 
                 # boletim
                 dcc.Link(children='alunos'.title(), href='/RelatorioAlunoSimplies'),
+                dcc.Link(children='Etiquetas'.title(), href='/RelatorioEtiquetaAluno'),
 
                 # boletim
                 dcc.Link(children='--boletim aluno'.title(), href='/r_boletim_aluno'),

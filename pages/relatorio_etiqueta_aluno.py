@@ -1,5 +1,3 @@
-import datetime
-
 import dash
 import pandas as pd
 
@@ -14,17 +12,16 @@ from elements.titulo import Titulo
 
 from banco.dados import Dados
 from config.config import Config
-from utils.get_idade import CalculateAge
 
 from string import Template
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='RelatorioAlunoSimplies'
+page_name='RelatorioEtiquetaAluno'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
 dados = Dados(config['ambiente'])
-cfg_relatorio_simples = config['relatorio_simples']
+cfg_relatorio_simples = config['relatorio_etiqueta_alunos']
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -58,7 +55,7 @@ content_layout = dbc.Row(
                                                         id=f"tabela-options-{page_name}",
                                                         options=[
                                                             {"label": "Somente alunos", "value": '1'},
-                                                            {"label": "Turmas", "value": '2'},
+                                                            # {"label": "Turmas", "value": '2'},
                                                         ],
                                                         value='1',
                                                         # inline=True,
@@ -150,7 +147,7 @@ content_layout = dbc.Row(
 
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Relatório Aluno Simples"
+                                        title="Relatório Etiqueta Alunos"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -224,21 +221,6 @@ function (n_clicks) {
     }
     """)
 
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css">');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap-grid.min.css">');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">');
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# theme
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css">
-# grid
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap-grid.min.css">
-# icon
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-# theme
-# https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/
-# https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css
 
 js_print = js_model_print.substitute(
     print_page=print_page
@@ -272,7 +254,8 @@ def filter_columns(table_radio):
             options=[
                 {
                     "label": x.replace('_', ' ').title(),
-                    "value": x
+                    "value": x,
+                    "disabled": False,
                 }
                 for x in filted_columns
             ],
@@ -324,77 +307,81 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
 
         # recebendo colunas filtradas
         list_columns = check_box_columns
-        # today.year - birthDate.year -
-        #          ((today.month, today.day) <
-        #          (birthDate.month, birthDate.day))
-        now = datetime.datetime.now()
+
+        # df_bruto['bairro'] = 'bairro'
+        # df_bruto['cidade'] = 'cidade'
+        # df_bruto['uf'] = 'uf'
+        # df_bruto['cep'] = 'cep'
+
         # resebendo resultado
-        df_result = df_bruto.copy()
+        df_result = df_bruto[['nome']]
+        df_result['endereco'] = df_bruto['endereco']
+        df_result['bairro/cidade'] = df_bruto['bairro'] +' - '+ df_bruto['cidade']
+        df_result['uf/cep'] = df_bruto['uf'] +' - '+ df_bruto['cep']
 
-        # df_result['dat_nasc'] = pd.to_datetime(df_result['dat_nasc'])
-        # df_result['idade'] = df_result['dat_nasc'].apply(CalculateAge)
 
-    elif table_radio == 2:
+    # elif table_radio == 2:
+    #
+    #     # query
+    #     df_bruto = dados.query_table(table_name=table_name)
+    #     df_aluno  = dados.query_table(table_name='aluno',)
+    #     df_turma  = dados.query_table(table_name='turma',)
+    #
+    #     # rename aluno
+    #     df_aluno.rename(
+    #         columns={
+    #             'id': 'id_aluno',
+    #             'status': 'status_aluno',
+    #             'inicio': 'inicio_aluno',
+    #         },
+    #         inplace=True
+    #     )
+    #
+    #     # rename turma
+    #     df_turma.rename(
+    #         columns={
+    #             'status': 'status_turma',
+    #             'inicio': 'inicio_turma',
+    #             'fim': 'fim_turma',
+    #         },
+    #         inplace=True
+    #     )
+    #     df_turma.drop(columns=['id', 'id_aluno'], inplace=True)
+    #
+    #     df_merge = pd.merge(
+    #         left=df_bruto,
+    #         right=df_aluno,
+    #         on=['id_aluno'],
+    #         how='left',
+    #     )
+    #     # merge
+    #     df_merge2 = pd.merge(
+    #         left=df_merge,
+    #         right=df_turma,
+    #         on=['id_turma'],
+    #         how='left',
+    #     )
+    #
+    #     df_merge2.sort_values(
+    #         by=['id_turma', 'status_turma', 'nome'],
+    #         ascending=[False, True, True],
+    #         inplace=True
+    #     )
+    #
+    #     # recebendo colunas filtradas
+    #     list_columns = check_box_columns
+    #
+    #     df_result = df_merge2.copy()
+    #
+    #     tt = df_merge2[list_columns]
+    #     aa = [
+    #             {
+    #                 "id": filted_columns[i],
+    #                 "name": filted_columns[i]['nome'].replace('_', ' ').upper(),
+    #                 "type": filted_columns[i]['type'],
+    #             } for i in list_columns
+    #         ]
 
-        # query
-        df_bruto = dados.query_table(table_name=table_name)
-        df_aluno  = dados.query_table(table_name='aluno',)
-        df_turma  = dados.query_table(table_name='turma',)
-
-        # rename aluno
-        df_aluno.rename(
-            columns={
-                'id': 'id_aluno',
-                'status': 'status_aluno',
-                'inicio': 'inicio_aluno',
-            },
-            inplace=True
-        )
-
-        # rename turma
-        df_turma.rename(
-            columns={
-                'status': 'status_turma',
-                'inicio': 'inicio_turma',
-                'fim': 'fim_turma',
-            },
-            inplace=True
-        )
-        df_turma.drop(columns=['id', 'id_aluno'], inplace=True)
-
-        df_merge = pd.merge(
-            left=df_bruto,
-            right=df_aluno,
-            on=['id_aluno'],
-            how='left',
-        )
-        # merge
-        df_merge2 = pd.merge(
-            left=df_merge,
-            right=df_turma,
-            on=['id_turma'],
-            how='left',
-        )
-
-        df_merge2.sort_values(
-            by=['id_turma', 'status_turma', 'nome'],
-            ascending=[False, True, True],
-            inplace=True
-        )
-
-        # recebendo colunas filtradas
-        list_columns = check_box_columns
-
-        df_result = df_merge2.copy()
-
-        tt = df_merge2[list_columns]
-        aa = [
-                {
-                    "id": filted_columns[i],
-                    "name": filted_columns[i]['nome'].replace('_', ' ').upper(),
-                    "type": filted_columns[i]['type'],
-                } for i in list_columns
-            ]
     # DASH DATA TABLE
     dt = dash_table.DataTable(
         id=f'data-table-edit-user-{page_name}',
@@ -413,7 +400,7 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
         # page_size=30,
         # style_cell={'textAlign': 'center'},
         editable=False,
-        filter_action='native',
+        # filter_action='native',
         # sort_mode="multi",
         # sort_action="native",
         page_action="native",
