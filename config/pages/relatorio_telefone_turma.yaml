@@ -1,0 +1,202 @@
+relatorio_telefone_turma:
+  radio_itens:
+    1:
+      table_name: aluno
+      filted_columns:
+        nome:
+          id: nome
+          nome: nome
+          type: text
+          editable: 0
+        endereco:
+          id: endereco
+          nome: endereco
+          type: text
+          editable: 0
+        bairro/cidade:
+          id: bairro/cidade
+          nome: bairro/cidade
+          type: text
+          editable: 0
+#        cidade:
+#          id: cidade
+#          nome: cidade
+#          type: text
+#          editable: 0
+        uf/cep:
+          id: uf/cep
+          nome: uf/cep
+          type: text
+          editable: 0
+#        cep:
+#          id: cep
+#          nome: cep
+#          type: text
+#          editable: 0
+      default_columns:
+        - nome
+        - endereco
+        - bairro/cidade
+        - uf/cep
+#        - n_irmaos
+#        - responsavel_financeiro
+#        - tel_responsavel_financeiro
+    2:
+      table_name: turma_aluno
+      filted_columns:
+        id_turma:
+          id: id_turma
+          nome: id_turma
+          type: numeric
+          editable: 0
+          ckbox: true
+        status_turma:
+          id: status_turma
+          nome: status_turma
+          type: text
+          editable: 0
+          ckbox: true
+        id_aluno:
+          id: id_aluno
+          nome: id_aluno
+          type: text
+          editable: 0
+          ckbox: true
+        status_aluno:
+          id: status_aluno
+          nome: status_aluno
+          type: text
+          editable: 0
+          ckbox: true
+        nome:
+          id: nome
+          nome: nome
+          type: text
+          editable: 0
+          ckbox: true
+        dat_nasc:
+          id: dat_nasc
+          nome: dat_nasc
+          type: text
+          editable: 0
+          ckbox: true
+        idade:
+          id: idade
+          nome: idade
+          type: text
+          editable: 0
+          ckbox: true
+#        nivel:
+#          id: nivel
+#          nome: nivel
+#          type: text
+#          editable: 0
+#          ckbox: true
+#        inicio_turma:
+#          id: inicio_turma
+#          nome: inicio
+#          type: text
+#          editable: 0
+#          ckbox: true
+#        fim_turma:
+#          id: fim_turma
+#          nome: fim
+#          type: text
+#          editable: 0
+#          ckbox: true
+#        map:
+#          id: map
+#          nome: map
+#          type: text
+#          editable: 0
+#          ckbox: true
+#        idioma:
+#          id: idioma
+#          nome: idioma
+#          type: text
+#          editable: 0
+#          ckbox: true
+#        inicio_aluno:
+#          id: inicio_aluno
+#          nome: inicio
+#          type: text
+#          editable: 0
+#          ckbox: true
+        telefone1:
+          id: telefone1
+          nome: telefone
+          type: text
+          editable: 0
+          ckbox: true
+        responsavel_financeiro:
+          id: responsavel_financeiro
+          nome: resp. financ
+          type: text
+          editable: 0
+          ckbox: true
+        tel_responsavel_financeiro:
+          id: tel_responsavel_financeiro
+          nome: tel resp. financ
+          type: text
+          editable: 0
+          ckbox: true
+        horario-SEGUNDA-FEIRA:
+          id: horario-SEGUNDA-FEIRA
+          nome: horario-SEGUNDA-FEIRA
+          type: text
+          editable: 0
+          ckbox: false
+        horario-TERÇA-FEIRA:
+          id: horario-TERÇA-FEIRA
+          nome: horario-TERÇA-FEIRA
+          type: text
+          editable: 0
+          ckbox: false
+        horario-QUARTA-FEIRA:
+          id: horario-QUARTA-FEIRA
+          nome: horario-QUARTA-FEIRA
+          type: text
+          editable: 0
+          ckbox: false
+        horario-QUINTA-FEIRA:
+          id: horario-QUINTA-FEIRA
+          nome: horario-QUINTA-FEIRA
+          type: text
+          editable: 0
+          ckbox: false
+        horario-SEXTA-FEIRA:
+          id: horario-SEXTA-FEIRA
+          nome: horario-SEXTA-FEIRA
+          type: text
+          editable: 0
+          ckbox: false
+        horario-SÁBADO:
+          id: horario-SÁBADO
+          nome: horario-SÁBADO
+          type: text
+          editable: 0
+          ckbox: false
+        horario-DOMINGO:
+          id: horario-DOMINGO
+          nome: horario-DOMINGO
+          type: text
+          editable: 0
+          ckbox: false
+      default_columns:
+        - id_turma
+        - status_turma
+        - id_aluno
+#        - nivel
+#        - inicio_turma
+#        - fim_turma
+#        - map
+#        - idioma
+#        - id_aluno
+        - status_aluno
+        - nome
+        - dat_nasc
+        - idade
+        - telefone1
+#        - inicio_aluno
+        - responsavel_financeiro
+        - tel_responsavel_financeiro

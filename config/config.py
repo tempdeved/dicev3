@@ -13,6 +13,7 @@ class Config(object):
         secret = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'auth', '.secret'))
         pages = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'pages', 'relatorio_simples.yaml'))
         relatorio_etiqueta_alunos = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'pages', 'relatorio_etiqueta_alunos.yaml'))
+        relatorio_telefone_turma = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'pages', 'relatorio_telefone_turma.yaml'))
 
         self.config = OmegaConf.merge(
             database_config,
@@ -20,6 +21,7 @@ class Config(object):
             cidades_brasil,
             pages,
             relatorio_etiqueta_alunos,
+            relatorio_telefone_turma,
         )
         self.config = OmegaConf.to_container(self.config)
 

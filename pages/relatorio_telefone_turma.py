@@ -1,4 +1,5 @@
-import datetime
+import glob
+import os.path
 
 import dash
 import pandas as pd
@@ -14,17 +15,19 @@ from elements.titulo import Titulo
 
 from banco.dados import Dados
 from config.config import Config
-from utils.get_idade import CalculateAge
 
 from string import Template
 
+from utils.get_idade import CalculateAge
+from utils.create_excel import Turma_xlsx
+
 # page_name = __name__[6:].replace('.', '_')
-page_name='RelatorioAlunoSimplies'
+page_name='RelatorioTelefoneTurma'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
 dados = Dados(config['ambiente'])
-cfg_relatorio_simples = config['relatorio_simples']
+cfg_relatorio_simples = config['relatorio_telefone_turma']
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -57,10 +60,10 @@ content_layout = dbc.Row(
                                                     dbc.Select(
                                                         id=f"tabela-options-{page_name}",
                                                         options=[
-                                                            {"label": "Somente alunos", "value": '1'},
+                                                            # {"label": "Somente alunos", "value": '1'},
                                                             {"label": "Turmas", "value": '2'},
                                                         ],
-                                                        value='1',
+                                                        value='2',
                                                         # inline=True,
                                                     ),
                                                 ]
@@ -126,6 +129,20 @@ content_layout = dbc.Row(
                                                             ),
                                                         ]
                                                     ),
+
+                                                    dbc.Col(
+                                                        # width=2,
+                                                        children=[
+                                                            dbc.Button(
+                                                                id=f'btn-download-turma-{page_name}',
+                                                                children=['DOWNLOAD /TURMA'],
+                                                                class_name='me-0',
+                                                                color='primary',
+                                                                n_clicks=0,
+                                                            ),
+                                                            dcc.Download(id=f"out-download-turma-{page_name}")
+                                                        ]
+                                                    ),
                                                 ]
                                             ),
 
@@ -150,7 +167,7 @@ content_layout = dbc.Row(
 
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Relatório Aluno Simples"
+                                        title="Relatório Telefones P/ Turma"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -224,21 +241,6 @@ function (n_clicks) {
     }
     """)
 
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css">');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap-grid.min.css">');
-# printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">');
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# printWindow.document.write('<script src="https://cdn.plot.ly/plotly-locale-pt-br-latest.js"></script>');
-# theme
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css">
-# grid
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap-grid.min.css">
-# icon
-# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-# theme
-# https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/
-# https://cdn.jsdelivr.net/npm/bootswatch@5.3.1/dist/zephyr/bootstrap.min.css
 
 js_print = js_model_print.substitute(
     print_page=print_page
@@ -250,6 +252,32 @@ clientside_callback(
     Input(component_id=f'btn-imprimpir-generico-{page_name}', component_property="n_clicks"),
     prevent_initial_call=True,
 )
+
+
+@callback(
+    Output(component_id=f"out-download-turma-{page_name}", component_property="data"),
+    State(component_id=f'data-table-edit-user-{page_name}', component_property="data"),
+    Input(component_id=f'btn-download-turma-{page_name}', component_property="n_clicks"),
+    prevent_initial_call=True,
+)
+def func(df_raw, n_clicks):
+    if df_raw:
+        path_folder = 'download'
+        filename = page_name + '.xlsx'
+        file_path = os.path.join(path_folder, filename)
+
+
+        # delete xlsx files
+        for f in glob.iglob(path_folder + '/*.xlsx', recursive=True):
+            os.remove(f)
+
+        df = pd.DataFrame(data=df_raw)
+
+        # create file
+        Turma_xlsx(file_path=file_path, df=df)
+
+        # return file
+        return dcc.send_file(file_path)
 
 @callback(
     Output(component_id=f'out-check-box-columns-{page_name}', component_property='children'),
@@ -266,16 +294,20 @@ def filter_columns(table_radio):
     default_columns = cfg_relatorio_simples['radio_itens'][table_radio]['default_columns']
     # columns = cfg_relatorio_simples['radio_itens'][table_radio]['columns']
 
+    opt = []
+
+    for x in filted_columns:
+        if filted_columns[x]['ckbox'] == True:
+            b = {
+                "label": x.replace('_', ' ').title(),
+                "value": x
+            }
+            opt.append(b)
+
     if table_radio == 1:
 
         check_box = dbc.Checklist(
-            options=[
-                {
-                    "label": x.replace('_', ' ').title(),
-                    "value": x
-                }
-                for x in filted_columns
-            ],
+            options=opt,
             value=default_columns,
             id=f"check-columns-{page_name}",
             inline=True,
@@ -283,13 +315,7 @@ def filter_columns(table_radio):
         )
     elif table_radio == 2:
         check_box = dbc.Checklist(
-            options=[
-                {
-                    "label": x.replace('_', ' ').title(),
-                    "value": x
-                }
-                for x in filted_columns
-            ],
+            options=opt,
             value=default_columns,
             id=f"check-columns-{page_name}",
             inline=True,
@@ -324,31 +350,40 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
 
         # recebendo colunas filtradas
         list_columns = check_box_columns
-        # today.year - birthDate.year -
-        #          ((today.month, today.day) <
-        #          (birthDate.month, birthDate.day))
-        now = datetime.datetime.now()
-        # resebendo resultado
-        df_result = df_bruto.copy()
 
-        # df_result['dat_nasc'] = pd.to_datetime(df_result['dat_nasc'])
-        # df_result['idade'] = df_result['dat_nasc'].apply(CalculateAge)
+        # df_bruto['bairro'] = 'bairro'
+        # df_bruto['cidade'] = 'cidade'
+        # df_bruto['uf'] = 'uf'
+        # df_bruto['cep'] = 'cep'
+
+        # resebendo resultado
+        df_result = df_bruto[['nome']]
+        df_result['endereco'] = df_bruto['endereco']
+        df_result['bairro/cidade'] = df_bruto['bairro'] +' - '+ df_bruto['cidade']
+        df_result['uf/cep'] = df_bruto['uf'] +' - '+ df_bruto['cep']
 
     elif table_radio == 2:
 
-        # query
-        df_bruto = dados.query_table(table_name=table_name)
-        df_aluno  = dados.query_table(table_name='aluno',)
-        df_turma  = dados.query_table(table_name='turma',)
-        df_horario  = dados.query_table(table_name='horario',)
+        list_columns = check_box_columns
 
-        # rename id_horario
-        df_horario.rename(columns={'id':'id_horario'}, inplace=True)
-        # import json
-        # list_hr = json.loads(df_turma['id_hr_turma'][0])['id_horario']
-        # df_turma_horario = pd.DataFrame(
-        #     json.dumps(df_turma['id_hr_turma'])
-        # )
+        # query
+        weekday = ['SEGUNDA-FEIRA']
+        status_turma = 'ATIVA'
+
+        # captura horarios
+        df_horario  = dados.query_table(table_name='horario',)
+        df_horario.rename(columns={'id': 'id_horario'}, inplace=True)
+
+        # captura horarios de turmas
+        df_turma_horario  = dados.query_table(table_name='turma_horario',)
+        df_turma_horario.drop(columns=['id'], inplace=True)
+
+        # captura turmas
+        df_turma_aluno = dados.query_table(table_name=table_name)
+        df_turma_aluno.drop(columns=['id'], inplace=True)
+
+        # captura alunos
+        df_aluno  = dados.query_table(table_name='aluno',)
 
         # rename aluno
         df_aluno.rename(
@@ -360,50 +395,172 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
             inplace=True
         )
 
-        # rename turma
-        df_turma.rename(
-            columns={
-                'status': 'status_turma',
-                'inicio': 'inicio_turma',
-                'fim': 'fim_turma',
-            },
-            inplace=True
-        )
-        df_turma.drop(columns=['id', 'id_aluno'], inplace=True)
+        # filtrar dia da semana
+        df_horario_filted = df_horario[df_horario['dia_semana'].isin(weekday)]
+        df_horario_filted.rename(columns={'id':'id_horario'}, inplace=True)
+        list_week_ids = df_horario_filted['id_horario'].unique()
 
-        df_merge = pd.merge(
-            left=df_bruto,
-            right=df_aluno,
-            on=['id_aluno'],
+        # captura turmas e seu dia da semana filtrado
+        df_merge_horarios = pd.merge(
+            left=df_turma_horario[df_turma_horario['id_horario'].isin(list_week_ids)],
+            right=df_horario_filted,
             how='left',
-        )
-        # merge
-        df_merge2 = pd.merge(
-            left=df_merge,
-            right=df_turma,
-            on=['id_turma'],
-            how='left',
+            on=['id_horario'],
         )
 
-        df_merge2.sort_values(
-            by=['id_turma', 'status_turma', 'nome'],
-            ascending=[False, True, True],
-            inplace=True
-        )
+        list_turmas_ids = []
+        for x in df_merge_horarios['id_turma'].unique():
+            list_turmas_ids.append(int(x))
 
-        # recebendo colunas filtradas
-        list_columns = check_box_columns
-
-        df_result = df_merge2.copy()
-
-        tt = df_merge2[list_columns]
-        aa = [
-                {
-                    "id": filted_columns[i],
-                    "name": filted_columns[i]['nome'].replace('_', ' ').upper(),
-                    "type": filted_columns[i]['type'],
-                } for i in list_columns
+        df_turma = dados.query_table(
+            table_name='turma',
+            filter_list=[
+                {'op': 'in', 'name': 'id_turma', 'value': list_turmas_ids},
+                {'op': 'eq', 'name': 'status', 'value': status_turma},
             ]
+        )
+        df_turma.rename(columns={'status': 'status_turma'}, inplace=True)
+        df_turma.drop(columns=['id_aluno'], inplace=True)
+
+        # merge alunos e turmas
+        df_merge_aluno = pd.merge(
+            left=df_turma,
+            right=df_turma_aluno,
+            how='left',
+            on=['id_turma']
+        )
+
+
+        # merge alunos detalhes
+        df_merge_aluno2 = pd.merge(
+            left=df_merge_aluno,
+            right=df_aluno,
+            how='left',
+            on=['id_aluno']
+        )
+
+        # ff = [
+        #     'id_turma', 'status_turma', 'id_aluno', 'status_aluno', 'nome', 'dat_nasc', 'telefone1', 'responsavel_financeiro',
+        #     'tel_responsavel_financeiro'
+        # ]
+
+        # df_merge_aluno3 = df_merge_aluno2[ff]
+        df_merge_aluno3 = df_merge_aluno2
+
+
+
+        """
+        capturando Turmas e Horarios
+        """
+
+        # merge horarios
+        df_merge_turma = pd.merge(
+            left=df_turma,
+            right=df_turma_horario,
+            how='left',
+            on=['id_turma']
+        )
+
+        # merge detalhe horarios
+        df_merge_turma2 = pd.merge(
+            left=df_merge_turma,
+            right=df_horario,
+            how='left',
+            on=['id_horario']
+        )
+        # ff = [
+        #     'id_turma', 'status_turma', 'nivel', 'inicio', 'fim', 'dia_semana',
+        #     'hora_inicio', 'min_inicio', 'hora_fim', 'min_fim',
+        # ]
+
+        # df_merge_turma2 = df_merge_turma2[ff]
+        df_merge_turma2 = df_merge_turma2
+
+        # concat 'horario'
+        df_merge_turma2['horario'] = df_merge_turma2['hora_inicio'].str.zfill(2) + ':' + df_merge_turma2['min_inicio'].str.zfill(2) + ' - ' + df_merge_turma2['hora_fim'].str.zfill(2) + ':' + df_merge_turma2['min_fim'].str.zfill(2)
+
+        df_pivot1 = pd.pivot(
+            data=df_merge_turma2,
+            columns=['dia_semana',],
+            index=['id_turma'],
+        )
+
+
+        df_pivot2 = df_pivot1.reset_index(level=0)
+
+
+        """
+        MERGE Turma Aluno / Turma Horario
+        """
+
+
+
+
+
+
+        list_r_name = []
+
+        for x in df_pivot2.columns:
+            a = x[0] + '-' +x[1]
+            list_r_name.append(a)
+
+        # drop level to merge
+        df_pivot3 = df_pivot2.droplevel(level=1, axis=1)
+
+        # renomeando pela ordem das colunas
+        df_pivot4 = df_pivot3.set_axis(list_r_name, axis=1)
+        df_pivot4.rename(columns={'id_turma-':'id_turma'}, inplace=True)
+
+
+        list_week_days = df_merge_turma2['dia_semana'].unique()
+        list_week_days1 = ['id_turma']
+
+        for x in list_week_days:
+            a = 'horario-' + x
+            list_week_days1.append(a)
+
+
+        df_merge_4 = pd.merge(
+            left=df_merge_aluno3,
+            right=df_pivot4[list_week_days1],
+            how='left',
+            on=['id_turma']
+        )
+
+        #convert date
+
+        df_merge_4['idade'] = df_merge_4['dat_nasc'].astype(str).apply(CalculateAge)
+
+
+
+        # cc = ['id_turma', 'status_turma', 'id_aluno', 'status_aluno', 'nome',
+        #        'dat_nasc', 'idade', 'telefone1', 'responsavel_financeiro',
+        #        'tel_responsavel_financeiro', 'horario-SEGUNDA-FEIRA',
+        #        'horario-QUARTA-FEIRA']
+
+        # df_result = df_merge_4
+
+        # remove id_turma to append horarios
+        list_week_days1.remove('id_turma')
+        list_columns = list_columns + list_week_days1
+
+        df_result = df_merge_4[list_columns]
+
+        # path_folder = 'download'
+        # filename = page_name + '.xlsx'
+        # file_path = os.path.join(path_folder, filename)
+        #
+        # # create file
+        # Turma_xlsx(file_path=file_path, df=df_result)
+        #
+        # with pd.ExcelWriter(file_path) as writer:
+        #
+        #     for idx, turma in enumerate(df_result['id_turma'].unique()):
+        #         df_result[df_result['id_turma'] == turma].to_excel(
+        #             writer, sheet_name=f"{idx + 1}-{turma}",
+        #             index=False,
+        #         )
+
     # DASH DATA TABLE
     dt = dash_table.DataTable(
         id=f'data-table-edit-user-{page_name}',
@@ -422,7 +579,8 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
         # page_size=30,
         # style_cell={'textAlign': 'center'},
         editable=False,
-        filter_action='native',
+        # content_style='grow',
+        # filter_action='native',
         # sort_mode="multi",
         # sort_action="native",
         page_action="native",

@@ -181,6 +181,12 @@ class TurmaAluno(Base):
     id_turma = Column(Integer, index=True)
     id_aluno = Column(Integer, index=True)
 
+class TurmaHorario(Base):
+    __tablename__ = 'turma_horario'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    id_turma = Column(Integer, index=True)
+    id_horario = Column(Integer, index=True)
+
 
 class StatusAluno(Base):
     __tablename__ = 'status_aluno'

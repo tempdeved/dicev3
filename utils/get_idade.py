@@ -3,15 +3,16 @@ from datetime import date
 
 
 def CalculateAge(born):
-    today = datetime.now()
-    try:
-        birthday = born.replace(year=today.year)
+    born = datetime.strptime(born, "%Y-%m-%d").date()
+    # born = datetime.strptime(born, "%d/%m/%Y").date()
+    today = date.today()
 
-    except ValueError:
-        birthday = born.replace(year=today.year,
-                                month=born.month + 1, day=1)
+    anos = today.year - born.year - (
+            (today.month, today.day) < (born.month, born.day)
+    )
 
-    if birthday > today:
-        return today.year - born.year - 1
-    else:
-        return today.year - born.year
+    meses = 12 - (born.month - today.month)
+
+    result = f'{anos} anos {meses} meses'
+
+    return result

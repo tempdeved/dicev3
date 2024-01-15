@@ -247,3 +247,5 @@ images/
 *.png
 *.jpg
 *.jpeg
+
+download/*.xlsx

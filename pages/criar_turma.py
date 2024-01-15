@@ -614,12 +614,21 @@ def create_turma(
                 list_coordenador.append(x)
             ids_coord = json.dumps({'email_user': list_coordenador})
 
+        df_turma_horario = pd.DataFrame()
         ids_horarios = None
         if horarios_turma:
             list_horarios = []
             for x in horarios_turma:
                 list_horarios.append(x)
             ids_horarios = json.dumps({'id_horario': list_horarios})
+
+            # tabela relacionamento horario
+            df_turma_horario = pd.DataFrame(
+                data={
+                    'id_horario': list_horarios
+                }
+            )
+            df_turma_horario['id_turma'] = id_turma
 
         df_new_turma= pd.DataFrame(
             data={
@@ -644,7 +653,7 @@ def create_turma(
             }
         )
 
-
+        df_turma_aluno = pd.DataFrame()
         if alunos_rows:
             df_alunos_filted = pd.DataFrame()
             df_alunos_filted = df_alunos.iloc[alunos_rows]
@@ -661,12 +670,18 @@ def create_turma(
             )
             df_turma_aluno['id_turma'] = id_turma
 
+
+
         try:
             df_new_turma.dropna(axis=1, inplace=True)
             dados.insert_into_table(df=df_new_turma, table_name='turma')
 
+            # tabelas de relacionamento
             if len(df_turma_aluno) >= 1:
                 dados.insert_into_table(df=df_turma_aluno, table_name='turma_aluno')
+
+            if len(df_turma_horario) >= 1:
+                dados.insert_into_table(df=df_turma_horario, table_name='turma_horario')
 
             msg = f'{n_clicks} - Turma Criada'
         except Exception as err:
