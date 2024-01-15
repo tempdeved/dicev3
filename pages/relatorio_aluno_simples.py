@@ -19,7 +19,7 @@ from utils.get_idade import CalculateAge
 from string import Template
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='RelatorioAlunoSimplies'
+page_name='RelatorioAlunoGenerico'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
@@ -58,7 +58,7 @@ content_layout = dbc.Row(
                                                         id=f"tabela-options-{page_name}",
                                                         options=[
                                                             {"label": "Somente alunos", "value": '1'},
-                                                            {"label": "Turmas", "value": '2'},
+                                                            {"label": "Alunos P/ Turmas", "value": '2'},
                                                         ],
                                                         value='1',
                                                         # inline=True,
@@ -150,7 +150,7 @@ content_layout = dbc.Row(
 
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Relatório Aluno Simples"
+                                        title="Relatório Aluno Genérico"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -295,8 +295,20 @@ def filter_columns(table_radio):
             inline=True,
 
         )
+        date_range = dcc.DatePickerRange(
 
-    return check_box
+        )
+
+
+
+    result = dbc.Row(
+        children=[
+            date_range,
+            check_box
+        ]
+    )
+
+    return result
 
 @callback(
     Output(component_id=f'out-edit-funcionario-{page_name}', component_property='children'),

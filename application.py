@@ -193,22 +193,26 @@ side_bar = Sidebar().layout(
             group_elements=[
 
                 # boletim
-                dcc.Link(children='alunos'.title(), href='/RelatorioAlunoSimplies'),
+                # dcc.Link(children='Alunos Genérico'.title(), href='/RelatorioAlunoGenerico'),
+
+                # alunos por horario
+                dcc.Link(children='Turmas'.title(), href='/RelatorioTurmaHorario'),
 
                 # alunos, telefones, etc
-                dcc.Link(children='--telefones p/ turma'.title(), href='/RelatorioTelefoneTurma'),
+                dcc.Link(children='telefones p/ turma'.title(), href='/RelatorioTelefoneTurma'),
 
                 # Etiquetas Alunos
                 dcc.Link(children='Etiquetas'.title(), href='/RelatorioEtiquetaAluno'),
 
                 # boletim da turma
-                dcc.Link(children='--nota por turma'.title(), href='/r_nota_por_turma'),
+                dcc.Link(children='--nota por turma'.title(), href=''),
 
                 # horarios das turmas
-                dcc.Link(children='--horarios turmas'.title(), href='/r_horarios_turma'),
+                # dcc.Link(children='--horarios turmas'.title(), href='/r_horarios_turma'),
 
                 # boletim
-                dcc.Link(children='--boletim aluno'.title(), href='/r_boletim_aluno'),
+                dcc.Link(children='--boletim aluno'.title(), href=''),
+                dcc.Link(children='--diploma'.title(), href=''),
 
             ]
         ),

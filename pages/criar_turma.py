@@ -189,7 +189,7 @@ def form_create_turma(datepicker):
     professor_lista = [
         {
             'label': f'{row["nome_completo"]} {row["status"]} ',
-            'value': row["email"]
+            'value': row["id_x"]
         }
         for i, row in df_professor.iterrows()
     ]
@@ -227,7 +227,7 @@ def form_create_turma(datepicker):
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.Checklist(
+                            dbc.Select(
                                 id=f'imp-create-turma-professor-{page_name}',
                                 options=professor_lista,
                                 className='m-0 p-0',
@@ -253,7 +253,7 @@ def form_create_turma(datepicker):
                 children=[
                     dbc.AccordionItem(
                         children=[
-                            dbc.Checklist(
+                            dbc.Select(
                                 id=f'imp-create-turma-coordenaor-{page_name}',
                                 options=professor_lista,
                                 className='m-0 p-0',
@@ -596,31 +596,31 @@ def create_turma(
         n_clicks,
 ):
 
-    if n_clicks and id_turma and status_turma and inicio_turma and fim_turma and nivel_turma and map:
+    if n_clicks and id_turma and status_turma and inicio_turma and fim_turma and nivel_turma and map and preofessores_turma and coordenador_turma:
 
         df_alunos = pd.DataFrame(alunos_data)
 
-        ids_prod = None
-        if preofessores_turma:
-            list_prof = []
-            for x in preofessores_turma:
-                list_prof.append(x)
-            ids_prod = json.dumps({'email_user': list_prof})
-
-        ids_coord = None
-        if coordenador_turma:
-            list_coordenador = []
-            for x in coordenador_turma:
-                list_coordenador.append(x)
-            ids_coord = json.dumps({'email_user': list_coordenador})
+        # ids_prod = None
+        # if preofessores_turma:
+        #     list_prof = []
+        #     for x in preofessores_turma:
+        #         list_prof.append(x)
+        #     ids_prod = json.dumps({'email_user': list_prof})
+        #
+        # ids_coord = None
+        # if coordenador_turma:
+        #     list_coordenador = []
+        #     for x in coordenador_turma:
+        #         list_coordenador.append(x)
+        #     ids_coord = json.dumps({'email_user': list_coordenador})
 
         df_turma_horario = pd.DataFrame()
         ids_horarios = None
         if horarios_turma:
             list_horarios = []
-            for x in horarios_turma:
-                list_horarios.append(x)
-            ids_horarios = json.dumps({'id_horario': list_horarios})
+            # for x in horarios_turma:
+            #     list_horarios.append(x)
+            # ids_horarios = json.dumps({'id_horario': list_horarios})
 
             # tabela relacionamento horario
             df_turma_horario = pd.DataFrame(
@@ -635,8 +635,8 @@ def create_turma(
                 'id_turma': [id_turma],
                 'created_at': [datetime.datetime.now()],
 
-                'id_professor': [ids_prod],
-                'id_coordenador': [ids_coord],
+                'id_professor': [preofessores_turma],
+                'id_coordenador': [coordenador_turma],
                 'id_hr_turma': [ids_horarios],
 
                 # 'semestre': [semestre_turma],
@@ -704,6 +704,10 @@ def create_turma(
             msg.append('NIVEL')
         if not map:
             msg.append('MAP')
+        if not preofessores_turma:
+            msg.append('PROFESSOR')
+        if not coordenador_turma:
+            msg.append('COORDENADOR')
 
 
         return f'Verifique se os campos estão corretos: {msg}'
