@@ -162,64 +162,72 @@ side_bar = Sidebar().layout(
             group_elements=[
                 # Div para fazer login e encerrar sessão
                 html.Div(id="user-status-header"),
-                dcc.Link(children='Login', href='/login', ),
-                dcc.Link(children='Logout', href='/logout'),
+                dcc.Link(children='Login', href='/login', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='Logout', href='/logout', className='justify-content-center text-middle text-center', ),
             ]
         ),
         ListGroup().layout(
             group_title='Aluno',
             group_elements=[
-                dcc.Link(children='criar aluno'.title(), href='/CriarALuno'),
+                dcc.Link(children='criar'.title(), href='/CriarALuno', className='justify-content-center text-middle text-center', ),
 
                 # editar aluno e exportar aluno
-                dcc.Link(children='editar aluno'.title(), href='/EditarAluno'),
+                dcc.Link(children='editar'.title(), href='/EditarAluno', className='justify-content-center text-middle text-center', ),
 
                 # lançar REMARKS junto com nota
-                # dcc.Link(children='lançar nota aluno'.title(), href='/Remarks'),
+                # dcc.children='lançar nota aluno'.title(), href='/Remarks', Link(Nass_name='justify-content-center text-middle text-center', ),
             ]
         ),
         ListGroup().layout(
             group_title='Turma',
             group_elements=[
-                dcc.Link(children='criar horario'.title(), href='/CriarHorario'),
-                dcc.Link(children='criar turma'.title(), href='/CriarTurma'),
-                dcc.Link(children='editar turma'.title(), href='/EditarTurma'),
-                dcc.Link(children='lançar nota turma'.title(), href='/LancarNotaTurma'),
-                dcc.Link(children='remarks'.title(), href='/Remarks'),
+                dcc.Link(children='criar '.title(), href='/CriarTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='editar '.title(), href='/EditarTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='lançar nota '.title(), href='/LancarNotaTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='lançar remarks'.title(), href='/Remarks', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='Fechar '.title(), href='/FecharTurma', className='justify-content-center text-middle text-center', ),
             ]
         ),
+
+        ListGroup().layout(
+            group_title='Horário',
+            group_elements=[
+                dcc.Link(children='criar horario'.title(), href='/CriarHorario', className='justify-content-center text-middle text-center', ),
+            ]
+        ),
+
         ListGroup().layout(
             group_title='Relatório',
             group_elements=[
 
                 # boletim
-                # dcc.Link(children='Alunos Genérico'.title(), href='/RelatorioAlunoGenerico'),
+                # dcc.children='Alunos Genérico'.title(), href='/RelatorioAlunoGenerico', Link(Nass_name='justify-content-center text-middle text-center', ),
 
                 # alunos por horario
-                dcc.Link(children='Turmas'.title(), href='/RelatorioTurmaHorario'),
+                dcc.Link(children='Turmas'.title(), href='/RelatorioTurmaHorario', className='justify-content-center text-middle text-center', ),
 
                 # alunos, telefones, etc
-                dcc.Link(children='telefones p/ turma'.title(), href='/RelatorioTelefoneTurma'),
+                dcc.Link(children='telefones p/ turma'.title(), href='/RelatorioTelefoneTurma', className='justify-content-center text-middle text-center', ),
 
                 # Etiquetas Alunos
-                dcc.Link(children='Etiquetas'.title(), href='/RelatorioEtiquetaAluno'),
+                dcc.Link(children='Etiquetas'.title(), href='/RelatorioEtiquetaAluno', className='justify-content-center text-middle text-center', ),
 
                 # boletim da turma
-                dcc.Link(children='--nota por turma'.title(), href=''),
+                dcc.Link(children='Nota p/ turma'.title(), href='/RelatorioNotaTurma', className='justify-content-center text-middle text-center', ),
 
                 # horarios das turmas
-                # dcc.Link(children='--horarios turmas'.title(), href='/r_horarios_turma'),
+                # dcc.children='--horarios turmas'.title(), href='/r_horarios_turma', Link(Nass_name='justify-content-center text-middle text-center', ),
 
                 # boletim
-                dcc.Link(children='--boletim aluno'.title(), href=''),
-                dcc.Link(children='--diploma'.title(), href=''),
+                dcc.Link(children='--boletim aluno'.title(), href='', className='justify-content-center text-middle text-center', ),
+                dcc.Link(children='diploma'.title(), href='/Diploma', className='justify-content-center text-middle text-center', ),
 
             ]
         ),
         ListGroup().layout(
             group_title='Gerenciar',
             group_elements=[
-                dcc.Link(children='usuario'.title(), href='/GerenciarUsuario'),
+                dcc.Link(children='usuario'.title(), href='/GerenciarUsuario', className='justify-content-center text-middle text-center', ),
             ]
         ),
     ]
@@ -323,18 +331,18 @@ app.layout = dbc.Row(
 #     ### test if user is logged in
 #     if current_user.is_authenticated:
 #         if path == '/login':
-#             return dcc.Link(children="logout".title(), href="/logout"), '/'
+#             return dcc.children="logout".title(), href="/logout"), ', Link(Nass_name='justify-content-center text-middle text-center', /'
 #
-#         return dcc.Link(children="logout", href="/logout"), dash.no_update
+#         return dcc.children="logout", href="/logout"), dash.no_upda, Link(Nass_name='justify-content-center text-middle text-center', te
 #     else:
 #         ### if page is restricted, redirect to login and save path
 #         if path in restricted_page:
 #             session['url'] = path
-#             return dcc.Link(children="login", href="/login"), '/login'
+#             return dcc.children="login", href="/login"), '/logi, Link(Nass_name='justify-content-center text-middle text-center', n'
 #
 #     ### if path not login and logout display login link
 #     if current_user and path not in ['/login', '/logout']:
-#         return dcc.Link(children="login", href="/login"), dash.no_update
+#         return dcc.children="login", href="/login"), dash.no_upda, Link(Nass_name='justify-content-center text-middle text-center', te
 #
 #     ### if path login and logout hide links
 #     if path in ['/login', '/logout']:
@@ -346,5 +354,6 @@ if __name__ == '__main__':
     # application.run(debug=False, port=5000)
     # testes no ec2 do sintegre
     application.run(debug=False, port=5010, host='0.0.0.0')
+    # application.run(debug=False, port=5010, host='0.0.0.0')
     # application.run(debug=False, port=5000)
     # app.run_server(debug=False)

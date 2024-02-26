@@ -8,7 +8,11 @@ def Turma_xlsx(file_path, df):
     with pd.ExcelWriter(file_path) as writer:
 
         for idx, turma in enumerate(df['id_turma'].unique()):
-            df[df['id_turma'] == turma].to_excel(
-                writer, sheet_name=f"{idx + 1}-{turma}",
+            aux = df[df['id_turma'] == turma].copy()
+
+            aux.to_excel(
+                writer,
+                sheet_name=f"{idx + 1}-{turma}",
                 index=False,
+
             )

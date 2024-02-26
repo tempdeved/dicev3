@@ -229,7 +229,10 @@ content_layout = dbc.Row(
                                                     dbc.Tab(
                                                         label="TURMA DETALHADA",
                                                         children=[
-                                                            dbc.Row(id=f'out-edit-func-{page_name}'),
+                                                            dbc.Row(
+                                                                id=f'out-edit-func-{page_name}',
+                                                                class_name='m-0 p-0',
+                                                            ),
                                                             dbc.Row(
                                                                 class_name='ml-0 pt-2',
                                                                 children=[
@@ -418,9 +421,11 @@ def buscar_turmas(btn):
         # export_columns='all',
         style_header={'textAlign': 'center', 'fontWeight': 'bold'},
         style_as_list_view=True,
-
     )
-    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(
+        dt_user,
+        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+    )
 
     return datatable1
 
@@ -501,12 +506,15 @@ def editar_turma(data_drom_data_table, active_cell):
         )
         df_prof['id_professor'] = df_prof['id']
         df_prof['id_coordenador'] = df_prof['id']
-        # df_prof.drop(columns=['id'], inplace=True)
 
-        # prof_name = ['']
-
-        # verifica se existe prod cadastrado
-        # if df_turma2['id_professor'].isna()[0] == False:
+        # captura horarios da turma
+        df_turma_horario  = dados.query_table(
+            table_name='turma_horario',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_turma', 'value': f'{turma_id}'},
+            ]
+        )
+        df_turma_horario.drop(columns=['id'], inplace=True)
 
         # merge prof and coord
         df_turma3 = pd.merge(
@@ -677,14 +685,13 @@ def editar_turma(data_drom_data_table, active_cell):
             columns=['dia_semana', 'hora_inicio', 'min_inicio', 'hora_fim', 'min_fim']
         )
 
-        if df_turma2['id_hr_turma'].isna()[0] == False:
-            list_hr = json.loads(df_turma2['id_hr_turma'][0])['id_horario']
 
-            # list_hr = df_turma2['id_hr_turma'][0].split(',')[:-1]
+        if not df_turma_horario.empty :
+
             df_hr = dados.query_table(
                 table_name='horario',
                 filter_list=[
-                    {'op': 'in', 'name': 'id', 'value': list_hr}
+                    {'op': 'in', 'name': 'id', 'value': df_turma_horario['id_horario']}
                 ]
             )
 
@@ -718,11 +725,25 @@ def editar_turma(data_drom_data_table, active_cell):
                 list_of_hour.append(
                     dbc.Row(
                         children=[
-                            f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
-                            f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper()
+                            dbc.Input(
+                                disabled=True,
+                                # options=[
+                                #     {'label': id_dice, 'value': id_dice},
+                                # ],
+                                value=f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
+                                      f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper(),
+                                # className='m-0 p-0',
+                            )
                         ],
-                        class_name='pt-1'
-                    )
+                        className='m-0 p-0 pt-2',
+                    ),
+                    # dbc.Row(
+                    #     children=[
+                    #         f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
+                    #         f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper()
+                    #     ],
+                    #     class_name='pt-1'
+                    # )
                 )
         else:
             list_of_hour.append(
@@ -733,7 +754,20 @@ def editar_turma(data_drom_data_table, active_cell):
                 #     # width=10
                 #     style={'height': '150px', 'width': '150px'},
                 # ),
-                dbc.Row(f'SEM HORARIO CADASTRADO'),
+                # dbc.Row(f'SEM HORARIO CADASTRADO'),
+                dbc.Row(
+                    children=[
+                        dbc.Input(
+                            disabled=True,
+                            # options=[
+                            #     {'label': id_dice, 'value': id_dice},
+                            # ],
+                            value=f'SEM HORARIO CADASTRADO',
+                            # className='m-0 p-0',
+                        )
+                    ],
+                    className='m-0 p-0 pt-2',
+                ),
             )
 
         alunos_cadastrados = df_alunos_filted['id'].to_list()
@@ -850,39 +884,45 @@ def editar_turma(data_drom_data_table, active_cell):
                 dbc.Row('TURMA', className='m-0 p-0 pt-2'),
                 dbc.Row(
                     children=[
-                        dbc.Select(
+                        dbc.Input(
+                        # dbc.Select(
                             id=f'id-turma-dice-{page_name}',
                             disabled=True,
-                            options=[
-                                {'label': id_dice, 'value': id_dice},
-                            ],
+                            # options=[
+                            #     {'label': id_dice, 'value': id_dice},
+                            # ],
                             value=id_dice,
+                            # className='m-0 p-0',
                          )
                     ],
                     className='m-0 p-0 pt-2',
                 ),
             ],
+            className='m-0 p-0',
         )
         row_professor = dbc.Row(
             children=[
                 dbc.Row('PROFESSOR', className='m-0 p-0 pt-2'),
                 dbc.Row(
                     children=[
-                        dbc.Select(
+                        dbc.Input(
+                        # dbc.Select(
                             id=f'nome-{x}-{page_name}',
                             disabled=True,
-                            options=[
-                                {'label': x, 'value': x},
-                            ],
+                            # options=[
+                            #     {'label': x, 'value': x},
+                            # ],
                             value=x,
+                            # className='m-0 p-0',
                          )
                      for x in prof_name ],
                     className='m-0 p-0 pt-2',
                 ),
             ],
+            className='m-0 p-0',
         )
 
-        row_nivel = html.Div(
+        row_nivel = dbc.Row(
             children=[
                 dbc.Row('NIVEL', className='m-0 p-0 pt-2'),
                 dbc.Row(

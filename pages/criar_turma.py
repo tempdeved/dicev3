@@ -230,7 +230,7 @@ def form_create_turma(datepicker):
                             dbc.Select(
                                 id=f'imp-create-turma-professor-{page_name}',
                                 options=professor_lista,
-                                className='m-0 p-0',
+                                # className='m-0 p-0',
                             )
                         ],
                         className='m-0 p-0',
@@ -256,7 +256,7 @@ def form_create_turma(datepicker):
                             dbc.Select(
                                 id=f'imp-create-turma-coordenaor-{page_name}',
                                 options=professor_lista,
-                                className='m-0 p-0',
+                                # className='m-0 p-0',
                             )
                         ],
                         className='m-0 p-0',
@@ -360,7 +360,7 @@ def form_create_turma(datepicker):
                             {'label': 'Ativa'.upper(),'value': f'Ativa'.upper()},
                             {'label': 'Inativa'.upper(),'value': f'Inativa'.upper()},
                             {'label': 'Em espera'.upper(),'value': f'Em espera'.upper()},
-                            {'label': 'Finalizadas'.upper(),'value': f'Finalizadas'.upper()},
+                            {'label': 'Finalizada'.upper(),'value': f'Finalizada'.upper()},
                         ],
                     )
                 ],
@@ -617,7 +617,7 @@ def create_turma(
         df_turma_horario = pd.DataFrame()
         ids_horarios = None
         if horarios_turma:
-            list_horarios = []
+            # list_horarios = []
             # for x in horarios_turma:
             #     list_horarios.append(x)
             # ids_horarios = json.dumps({'id_horario': list_horarios})
@@ -625,7 +625,8 @@ def create_turma(
             # tabela relacionamento horario
             df_turma_horario = pd.DataFrame(
                 data={
-                    'id_horario': list_horarios
+                    'id_horario': horarios_turma
+                    # 'id_horario': list_horarios
                 }
             )
             df_turma_horario['id_turma'] = id_turma

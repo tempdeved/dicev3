@@ -16,7 +16,14 @@ class RadioItem(Component):
             class_name='shadow-lg border mx-1 my-1 px-1 py-1',
             children=[
                 dbc.CardHeader(
-                    children=html.P(f'{self.title}'),
+                    children=html.P(
+                        f'{self.title}',
+                        className='p-2 m-2',
+                        style={
+                            # 'font-weight': 'bold',
+                            'font-size': '16px'
+                        }
+                    ),
                     class_name='py-0 my-0 justify-content-middle text-center'
                 ),
                 dbc.CardBody(
@@ -50,7 +57,14 @@ class CheckList(Component):
             class_name='shadow-lg border mx-1 my-1 px-1 py-1',
             children=[
                 dbc.CardHeader(
-                    children=html.P(f'{self.title}'),
+                    children=html.P(
+                        f'{self.title}',
+                        className='p-2 m-2',
+                        style={
+                            # 'font-weight': 'bold',
+                            'font-size': '16px'
+                        }
+                    ),
                     class_name='py-0 my-0 justify-content-middle text-center'
                 ),
                 dbc.CardBody(
