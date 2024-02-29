@@ -423,16 +423,16 @@ def editar_turma(data_drom_data_table, active_cell):
                         ),
                         dbc.Col(
                             children=[
-                                principal.layout
+                                master_english.layout
                             ],
                             class_name='col-lg-4 col-md-12 col-sm-12'
                         ),
                         dbc.Col(
                             children=[
-                                master_english.layout
+                                principal.layout
                             ],
                             class_name='col-lg-4 col-md-12 col-sm-12'
-                        )
+                        ),
                     ],
                     class_name='p-0 m-0'
                 ),
