@@ -1,9 +1,11 @@
 import glob
 import os.path
-
+from datetime import datetime, date
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+
+from elements.input import Input as dccInput
 from utils.create_excel import Turma_xlsx
 
 import datetime
@@ -160,7 +162,7 @@ def func(df_raw, n_clicks):
         # path_folder = 'download'
         # filename = page_name + '.png'
 
-        format_file = 'png'
+        format_file = 'jpg'
         file_path = os.path.join('static', 'images', 'certificate', f'cert.{format_file}')
 
         #
@@ -250,6 +252,7 @@ def buscar_turmas(btn):
 @callback(
     Output(component_id=f'out-edit-func-{page_name}', component_property='children'),
     Output(component_id=f'out-alert-fuc-{page_name}', component_property='children'),
+    # Output(component_id=f'btn-download-turma-{page_name}', component_property='children'),
     State(component_id=f'data-table-edit-user-{page_name}',  component_property='data'),
     Input(component_id=f'data-table-edit-user-{page_name}',  component_property='selected_rows'),
     # Input(component_id=f"mes-ref-{page_name}",  component_property='value'),
@@ -350,11 +353,96 @@ def editar_turma(data_drom_data_table, active_cell):
             row_selectable="single",
         )
 
+        now = datetime.datetime.now()
+
+        dt_picker = dbc.Card(
+            class_name='shadow-lg border mx-1 my-1 px-1 py-1 text-center',
+            # class_name='shadow-lg border mx-0 my-1 px-0 py-1 text-middle text-center',
+            children=[
+                dbc.CardHeader(
+                    children=html.P(
+                        f'INICIO - FIM',
+                        className='p-2 m-2',
+                        style={
+                            # 'font-weight': 'bold',
+                            'font-size': '14px'
+                        },
+                    ),
+                    class_name='py-0 my-0 justify-content-top text-center'
+                ),
+                dbc.CardBody(
+                    class_name='px-0 mx-0 py-0 my-0',
+                    children=[
+                        dcc.DatePickerRange(
+                            id=f'dt-picker-turma-{page_name}',
+                            className='',
+                            # id_object=f'datepicker_data_referencia_{page_name}',
+                            # title='Data',
+                            # min_date_allowed=inicio,
+                            min_date_allowed=date(1990, 1, 1),
+                            # max_date_allowed=fim,
+                            # max_date_allowed=date(2050, 1, 1),
+                            initial_visible_month=date.today(),
+                            display_format='YYYY-MM-DD',
+                            start_date=date(now.year-2, 1, 1),
+                            end_date=date(now.year, 12, 31),
+                        )
+                    ]
+                )
+            ]
+        )
+
+        principal = dccInput(
+            id_object=f'inp-principal-{page_name}',
+            title='PRINCIPAL',
+            placeholder='PRINCIPAL (20)',
+            maxLength=20,
+            type='text'
+        )
+        principal.load()
+
+        master_english = dccInput(
+            id_object=f'inp-master-eng-{page_name}',
+            title='LEVEL',
+            placeholder='LEVEL (20)',
+            maxLength=20,
+            type='text'
+        )
+        master_english.load()
+
         datatable1 = dbc.Row(
             children=[
-                dt_turma
+                dbc.Row(
+                    children=[
+                        dbc.Col(
+                            children=[
+                                dt_picker
+                            ],
+                            class_name='col-lg-4 col-md-12 col-sm-12'
+                        ),
+                        dbc.Col(
+                            children=[
+                                principal.layout
+                            ],
+                            class_name='col-lg-4 col-md-12 col-sm-12'
+                        ),
+                        dbc.Col(
+                            children=[
+                                master_english.layout
+                            ],
+                            class_name='col-lg-4 col-md-12 col-sm-12'
+                        )
+                    ],
+                    class_name='p-0 m-0'
+                ),
+                dbc.Row(
+                    children=[
+                        dt_turma
+                    ],
+                    class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
+                ),
+
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
         )
         # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
@@ -369,14 +457,23 @@ def editar_turma(data_drom_data_table, active_cell):
 
 @callback(
     Output(component_id=f'out-remark-edit{page_name}', component_property='children'),
+    Output(component_id=f'btn-download-turma-{page_name}', component_property='children'),
     # State(component_id=f"mes-ref-{page_name}", component_property='value'),
     # State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
     State(component_id=f'data-table-hist-aluno-{page_name}', component_property='data'),
     Input(component_id=f'data-table-hist-aluno-{page_name}', component_property='selected_rows'),
+    State(component_id=f'dt-picker-turma-{page_name}', component_property='start_date'),
+    State(component_id=f'dt-picker-turma-{page_name}', component_property='end_date'),
+    State(component_id=f'inp-principal-{page_name}', component_property='value'),
+    State(component_id=f'inp-master-eng-{page_name}', component_property='value'),
 )
 def edit_remart(
         dt_alu_tur,
-        active_cell
+        active_cell,
+        start,
+        end,
+        principal,
+        master_level,
 ):
 
     if dt_alu_tur and active_cell:
@@ -386,10 +483,11 @@ def edit_remart(
         # turma_id_dice = df_turma['id_turma'].iloc[active_cell[0]]
         id_turma = int(df_alu_turma['id_turma'].iloc[active_cell[0]])
         nome_aluno = str(df_alu_turma['nome'].iloc[active_cell[0]])
+        id_aluno = str(df_alu_turma['id_aluno'].iloc[active_cell[0]])
 
         static_path_file = '/static/images/certificate/'
         name_file = 'cert_dummy'
-        format_file = 'png'
+        format_file = 'jpg'
 
         path_static_orig = f'{static_path_file}{name_file}.{format_file}'
         path_static_new = f'{static_path_file}cert.{format_file}'
@@ -398,7 +496,7 @@ def edit_remart(
 
         image = Image.open(path_file)
 
-        myFont = ImageFont.truetype(font='arial.ttf', size=65)
+        myFont = ImageFont.truetype(font='times_new_roman.ttf', size=65)
 
         # tamanho img
         size = image.size
@@ -410,19 +508,50 @@ def edit_remart(
         # capturando ?????
         _, _, w, h = draw.textbbox((0, 0), nome_aluno, font=myFont)
 
+        position_tittle = (
+            (W - w) / 2 ,
+            (H - h) / 2-230
+        )
+
+        _, _, w, h = draw.textbbox((0, 0), start, font=myFont)
+
+        position_start = (
+            (W - w) / 2 + 80 ,
+            (H - h) / 2
+        )
+        _, _, w, h = draw.textbbox((0, 0), end, font=myFont)
+
+        position_end = (
+            (W - w) / 2 + 700,
+            (H - h) / 2
+        )
+
+        _, _, w, h = draw.textbbox((0, 0), principal, font=myFont)
+
+        position_principal = (
+            (W - w) / 2 ,
+            (H - h) / 2 + 800
+        )
+        _, _, w, h = draw.textbbox((0, 0), master_level, font=myFont)
+
+        position_master = (
+            (W - w) / 2 + 350 ,
+            (H - h) / 2 + 125
+        )
+
         # escrevendo na img
-        draw.text(
-            ((W - w) / 2, (H - h) / 2),
-            nome_aluno,
-            font=myFont,
-            fill='black'
-        )
+        draw.text(position_tittle,nome_aluno,font=myFont,fill='black')
+        draw.text(position_start,start,font=myFont,fill='black')
+        draw.text(position_end,end,font=myFont,fill='black')
+        draw.text(position_principal,principal,font=myFont,fill='black')
+        draw.text(position_master,master_level,font=myFont,fill='black')
 
-        # image.show()
+        # apaga arquivo qd existir
+        if os.path.isfile(os.path.join('static', 'images', 'certificate', f'cert.{format_file}')):
+            os.remove(
+                os.path.join('static', 'images', 'certificate', f'cert.{format_file}')
+            )
 
-        os.remove(
-            os.path.join('static', 'images', 'certificate', f'cert.{format_file}')
-        )
         image.save(
             os.path.join('static', 'images', 'certificate', f'cert.{format_file}')
         )
@@ -436,72 +565,75 @@ def edit_remart(
 
         editable_remark = dbc.Row(
             children=[
-                ''
-                # certi_png
+                nome_aluno,
+                certi_png,
             ],
         )
+
+        download_value = f'DOWNLOAD {nome_aluno.split(" ")[0]}'.upper()
     else:
         editable_remark = ''
+        download_value = 'DOWNLOAD'
 
-    return editable_remark
-
-
-@callback(
-    Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
-    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-hist-aluno-{page_name}', component_property='selected_rows'),
-    State(component_id=f"mes-ref-{page_name}",  component_property='value'),
-    State(component_id=f"aluno-descricao-{page_name}",  component_property='value'),
-
-    Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
-    )
-def salvar_nota_turma(dt_notas, active_cell, mes_ref, descricao, n_clicks):
-    # if n_clicks :
-    if n_clicks:
-
-        df_hist = pd.DataFrame(dt_notas)
-
-        id_hist = int(df_hist['id_hist'].iloc[active_cell[0]])
-        nome_aluno = df_hist['nome'].iloc[active_cell[0]]
-
-        df_notas = pd.DataFrame(
-            data={
-                'id': [id_hist],
-                'descricao': [descricao],
-            }
-        )
+    return editable_remark, download_value
 
 
-        # df_notas['mes_ref'] = mes_ref
-        # df_notas['created_at'] = datetime.datetime.now()
-        # df_notas.fillna(0, inplace=True)
-
-        # hist_alunos = dados.query_table(
-        #     table_name='historico_aluno',
-        #     filter_list=[
-        #         {'op': 'eq', 'name': 'id_turma', 'value': int(df_notas['id_turma'].unique()[0])},
-        #         {'op': 'eq', 'name': 'mes_ref', 'value': int(df_notas['mes_ref'].unique()[0])},
-        #     ]
-        # )
-
-        try:
-            # removendo notas para inserir novas notas
-            # dados.remove_from_table(
-            #     table_name='historico_aluno',
-            #     filter_list=[
-            #         {'op': 'in', 'name': 'id', 'value': hist_alunos['id'].to_list()},
-            #     ]
-            # );
-            dados.update_table(
-                values=df_notas.to_dict(orient='records')[0],
-                table_name='historico_aluno',
-                pk_value=id_hist,
-                pk_name='id'
-            )
-
-            return f'{nome_aluno} ATUALIZADA'
-        except Exception as err:
-            return str(err)
-
-    else:
-        return "SELECIONE UMA TURMA"
+# @callback(
+#     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
+#     State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
+#     State(component_id=f'data-table-hist-aluno-{page_name}', component_property='selected_rows'),
+#     State(component_id=f"mes-ref-{page_name}",  component_property='value'),
+#     State(component_id=f"aluno-descricao-{page_name}",  component_property='value'),
+#
+#     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
+#     )
+# def salvar_nota_turma(dt_notas, active_cell, mes_ref, descricao, n_clicks):
+#     # if n_clicks :
+#     if n_clicks:
+#
+#         df_hist = pd.DataFrame(dt_notas)
+#
+#         id_hist = int(df_hist['id_hist'].iloc[active_cell[0]])
+#         nome_aluno = df_hist['nome'].iloc[active_cell[0]]
+#
+#         df_notas = pd.DataFrame(
+#             data={
+#                 'id': [id_hist],
+#                 'descricao': [descricao],
+#             }
+#         )
+#
+#
+#         # df_notas['mes_ref'] = mes_ref
+#         # df_notas['created_at'] = datetime.datetime.now()
+#         # df_notas.fillna(0, inplace=True)
+#
+#         # hist_alunos = dados.query_table(
+#         #     table_name='historico_aluno',
+#         #     filter_list=[
+#         #         {'op': 'eq', 'name': 'id_turma', 'value': int(df_notas['id_turma'].unique()[0])},
+#         #         {'op': 'eq', 'name': 'mes_ref', 'value': int(df_notas['mes_ref'].unique()[0])},
+#         #     ]
+#         # )
+#
+#         try:
+#             # removendo notas para inserir novas notas
+#             # dados.remove_from_table(
+#             #     table_name='historico_aluno',
+#             #     filter_list=[
+#             #         {'op': 'in', 'name': 'id', 'value': hist_alunos['id'].to_list()},
+#             #     ]
+#             # );
+#             dados.update_table(
+#                 values=df_notas.to_dict(orient='records')[0],
+#                 table_name='historico_aluno',
+#                 pk_value=id_hist,
+#                 pk_name='id'
+#             )
+#
+#             return f'{nome_aluno} ATUALIZADA'
+#         except Exception as err:
+#             return str(err)
+#
+#     else:
+#         return "SELECIONE UMA TURMA"
