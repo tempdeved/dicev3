@@ -36,13 +36,11 @@ select_periodo = CheckList(
     id_object=f"mes-ref-{page_name}",
     title='PERÍODO',
     options=[
-        {"label": "Março/Abril", "value": 1, 'disabled': True },
-        {"label": "Maio/Junho", "value": 2, 'disabled': True },
-        {"label": "Ago/set", "value": 3, 'disabled': True },
-        {"label": "Out/nov", "value": 4, 'disabled': True },
+        {"label": "1° Sem.", "value": 1, 'disabled': True },
+        {"label": "2° Sem.", "value": 2, 'disabled': True },
     ],
     inline=True,
-    value=[1, 2, 3, 4],
+    value=[1, 2,],
     # disabled=True,
 )
 select_periodo.load()
@@ -545,11 +543,10 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                         )
 
                     meses_ref = {
-                        1: "Março/Abril",
-                        2: "Maio/Junho",
-                        3: "Ago/set",
-                        4: "Out/nov",
+                        1: "1° Sem.",
+                        2: "2° Sem.",
                     }
+
                     month_str = meses_ref[int_month]
                     df_merge[f'media_{month_str}'] = notas
 
@@ -936,10 +933,8 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
 
     # caputra mes ref STR
     meses_ref = {
-        1: "Março/Abril",
-        2: "Maio/Junho",
-        3: "Ago/set",
-        4: "Out/nov",
+        1: "1° Sem.",
+        2: "2° Sem.",
     }
 
     month_ref = f'NOTA'

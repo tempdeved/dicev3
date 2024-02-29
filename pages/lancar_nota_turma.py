@@ -5,6 +5,7 @@ import pandas as pd
 import sqlalchemy.exc
 import json
 
+from elements.check_list import CheckList, RadioItem
 import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State
 import dash_bootstrap_components as dbc
@@ -24,6 +25,23 @@ dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
 dados = Dados(config['ambiente'])
+
+semestre = RadioItem(
+            id_object=f"mes-ref-{page_name}",
+            title='FILTRAR COLUNAS',
+            options=[
+                {"label": "1° Sem", "value": 1},
+                {"label": "2° Sem", "value": 2},
+            ],
+            labelCheckedClassName="text-primary",
+            inputCheckedClassName="border border-primary bg-primary",
+            # value=['id_submercado', 'tipo_energia'],
+            value=1,
+            inline=True,
+            switch=True,
+        )
+semestre.load()
+
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -49,18 +67,17 @@ content_layout = dbc.Row(
                                                 ]
                                             ),
 
-                                            dbc.Row("PERÍODO", class_name='pt-2',),
-                                            dbc.RadioItems(
-                                                id=f"mes-ref-{page_name}",
-                                                options=[
-                                                    {"label": "Março/Abril", "value": 1},
-                                                    {"label": "Maio/Junho", "value": 2},
-                                                    {"label": "Ago/set", "value": 3},
-                                                    {"label": "Out/nov", "value": 4},
-                                                ],
-                                                value=1,
-                                                inline=True,
-                                            ),
+                                            # dbc.Row("PERÍODO", class_name='pt-2',),
+                                            # dbc.RadioItems(
+                                            #     id=f"mes-ref-{page_name}",
+                                            #     options=[
+                                            #         {"label": "1° Sem", "value": 1},
+                                            #         {"label": "2° Sem", "value": 2},
+                                            #     ],
+                                            #     value=1,
+                                            #     inline=True,
+                                            # ),
+                                            semestre.layout,
 
                                             dbc.Tabs(
                                                 children=[
@@ -415,10 +432,8 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
     # caputra mes ref STR
     meses_ref = {
-        1: "Março/Abril",
-        2: "Maio/Junho",
-        3: "Ago/set",
-        4: "Out/nov",
+        1: "1° Sem.",
+        2: "2° Sem.",
     }
 
     month_ref = f'LANÇAR NOTA - {meses_ref[mes_ref]}'
