@@ -122,6 +122,7 @@ content_layout = dbc.Row(
                 dbc.Row(id=f'out-alert-user-{page_name}'),
                 dbc.Row(id=f'out-alert-fuc-{page_name}'),
                 dbc.Row(id=f'out-alert-edited-fuc-{page_name}'),
+                dbc.Row(id=f'out-alert-diploma-{page_name}'),
             ]
         )
     ],
@@ -395,7 +396,7 @@ def editar_turma(data_drom_data_table, active_cell):
         principal = dccInput(
             id_object=f'inp-principal-{page_name}',
             title='PRINCIPAL',
-            placeholder='PRINCIPAL (20)',
+            placeholder='(20)',
             maxLength=20,
             type='text'
         )
@@ -404,7 +405,7 @@ def editar_turma(data_drom_data_table, active_cell):
         master_english = dccInput(
             id_object=f'inp-master-eng-{page_name}',
             title='LEVEL',
-            placeholder='LEVEL (20)',
+            placeholder='(20)',
             maxLength=20,
             type='text'
         )
@@ -458,6 +459,7 @@ def editar_turma(data_drom_data_table, active_cell):
 @callback(
     Output(component_id=f'out-remark-edit{page_name}', component_property='children'),
     Output(component_id=f'btn-download-turma-{page_name}', component_property='children'),
+    Output(component_id=f'out-alert-diploma-{page_name}', component_property='children'),
     # State(component_id=f"mes-ref-{page_name}", component_property='value'),
     # State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
     State(component_id=f'data-table-hist-aluno-{page_name}', component_property='data'),
@@ -476,7 +478,7 @@ def edit_remart(
         master_level,
 ):
 
-    if dt_alu_tur and active_cell:
+    if dt_alu_tur and active_cell and start and end and principal and master_level:
         df_alu_turma = pd.DataFrame(dt_alu_tur)
 
         # turma_id =  df_turma['id_turma'].iloc[active_cell[0]]
@@ -565,17 +567,43 @@ def edit_remart(
 
         editable_remark = dbc.Row(
             children=[
-                nome_aluno,
-                certi_png,
+                # nome_aluno,
+                # certi_png,
             ],
         )
 
         download_value = f'DOWNLOAD {nome_aluno.split(" ")[0]}'.upper()
+        alert = ''
     else:
+        campos_faltantes = []
+
+        if not start:
+            campos_faltantes.append('start')
+        if not end:
+            campos_faltantes.append('end')
+        if not principal:
+            campos_faltantes.append('principal')
+        if not master_level:
+            campos_faltantes.append('master_level')
+
+        ch = f''
+
+        for x in campos_faltantes:
+            ch = ch + f"{x}; "
+
         editable_remark = ''
+
+        alert = dbc.Row(
+            children=[
+                f'PREENCHA OS CAMPOS ',
+                f'[{ch}]'
+            ],
+            class_name='p-2 mt-1',
+        )
+
         download_value = 'DOWNLOAD'
 
-    return editable_remark, download_value
+    return editable_remark, download_value, alert
 
 
 # @callback(
