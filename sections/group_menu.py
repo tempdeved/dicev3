@@ -19,7 +19,7 @@ class ListGroup(object):
                         # html.H4(children=group_title, className='text-center border-bottom'),
                         dbc.Row(children=group_elements, class_name='justify-content-center text-middle text-center'),
                         # html.Hr(),
-                        html.Hr(),
+                        # html.Hr(),
                 #     ]
                 # ),
             ],

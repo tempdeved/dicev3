@@ -444,6 +444,7 @@ def editar_turma(data_drom_data_table, active_cell):
         # Nivel
         # Mapa
         # Professor
+        # Coordenador
         # Alunos da turma
 
         df_turma = pd.DataFrame(data_drom_data_table)
@@ -467,6 +468,13 @@ def editar_turma(data_drom_data_table, active_cell):
             # ]
             filter_list=[
                 {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
+            ]
+        )
+
+        df_turma_aluno  = dados.query_table(
+            table_name='turma_aluno',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_turma', 'value': f'{id_dice}'},
             ]
         )
         df_turma2['id_professor'] = df_turma2['id_professor'].astype(int)
@@ -563,6 +571,7 @@ def editar_turma(data_drom_data_table, active_cell):
         # )
 
         df_prof_filted = df_turma4[['id_professor', 'email_func', 'nome_professor', 'status']].copy()
+        df_coord_filted = df_turma4[['id_coordenador', 'email_func', 'nome_coordenador', 'status']].copy()
 
         dt_prof = dbc.Select(
             id=f'data-table-edit-profs-{page_name}',
@@ -574,7 +583,20 @@ def editar_turma(data_drom_data_table, active_cell):
                 for i, row in df_prof_filted.iterrows()
             ],
             value='' if df_turma2['id_professor'].isna()[0] else int(df_turma2['id_professor']),
-            className='m-0 p-0',
+            # className='m-0 p-0',
+        )
+
+        dt_coord = dbc.Select(
+            id=f'data-table-edit-coord-{page_name}',
+            options=[
+                {
+                    'label': f'{row["id_coordenador"]} - {row["nome_coordenador"]} ',
+                    'value': row["id_coordenador"]
+                }
+                for i, row in df_coord_filted.iterrows()
+            ],
+            value='' if df_turma2['id_coordenador'].isna()[0] else int(df_turma2['id_coordenador']),
+            # className='m-0 p-0',
         )
 
             # dt_prof = dash_table.DataTable(
@@ -614,9 +636,17 @@ def editar_turma(data_drom_data_table, active_cell):
         #     df_prof_filted = df_prof_filted[['id', 'nome_completo']]
         #
         cod = '' if df_turma2['id_professor'].isna()[0] else int(df_turma2['id_professor'])
+        cod_cord = '' if df_turma2['id_coordenador'].isna()[0] else int(df_turma2['id_coordenador'])
+
         prof_name = df_prof[
             df_prof['id'].astype(int) == cod
         ]['nome_completo'].to_list()
+
+        coord_name = df_prof[
+            df_prof['id'].astype(int) == cod_cord
+        ]['nome_completo'].to_list()
+
+
         #
         #     profs_cadastrados = df_prof_filted['id'].to_list()
         #
@@ -702,10 +732,11 @@ def editar_turma(data_drom_data_table, active_cell):
             columns=['id', 'nome', 'status', 'telefone1']
         )
 
-        if df_turma2['id_aluno'].isna()[0] == False:
+        if df_turma_aluno.empty == False:
             # json_alunos = json.loads(df_turma2['id_aluno'][0])
 
-            list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
+            list_alunos = df_turma_aluno['id_aluno'].to_list()
+            # list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
             # list_alunos = df_turma2['id_aluno'][0].split(',')[:-1]
             df_alunos = dados.query_table(
                 table_name='aluno',
@@ -922,6 +953,28 @@ def editar_turma(data_drom_data_table, active_cell):
             className='m-0 p-0',
         )
 
+        row_coordenador = dbc.Row(
+            children=[
+                dbc.Row('COORDENADOR', className='m-0 p-0 pt-2'),
+                dbc.Row(
+                    children=[
+                        dbc.Input(
+                        # dbc.Select(
+                            id=f'coordenador-{x}-{page_name}',
+                            disabled=True,
+                            # options=[
+                            #     {'label': x, 'value': x},
+                            # ],
+                            value=x,
+                            # className='m-0 p-0',
+                         )
+                     for x in coord_name ],
+                    className='m-0 p-0 pt-2',
+                ),
+            ],
+            className='m-0 p-0',
+        )
+
         row_nivel = dbc.Row(
             children=[
                 dbc.Row('NIVEL', className='m-0 p-0 pt-2'),
@@ -1019,6 +1072,32 @@ def editar_turma(data_drom_data_table, active_cell):
              ],
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
+
+        row_coord = dbc.Row(
+            children=[
+                dbc.Accordion(
+                    children=[
+                        dbc.AccordionItem(
+                            children=[
+                                dbc.Row(
+                                    dt_coord,
+                                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+                                ),
+                            ],
+                            className='m-0 p-0',
+                            style={'background-color': '#FAFAFA'},
+                            title="COORDENADOR",
+                        )
+                    ],
+
+                    className='m-0 p-0',
+                    start_collapsed=True,
+                    flush=True,
+                )
+             ],
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
+        )
+
         row_aluno = dbc.Row(
             children=[
                 dbc.Accordion(
@@ -1045,19 +1124,10 @@ def editar_turma(data_drom_data_table, active_cell):
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
 
-
-
-
-        # row3_coord = dbc.Row(
-        #     children=[
-        #         dbc.Row('COORDENADOR', class_name='justify-content-center'),
-        #         dt_func3
-        # ], class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 pt-5 ')
-
         row4_title_hora = dbc.Row(
             children=[
                 dbc.Row('HORARIO', class_name=''),
-        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-1 pb-1')
+        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2 pb-1')
 
         row4_content_hora = dbc.Row(
             children=list_of_hour,
@@ -1079,12 +1149,13 @@ def editar_turma(data_drom_data_table, active_cell):
                 # row1,
                 row_id_turma,
                 row_professor,
+                row_coordenador,
                 row4_title_hora, # HORARIO
                 row4_content_hora, # HORARIO
                 row_nivel,
                 row_map,
                 row2,
-                # row3_coord,
+                row_coord,
 
                 row_aluno,
             ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
@@ -1105,6 +1176,7 @@ def editar_turma(data_drom_data_table, active_cell):
     # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
     State(component_id=f'data-table-edit-func-5-{page_name}',  component_property='data'),
     State(component_id=f'data-table-edit-profs-{page_name}',  component_property='value'),
+    State(component_id=f'data-table-edit-coord-{page_name}',  component_property='value'),
     # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
     State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
     State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
@@ -1113,11 +1185,20 @@ def editar_turma(data_drom_data_table, active_cell):
 
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
     )
-def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
+def salvar_turma(
+        dt_aluno,
+        dt_prof,
+        dt_coord,
+        nivel,
+        map,
+        id_turma_dice,
+        n_clicks
+):
     # if n_clicks :
     if n_clicks or dt_aluno or dt_prof or nivel or map:
         id_turma_dice = int(id_turma_dice)
         dt_prof = int(dt_prof)
+        dt_coord = int(dt_coord)
         df_aluno = pd.DataFrame(dt_aluno)
 
         # profs_cadastrados = []
@@ -1136,9 +1217,10 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
 
         # append alunos novos
         if len(alunos_cadastrados) >=1 :
-            list_aluno = []
-            for x in alunos_cadastrados['id']:
-                list_aluno.append(x)
+            # list_aluno = []
+            list_aluno = alunos_cadastrados['id'].to_list()
+            # for x in alunos_cadastrados['id']:
+            #     list_aluno.append(x)
 
             # df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
 
@@ -1173,6 +1255,7 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
             #     list_profs.append(x)
 
         df_turma['id_professor'] = dt_prof
+        df_turma['id_coordenador'] = dt_coord
 
 
 
@@ -1193,7 +1276,7 @@ def salvar_turma(dt_aluno, dt_prof, nivel, map, id_turma_dice, n_clicks):
             )
             # inserir alunos na turma
             dados.insert_into_table(table_name='turma_aluno', df=df_turma_aluno,)
-
+            datetime.datetime.today()
             return f'TURMA ATUALIZADA: {df_turma_aluno["id_aluno"].to_list()}'
 
         except Exception as err:

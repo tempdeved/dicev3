@@ -174,8 +174,8 @@ def form_create_turma(datepicker):
         how='left',
     )
 
-    df_professor = df_users[df_users['tipo'].isin(['Professor', 'Coordenador'])]
-    df_coordenador = df_users[df_users['tipo'].isin(['Professor', 'Coordenador'])]
+    df_professor = df_users[df_users['tipo'].isin(['Gerente', 'Professor', 'Coordenador'])]
+    df_coordenador = df_users[df_users['tipo'].isin(['Gerente', 'Professor', 'Coordenador'])]
 
     horario_lista = [
         {

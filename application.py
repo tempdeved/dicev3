@@ -158,76 +158,168 @@ side_bar = Sidebar().layout(
 
         # Grupo
         ListGroup().layout(
-            group_title='Autenticação',
+            group_title='',
+            # group_title='Autenticação'.upper(),
             group_elements=[
                 # Div para fazer login e encerrar sessão
-                html.Div(id="user-status-header"),
-                dcc.Link(children='Login', href='/login', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='Logout', href='/logout', className='justify-content-center text-middle text-center', ),
+                # html.Div(id="user-status-header"),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Login'.upper(),
+                    href='/login',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Logout'.upper(),
+                    href='/logout',
+                    className='justify-content-center text-middle text-center',
+                ),
             ]
         ),
         ListGroup().layout(
-            group_title='Aluno',
+            group_title='Aluno'.upper(),
             group_elements=[
-                dcc.Link(children='criar'.title(), href='/CriarALuno', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='criar'.upper(),
+                    href='/CriarALuno',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # editar aluno e exportar aluno
-                dcc.Link(children='editar'.title(), href='/EditarAluno', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='editar'.upper(),
+                    href='/EditarAluno',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # lançar REMARKS junto com nota
-                # dcc.children='lançar nota aluno'.title(), href='/Remarks', Link(Nass_name='justify-content-center text-middle text-center', ),
+                # dcc.children='lançar nota aluno'.upper(),
+                # href='/Remarks', Link(Nass_name='justify-content-center text-middle text-center',
+                # ),
             ]
         ),
         ListGroup().layout(
-            group_title='Turma',
+            group_title='Turma'.upper(),
             group_elements=[
-                dcc.Link(children='criar '.title(), href='/CriarTurma', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='editar '.title(), href='/EditarTurma', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='lançar nota '.title(), href='/LancarNotaTurma', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='lançar remarks'.title(), href='/Remarks', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='Fechar '.title(), href='/FecharTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='criar '.upper(),
+                    href='/CriarTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='editar '.upper(),
+                    href='/EditarTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='lançar nota '.upper(),
+                    href='/LancarNotaTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='lançar remarks'.upper(),
+                    href='/Remarks',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Fechar '.upper(),
+                    href='/FecharTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
             ]
         ),
 
         ListGroup().layout(
-            group_title='Horário',
+            group_title='Horário'.upper(),
             group_elements=[
-                dcc.Link(children='criar horario'.title(), href='/CriarHorario', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='criar horario'.upper(),
+                    href='/CriarHorario',
+                    className='justify-content-center text-middle text-center',
+                ),
             ]
         ),
 
         ListGroup().layout(
-            group_title='Relatório',
+            group_title='Relatório'.upper(),
             group_elements=[
 
                 # boletim
-                # dcc.children='Alunos Genérico'.title(), href='/RelatorioAlunoGenerico', Link(Nass_name='justify-content-center text-middle text-center', ),
+                # dcc.children='Alunos Genérico'.upper(),
+                # href='/RelatorioAlunoGenerico', Link(Nass_name='justify-content-center text-middle text-center',
+                # ),
 
                 # alunos por horario
-                dcc.Link(children='Turmas'.title(), href='/RelatorioTurmaHorario', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Turmas'.upper(),
+                    href='/RelatorioTurmaHorario',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # alunos, telefones, etc
-                dcc.Link(children='telefones p/ turma'.title(), href='/RelatorioTelefoneTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='telefones p/ turma'.upper(),
+                    href='/RelatorioTelefoneTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # Etiquetas Alunos
-                dcc.Link(children='Etiquetas'.title(), href='/RelatorioEtiquetaAluno', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Etiquetas'.upper(),
+                    href='/RelatorioEtiquetaAluno',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # boletim da turma
-                dcc.Link(children='Nota p/ turma'.title(), href='/RelatorioNotaTurma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='Nota p/ turma'.upper(),
+                    href='/RelatorioNotaTurma',
+                    className='justify-content-center text-middle text-center',
+                ),
 
                 # horarios das turmas
-                # dcc.children='--horarios turmas'.title(), href='/r_horarios_turma', Link(Nass_name='justify-content-center text-middle text-center', ),
+                # dcc.children='--horarios turmas'.upper(),
+                # href='/r_horarios_turma', Link(Nass_name='justify-content-center text-middle text-center',
+                # ),
 
                 # boletim
-                dcc.Link(children='--boletim aluno'.title(), href='', className='justify-content-center text-middle text-center', ),
-                dcc.Link(children='diploma'.title(), href='/Diploma', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='--boletim aluno'.upper(),
+                    href='',
+                    className='justify-content-center text-middle text-center',
+                ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='diploma'.upper(),
+                    href='/Diploma',
+                    className='justify-content-center text-middle text-center',
+                ),
 
             ]
         ),
         ListGroup().layout(
-            group_title='Gerenciar',
+            group_title='Gerenciar'.upper(),
             group_elements=[
-                dcc.Link(children='usuario'.title(), href='/GerenciarUsuario', className='justify-content-center text-middle text-center', ),
+                dcc.Link(
+                    style={'font-size': 13},
+                    children='usuario'.upper(),
+                    href='/GerenciarUsuario',
+                    className='justify-content-center text-middle text-center',
+                ),
             ]
         ),
     ]
@@ -251,41 +343,36 @@ app.layout = dbc.Row(
             id='',
             class_name='mx-0 px-0',
             children=[
-                dbc.Row(side_bar, class_name='justify-content-center'),
-                # dbc.Row(
-                #     id='nav-bar-row',
-                #     class_name='px-0 mx-0 my-1 ',
-                #     children=[
-                #
-                #         # Nav bar
-                #         dbc.Col(
-                #             id='nav-bar',
-                #             width=1,
-                #             class_name='col-12 justify-content-center py-0 px-0 mx-0 px-0',
-                #             children=[
-                #                 dbc.Row(
-                #                     class_name='justify-content-center mx-0 px-0 px-0 py-0',
-                #                     children=[side_bar]
-                #                 )
-                #             ],
-                #         ),
-                #
-                #         # Título dashboard
-                #         dbc.Col(
-                #             id='col-titulo-dashboard',
-                #             class_name='col-12 py-2 mx-0 px-0 my-0 py-0',
-                #             children=[]
-                #         ),
-                #     ]
-                # ),
-
-                # Main app area
                 dbc.Row(
-                    id='main_area_app',
-                    # class_name=' mx-5 px-0 my-0 py-0',
-                    class_name='p-5 p-0',
-                    children=[dash.page_container]
+                    children=[
+                        dbc.Col(
+                            class_name='col-3',
+                            children=[
+                                dbc.Row(
+                                    side_bar,
+                                    class_name='justify-content-center'),
+                            ],
+                        ),
+                        dbc.Col(
+                            class_name='col-9',
+                            children=[
+                                dbc.Row(
+                                    id='main_area_app',
+                                    # class_name=' mx-5 px-0 my-0 py-0',
+                                    class_name='p-5 p-0',
+                                    children=[dash.page_container]
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
+                # dbc.Row(side_bar, class_name='justify-content-center'),
+                # dbc.Row(
+                #     id='main_area_app',
+                #     # class_name=' mx-5 px-0 my-0 py-0',
+                #     class_name='p-5 p-0',
+                #     children=[dash.page_container]
+                # ),
                 # dcc.Store(id=f'out-tbl-preco-medio-prazo-historico-2')
                 dbc.Row(
                     children=[
@@ -331,7 +418,7 @@ app.layout = dbc.Row(
 #     ### test if user is logged in
 #     if current_user.is_authenticated:
 #         if path == '/login':
-#             return dcc.children="logout".title(), href="/logout"), ', Link(Nass_name='justify-content-center text-middle text-center', /'
+#             return dcc.children="logout".upper(), href="/logout"), ', Link(Nass_name='justify-content-center text-middle text-center', /'
 #
 #         return dcc.children="logout", href="/logout"), dash.no_upda, Link(Nass_name='justify-content-center text-middle text-center', te
 #     else:
