@@ -30,10 +30,8 @@ select_periodo = CheckList(
     id_object=f"mes-ref-{page_name}",
     title='PERÍODO',
     options=[
-        {"label": "Março/Abril", "value": 1, 'disabled': True },
-        {"label": "Maio/Junho", "value": 2, 'disabled': True },
-        {"label": "Ago/set", "value": 3, 'disabled': True },
-        {"label": "Out/nov", "value": 4, 'disabled': True },
+        {"label": "1° Sem", "value": 1, "disabled": True},
+        {"label": "2° Sem", "value": 2, "disabled": True},
     ],
     inline=True,
     value=[1, 2, 3, 4],
@@ -370,33 +368,6 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                     on=['id_aluno'],
                 )
                 df_merge['id_turma'] = id_turma_dice
-
-
-        # """
-        # fechamento de media anuale
-        # """
-        # df_merge_agg = df_merge.groupby(
-        #     by=[
-        #         pd.Grouper(key='id_turma', ),
-        #         pd.Grouper(key='id_aluno', ),
-        #         pd.Grouper(key='nome', ),
-        #     ],
-        # ).agg(
-        #     numero_aulas=pd.NamedAgg(column='numero_aulas', aggfunc='sum'),
-        #     numero_faltas=pd.NamedAgg(column='numero_faltas', aggfunc='sum'),
-        #     research=pd.NamedAgg(column='research', aggfunc='sum'),
-        #     organization=pd.NamedAgg(column='organization', aggfunc='sum'),
-        #     interest=pd.NamedAgg(column='interest', aggfunc='sum'),
-        #     group_activity=pd.NamedAgg(column='group_activity', aggfunc='sum'),
-        #     speaking=pd.NamedAgg(column='speaking', aggfunc='sum'),
-        #     frequencia_of=pd.NamedAgg(column='frequencia_of', aggfunc='sum'),
-        #     listening=pd.NamedAgg(column='listening', aggfunc='sum'),
-        #     readind_inter=pd.NamedAgg(column='readind_inter', aggfunc='sum'),
-        #     writing_process=pd.NamedAgg(column='writing_process', aggfunc='sum'),
-        #     # frequency=pd.NamedAgg(column='frequency', aggfunc='sum'),
-        # ).reset_index()
-
-        # calc frequencia
                 df_merge['frequency_pct'] = 1 - (df_merge['numero_faltas'] / df_merge['numero_aulas'])
                 df_merge['frequency'] = df_merge['frequency_pct'] * 100
                 df_merge['frequency_pct'] = df_merge['frequency_pct'] * 100
@@ -483,6 +454,11 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                 # "presentation": 'dropdown' if i == 'cadastrado' else '',
             } for i in df_result2.columns
         ]
+
+        df_result2['nome'] = df_result2['nome'].apply(
+            lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" ")) > 2 else f'{x.split(" ")[0]}'
+        )
+
         dt_turma = dash_table.DataTable(
             id=f'data-table-hist-aluno-{page_name}',
             data=df_result2.to_dict('records'),
@@ -505,7 +481,6 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             # editable=False,
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
             style_as_list_view=True,
-
             fixed_columns={'headers': True, 'data': 3},
             style_table={'minWidth': '100%'},
             style_cell={
@@ -515,6 +490,11 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                 'overflow': 'hidden',
                 'textOverflow': 'ellipsis',
             },
+            style_cell_conditional=[
+                {'if': {'column_id': 'id_turma'}, 'width': '3%'},
+                {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
+                {'if': {'column_id': 'nome'}, 'width': '5%'},
+            ]
 
         )
 

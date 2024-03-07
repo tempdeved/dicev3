@@ -9,6 +9,7 @@ import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 
+from elements.check_list import CheckList, RadioItem
 from flask import Flask, request, redirect, session, url_for
 from flask_login import current_user
 
@@ -24,6 +25,24 @@ dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
 dados = Dados(config['ambiente'])
+
+
+semestre = RadioItem(
+            id_object=f"mes-ref-{page_name}",
+            title='PERÍODO',
+            options=[
+                {"label": "1° Sem", "value": 1},
+                {"label": "2° Sem", "value": 2},
+            ],
+            labelCheckedClassName="text-primary",
+            inputCheckedClassName="border border-primary bg-primary",
+            # value=['id_submercado', 'tipo_energia'],
+            value=1,
+            inline=True,
+            switch=True,
+        )
+semestre.load()
+
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -49,18 +68,18 @@ content_layout = dbc.Row(
                                                 ]
                                             ),
 
-                                            dbc.Row("PERÍODO", class_name='pt-2',),
-                                            dbc.RadioItems(
-                                                id=f"mes-ref-{page_name}",
-                                                options=[
-                                                    {"label": "Março/Abril", "value": 1},
-                                                    {"label": "Maio/Junho", "value": 2},
-                                                    {"label": "Ago/set", "value": 3},
-                                                    {"label": "Out/nov", "value": 4},
-                                                ],
-                                                value=1,
-                                                inline=True,
-                                            ),
+                                            semestre.layout,
+
+                                            # dbc.Row("PERÍODO", class_name='pt-2',),
+                                            # dbc.RadioItems(
+                                            #     id=f"mes-ref-{page_name}",
+                                            #     options=[
+                                            #         {"label": "1° Sem", "value": 1},
+                                            #         {"label": "2° Sem", "value": 2},
+                                            #     ],
+                                            #     value=1,
+                                            #     inline=True,
+                                            # ),
 
                                             dbc.Tabs(
                                                 children=[
@@ -128,6 +147,7 @@ content_layout = dbc.Row(
                 dbc.Row(id=f'out-alert-user-{page_name}'),
                 dbc.Row(id=f'out-alert-fuc-{page_name}'),
                 dbc.Row(id=f'out-alert-edited-fuc-{page_name}'),
+                dbc.Row(id=f'out-alert-sem-nota-{page_name}'),
             ]
         )
     ],
@@ -409,6 +429,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
 @callback(
     Output(component_id=f'out-remark-edit{page_name}', component_property='children'),
+    Output(component_id=f'out-alert-sem-nota-{page_name}', component_property='children'),
     State(component_id=f"mes-ref-{page_name}", component_property='value'),
     State(component_id=f'data-table-edit-user-{page_name}', component_property='data'),
     State(component_id=f'data-table-hist-aluno-{page_name}', component_property='data'),
@@ -422,55 +443,63 @@ def edit_remart(mes_ref, dt_turma, dt_alu_tur, active_cell):
 
         # turma_id =  df_turma['id_turma'].iloc[active_cell[0]]
         # turma_id_dice = df_turma['id_turma'].iloc[active_cell[0]]
-        id_hist = int(df_alu_turma['id_hist'].iloc[active_cell[0]])
-        nome_aluno = str(df_alu_turma['nome'].iloc[active_cell[0]])
+        try:
+            id_hist = int(df_alu_turma['id_hist'].iloc[active_cell[0]])
+            nome_aluno = str(df_alu_turma['nome'].iloc[active_cell[0]])
 
-        df_hist_turma  = dados.query_table(
-            table_name='historico_aluno',
-            field_list=[
-                {'name': 'id'},
-                {'name': 'descricao'},
-            ],
-            filter_list=[
-                {'op': 'eq', 'name': 'id', 'value': int(id_hist)},
-            ]
-        )
-        descricao = df_hist_turma['descricao'][0]
-
-        editable_remark = dbc.Row(
-            children=[
-                dbc.Row(
-                    children=[
-                     html.H1(nome_aluno)
-                    ],
-                    className='pt-5',
-                    style={
-                        'background-color': '#ffffff'
-                    },
-                ),
-                dbc.Row(children=[
-                    dbc.Textarea(
-                        id=f"aluno-descricao-{page_name}",
-                        size="lg",
-                        placeholder="",
-                        value=descricao,
-                        style={
-                            'width': '100%',
-                            'height': '500px'
-                        },
-
-
-                    )
+            df_hist_turma  = dados.query_table(
+                table_name='historico_aluno',
+                field_list=[
+                    {'name': 'id'},
+                    {'name': 'descricao'},
                 ],
-                    className='py-2'
-                ),
+                filter_list=[
+                    {'op': 'eq', 'name': 'id', 'value': int(id_hist)},
+                ]
+            )
+            descricao = df_hist_turma['descricao'][0]
 
-            ],
-        )
+            editable_remark = dbc.Row(
+                children=[
+                    dbc.Row(
+                        children=[
+                         html.H1(nome_aluno)
+                        ],
+                        className='pt-5',
+                        style={
+                            'background-color': '#ffffff'
+                        },
+                    ),
+                    dbc.Row(children=[
+                        dbc.Textarea(
+                            id=f"aluno-descricao-{page_name}",
+                            size="lg",
+                            placeholder="",
+                            value=descricao,
+                            style={
+                                'width': '100%',
+                                'height': '500px'
+                            },
+
+
+                        )
+                    ],
+                        className='py-2'
+                    ),
+
+                ],
+            )
+            alert = ''
+
+        except Exception as err:
+            editable_remark = ''
+            alert = 'Turma não possui nota'
+
     else:
         editable_remark = ''
+        alert = ''
 
-    return editable_remark
+    return editable_remark, alert
 
 
 @callback(

@@ -485,7 +485,7 @@ def filter_columns(table_radio):
                 {'label': 'Ativa'.upper(), 'value': f'Ativa'.upper()},
                 {'label': 'Inativa'.upper(), 'value': f'Inativa'.upper()},
                 {'label': 'Em espera'.upper(), 'value': f'Em espera'.upper()},
-                {'label': 'Finalizadas'.upper(), 'value': f'Finalizadas'.upper()},
+                {'label': 'Finalizada'.upper(), 'value': f'Finalizada'.upper()},
             ],
             value='ATIVA',
         )

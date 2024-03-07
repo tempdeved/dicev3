@@ -471,7 +471,7 @@ def capturar_funcionarios(main_contianer):
             data=df[filter_columns].to_dict('records'),
             columns=[{"name": i.upper(), "id": i} for i in df[filter_columns].columns],
             page_current=0,
-            page_size=5,
+            page_size=10,
             style_cell={'textAlign': 'center'},
             editable=False,
             filter_action='native',

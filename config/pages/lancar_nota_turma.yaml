@@ -1,0 +1,184 @@
+lancar_nota_turma:
+  table_contraparte:
+    id_turma:
+      headerName: id_turma
+      suppressSizeToFit: True
+      editable: True
+      width: 80
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    id_aluno:
+      headerName: id_aluno
+      suppressSizeToFit: True
+      editable: True
+      width: 80
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    nome:
+      headerName: nome
+      suppressSizeToFit: True
+      editable: True
+      width: 180
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    numero_aulas:
+      headerName: numero_aulas
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    numero_faltas:
+      headerName: numero_faltas
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    research:
+      headerName: research
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    organization:
+      headerName: organization
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    interest:
+      headerName: interest
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    group_activity:
+      headerName: group_activity
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    speaking:
+      headerName: speaking
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    frequencia_of:
+      headerName: frequencia_of
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    listening:
+      headerName: listening
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    readind_inter:
+      headerName: readind_inter
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True
+    writing_process:
+      headerName: writing_process
+      suppressSizeToFit: True
+      editable: True
+      width: 60
+      type: ''
+      format:
+        function: ''
+      group: True
+      aggFunc: ''
+      hide: True
+      pinned: 'left'
+      checkbox_selection: True

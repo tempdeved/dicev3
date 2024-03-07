@@ -4,6 +4,7 @@ import mysql.connector.errors
 import pandas as pd
 import sqlalchemy.exc
 import json
+import dash_ag_grid as dag
 
 from elements.check_list import CheckList, RadioItem
 import dependecies
@@ -28,7 +29,7 @@ dados = Dados(config['ambiente'])
 
 semestre = RadioItem(
             id_object=f"mes-ref-{page_name}",
-            title='FILTRAR COLUNAS',
+            title='PERÍODO',
             options=[
                 {"label": "1° Sem", "value": 1},
                 {"label": "2° Sem", "value": 2},
@@ -129,6 +130,9 @@ content_layout = dbc.Row(
                                                     ),
                                                 ],
                                             ),
+
+                                            # dbc.Row(id=f'out-edit-func-{page_name}'),
+
                                         ],
                                         style={'background-color': '#ffffff'},
                                         title="SELECIONAR TURMA"
@@ -271,6 +275,12 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                 {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
             ]
         )
+        df_turma_aluno  = dados.query_table(
+            table_name='turma_aluno',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_turma', 'value': id_turma_dice},
+            ]
+        )
 
         if len(df_turma2['id_aluno']) >= 1:
             print('possui alunos')
@@ -278,7 +288,8 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             print('nao possui')
             return 'não possui alunos cadastrados'
 
-        list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
+        list_alunos = df_turma_aluno['id_aluno'].to_list()
+        # list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
 
         df_all_aluno  = dados.query_table(
             table_name='aluno',
@@ -371,6 +382,10 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
         )
         df_merge['id_turma'] = id_turma_dice
 
+        df_merge['nome'] = df_merge['nome'].apply(
+            lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" "))  > 2 else f'{x.split(" ")[0]}'
+        )
+
         dt_turma = dash_table.DataTable(
             id=f'data-table-hist-aluno-{page_name}',
             data=df_merge[list_columns].to_dict('records'),
@@ -393,33 +408,114 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             # },
             # style_cell={'textAlign': 'center'},
             page_size=30,
-            filter_action='native',
-            sort_mode="multi",
-            sort_action="native",
-            page_action="native",
+            # filter_action='native',
+            # sort_mode="multi",
+            # sort_action="native",
+            # page_action="native",
             # editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-            style_as_list_view=True,
-
-            fixed_columns={'headers': True, 'data': 3},
-            style_table={'minWidth': '100%'},
+            style_header={
+                'textAlign': 'center',
+                'fontWeight': 'bold',
+                # 'transform': 'rotate(270deg)',
+                # 'display': 'block'
+            },
+            # style_as_list_view=True,
+            # fixed_columns={'headers': True, 'data': 3},
+            # style_table={'minWidth': '100%'},
             style_cell={
                 # all three widths are needed
                 'textAlign': 'center',
                 # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
+                # 'overflow': 'hidden',
+                # 'textOverflow': 'ellipsis',
+                # 'transform': 'rotate(270deg)',
             },
-
+            # style_cell_conditional=[
+                # {'if': {'column_id': 'id_turma'}, 'width': '2%'},
+                # {'if': {'column_id': 'id_aluno'}, 'width': '2%'},
+                # {'if': {'column_id': 'nome'}, 'width': '3%'},
+                # {'if': {'column_id': 'numero_aulas'}, 'transform': 'rotate(270deg);'},
+                # {'if': {'column_id': 'numero_faltas'}, 'transform': 'rotate(270deg);'},
+            # ],
         )
+        # columns_datatable = [
+        #     {
+        #         "field": i,
+        #         'headerName': columns[i]['name'],
+        #         'filter': True,
+        #         'editable': False,
+        #         'type': columns[i]['type'],
+        #         "filterParams": {
+        #             "buttons": ["apply", "reset"],
+        #             "closeOnApply": False,
+        #         },
+        #         "sortable": True,
+        #         'valueFormatter': columns[i]['format'],
+        #         'checkboxSelection': columns[i]['checkbox_selection'],
+        #         'autoHeight': True,
+        #         # 'rowGroup': columns[i]['group'],
+        #         # 'aggFunc': columns[i]['aggFunc'],
+        #         # 'hide': columns[i]['hide'],
+        #         # 'pinned': columns[i]['pinned'],
+        #         # 'floatingFilter': columns[i]['pinned'],
+        #
+        #     } for i in columns
+        # ]
 
 
+
+        columnDefs = [
+            {
+                "field": x,
+                "headerName": config['lancar_nota_turma']['table_contraparte'][x]['headerName'].replace('_', ' ').title(),
+                'suppressSizeToFit': config['lancar_nota_turma']['table_contraparte'][x]['suppressSizeToFit'],
+                'editable': config['lancar_nota_turma']['table_contraparte'][x]['editable'],
+                # 'width': 80,
+                'width': config['lancar_nota_turma']['table_contraparte'][x]['width'],
+            }
+            for x in config['lancar_nota_turma']['table_contraparte']
+        ]
+
+        turma2 = dag.AgGrid(
+            id=f'data-table-hist-aluno-{page_name}',
+            columnDefs=columnDefs,
+            rowData=df_merge[list_columns].to_dict('records'),
+            dashGridOptions={
+                # 'groupHeaderHeight': 120,
+                'headerHeight': 150,
+                # 'floatingFiltersHeight': 100,
+                "animateRows": True,
+                # "wrapHeaderText": True,
+                # "autoHeaderHeight": True,
+            },
+            # defaultColDef={"editable": True, "filter": True, "floatingFilter": True},
+            columnSize="sizeToFit",
+        )
 
         datatable1 = dbc.Row(
             children=[
-                dt_turma
+                # html.P('a'),
+                # html.P('a'),
+                # html.P('a'),
+                # html.P('a'),
+                # html.P('a'),
+                # html.P('a'),
+                # html.P('a'),
+
+                # dt_turma,
+
+                # html.Br('a'),
+                # html.Br('a'),
+
+                turma2,
+
+                # html.Br('a'),
+                # html.Br('a'),
+                # html.Br('a'),
+                # html.Br('a'),
+                # html.Br('a'),
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto header1'
         )
         # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
@@ -447,7 +543,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
     # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
+    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='rowData'),
     # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
     # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
     # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),

@@ -1,3 +1,34 @@
+ /*
+ Select-menu-outer
+ para dropdown no dashdatatable
+ */
+
 .Select-menu-outer {
     display : block !important;
   }
+
+
+ /*
+ Texto vertical
+ */
+
+.header1 .ag-header-cell-label {
+    /*Necessary to allow for text to grow vertically*/
+    height: 100%;
+    padding: 0 !important;
+}
+
+.header1 .ag-header-group-cell {
+    font-size: 50px;
+}
+
+.header1 .ag-header-cell-label .ag-header-cell-text {
+    /*Force the width corresponding at how much width
+      we need once the text is laid out vertically*/
+    /* width: 100px; */
+    writing-mode: vertical-lr;
+    /* -ms-writing-mode: bt-lr; */
+    /* line-height: 2em; */
+    /* margin-top: 60px; */
+    /* transform: rotate(270deg); */
+}

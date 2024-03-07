@@ -594,6 +594,10 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
             } for i in df_result3.columns
         ]
 
+        df_result3['nome'] = df_result3['nome'].apply(
+            lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" ")) > 2 else f'{x.split(" ")[0]}'
+        )
+
         dt_turma = dash_table.DataTable(
             id=f'data-table-hist-aluno-{page_name}',
             data=df_result3.to_dict('records'),
@@ -609,7 +613,7 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
             # },
             # style_cell={'textAlign': 'center'},
             # page_size=30,
-            # filter_action='native',
+            filter_action='native',
             # sort_mode="multi",
             # sort_action="native",
             # page_action="native",
@@ -628,6 +632,11 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                 'overflow': 'hidden',
                 'textOverflow': 'ellipsis',
             },
+            style_cell_conditional=[
+                {'if': {'column_id': 'id_turma'}, 'width': '3%'},
+                {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
+                {'if': {'column_id': 'nome'}, 'width': '5%'},
+            ]
 
         )
 
