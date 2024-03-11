@@ -26,13 +26,18 @@ dash.register_page(__name__, path=f'/{page_name}')
 config = Config().config
 dados = Dados(config['ambiente'])
 
-
+"Mar/Abr"
+"Mai/Jun"
+"Ago/Set"
+"Out/Nov"
 semestre = RadioItem(
             id_object=f"mes-ref-{page_name}",
             title='PERÍODO',
             options=[
-                {"label": "1° Sem", "value": 1},
-                {"label": "2° Sem", "value": 2},
+                {"label": "Mar/Abr", "value": 1},
+                {"label": "Mai/Jun", "value": 2},
+                {"label": "Ago/Set", "value": 3},
+                {"label": "Out/Nov", "value": 4},
             ],
             labelCheckedClassName="text-primary",
             inputCheckedClassName="border border-primary bg-primary",
@@ -201,8 +206,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status', 'semestre'],
-        ascending=[False, True, True],
+        by=['status', 'inicio', ],
+        ascending=[True, False, ],
         inplace=True
     )
     colulmn_type = {

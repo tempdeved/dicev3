@@ -289,8 +289,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status', 'semestre'],
-        ascending=[False, True, True],
+        by=['status', 'inicio', ],
+        ascending=[True, False, ],
         inplace=True
     )
     colulmn_type = {

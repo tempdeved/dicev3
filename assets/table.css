@@ -32,3 +32,76 @@
     /* margin-top: 60px; */
     /* transform: rotate(270deg); */
 }
+
+/*.center-aligned-group-header .ag-header-group-cell-label {*/
+.center-aligned-group-header {
+    text-align: center;
+}
+
+.tamanho-letra {
+    font-size: 0.875em;
+}
+
+.comments-size {
+    font-size: 1.2em;
+}
+
+.header2 .ag-header-cell-label {
+    /*Necessary to allow for text to grow vertically*/
+    height: 100%;
+    padding: 0 !important;
+}
+
+.header2 .ag-header-group-cell {
+    font-size: 20px;
+}
+
+.header2 .ag-header-cell-label .ag-header-cell-text {
+    /*Force the width corresponding at how much width
+      we need once the text is laid out vertically*/
+    width: 100%;
+}
+
+.center-aligned-header .ag-header-cell-label {
+    justify-content: center;
+}
+
+.header3 .ag-header-cell-label {
+    /*Necessary to allow for text to grow vertically*/
+    height: 100%;
+    padding: 0 !important;
+}
+
+.header3 .ag-header-group-cell {
+    font-size: 20px;
+    text-align: center;
+
+}
+
+.header3 .ag-header-cell-label .ag-header-cell-text {
+    /*Force the width corresponding at how much width
+      we need once the text is laid out vertically*/
+    width: 100%;
+}
+
+/* center header e content */
+.header3 .ag-root-wrapper  {
+    text-align: center;
+}
+
+.header3 .ag-theme-alpine .ag-header-group-cell {
+    font-weight: bold;
+    /* font-size: 22px; */
+    justify-content: center;
+
+}
+.center-aligned-group-header{
+    justify-content: center;
+}
+
+.img-logo2 {
+  width: 400px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 20%;
+}

@@ -5,6 +5,7 @@ import pandas as pd
 import sqlalchemy.exc
 import json
 
+import dash_ag_grid as dag
 import dependecies
 from dash import html, dcc, dash_table, callback, Input, Output, State
 import dash_bootstrap_components as dbc
@@ -26,12 +27,17 @@ dash.register_page(__name__, path=f'/{page_name}')
 config = Config().config
 dados = Dados(config['ambiente'])
 
+
+
+
 select_periodo = CheckList(
     id_object=f"mes-ref-{page_name}",
     title='PERÍODO',
     options=[
-        {"label": "1° Sem", "value": 1, "disabled": True},
-        {"label": "2° Sem", "value": 2, "disabled": True},
+        {"label": "Mar/Abr", "value": 1, "disabled": True},
+        {"label": "Mai/Jun", "value": 2, "disabled": True},
+        {"label": "Ago/Set", "value": 3, "disabled": True},
+        {"label": "Out/Nov", "value": 4, "disabled": True},
     ],
     inline=True,
     value=[1, 2, 3, 4],
@@ -196,8 +202,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status', 'semestre'],
-        ascending=[False, True, True],
+        by=[ 'status', 'inicio',],
+        ascending=[True, False,],
         inplace=True
     )
     colulmn_type = {
@@ -408,10 +414,10 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                     )
 
                 meses_ref = {
-                    1: "Março/Abril",
-                    2: "Maio/Junho",
-                    3: "Ago/set",
-                    4: "Out/nov",
+                    1: "Mar/Abr",
+                    2: "Mai/Jun",
+                    3: "Ago/Set",
+                    4: "Out/Nov",
                 }
                 month_str = meses_ref[int_month]
                 df_merge[f'media_{month_str}'] = notas
@@ -459,52 +465,95 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" ")) > 2 else f'{x.split(" ")[0]}'
         )
 
-        dt_turma = dash_table.DataTable(
-            id=f'data-table-hist-aluno-{page_name}',
-            data=df_result2.to_dict('records'),
-            # data=df_merge[list_columns].to_dict('records'),
-            columns=columns,
-            # dropdown={
-            #     'cadastrado': {
-            #         'options': [
-            #             {'label': "CAD", 'value': "CAD"},
-            #             {'label': "NAO CAD", 'value': "NAO CAD"},
-            #         ]
-            #     }
-            # },
-            # style_cell={'textAlign': 'center'},
-            page_size=30,
-            filter_action='native',
-            sort_mode="multi",
-            sort_action="native",
-            page_action="native",
-            # editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-            style_as_list_view=True,
-            fixed_columns={'headers': True, 'data': 3},
-            style_table={'minWidth': '100%'},
-            style_cell={
-                # all three widths are needed
-                'textAlign': 'center',
-                # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-            },
-            style_cell_conditional=[
-                {'if': {'column_id': 'id_turma'}, 'width': '3%'},
-                {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
-                {'if': {'column_id': 'nome'}, 'width': '5%'},
-            ]
+        # dt_turma = dash_table.DataTable(
+        #     id=f'data-table-hist-aluno-{page_name}',
+        #     data=df_result2.to_dict('records'),
+        #     # data=df_merge[list_columns].to_dict('records'),
+        #     columns=columns,
+        #     page_size=30,
+        #     filter_action='native',
+        #     sort_mode="multi",
+        #     sort_action="native",
+        #     page_action="native",
+        #     # editable=False,
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #     style_as_list_view=True,
+        #     fixed_columns={'headers': True, 'data': 3},
+        #     style_table={'minWidth': '100%'},
+        #     style_cell={
+        #         # all three widths are needed
+        #         'textAlign': 'center',
+        #         # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+        #         'overflow': 'hidden',
+        #         'textOverflow': 'ellipsis',
+        #     },
+        #     style_cell_conditional=[
+        #         {'if': {'column_id': 'id_turma'}, 'width': '3%'},
+        #         {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
+        #         {'if': {'column_id': 'nome'}, 'width': '5%'},
+        #     ]
+        #
+        # )
 
+        # columnDefs = [
+        #     {
+        #         "field": x,
+        #         "headerName": '',                                                                       ' ').title(),
+        #         'suppressSizeToFit': '',
+        #         'editable': '',
+        #         'width': '',
+        #     }
+        #     for x in df_result2.columns
+        # ]
+        columnDefs = []
+
+        for idx, x in enumerate(df_result2.columns):
+            if idx == 2:
+                columnDefs.append(
+                    {
+                        'field': x,
+                        'headerName': x.replace('_', ' ').upper(),
+                        'suppressSizeToFit': True,
+                        'width': 180,
+                    }
+                )
+            else:
+                columnDefs.append(
+                    {
+                        'field': x,
+                        'headerName': x.replace('_', ' ').upper(),
+                        'suppressSizeToFit': True,
+                        'width': 90,
+                    }
+                )
+
+
+        turma2 = dag.AgGrid(
+            id=f'data-table-hist-aluno-{page_name}',
+            columnDefs=columnDefs,
+            rowData=df_result2.to_dict('records'),
+            dashGridOptions={
+                # 'groupHeaderHeight': 120,
+                'headerHeight': 200,
+                # 'floatingFiltersHeight': 100,
+                "animateRows": True,
+                # "wrapHeaderText": True,
+                # "autoHeaderHeight": True,
+
+                "domLayout": 'print',
+            },
+            # defaultColDef={"editable": True, "filter": True, "floatingFilter": True},
+            columnSize="sizeToFit",
         )
 
 
 
         datatable1 = dbc.Row(
             children=[
-                dt_turma
+                # dt_turma,
+                turma2,
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto header1'
         )
         # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
@@ -517,10 +566,10 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
     # caputra mes ref STR
     meses_ref = {
-        1: "Março/Abril",
-        2: "Maio/Junho",
-        3: "Ago/set",
-        4: "Out/nov",
+        1: "Mar/Abr",
+        2: "Mai/Jun",
+        3: "Ago/Set",
+        4: "Out/Nov",
     }
 
     month_ref = f'NOTA'
@@ -534,7 +583,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 @callback(
     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
     # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
+    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='rowData'),
     # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
     # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
     # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),

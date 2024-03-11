@@ -397,8 +397,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status'],
-        ascending=[False, True],
+        by=['status', 'inicio', ],
+        ascending=[True, False, ],
         inplace=True
     )
 
@@ -519,7 +519,7 @@ def editar_turma(data_drom_data_table, active_cell):
         df_turma_horario  = dados.query_table(
             table_name='turma_horario',
             filter_list=[
-                {'op': 'eq', 'name': 'id_turma', 'value': f'{turma_id}'},
+                {'op': 'eq', 'name': 'id_turma', 'value': f'{id_dice}'},
             ]
         )
         df_turma_horario.drop(columns=['id'], inplace=True)
@@ -751,55 +751,72 @@ def editar_turma(data_drom_data_table, active_cell):
 
 
         list_of_hour = []
+        df_horario = dados.query_table(table_name='horario')
+
         if len(df_hr_filted) >=1 :
-            for x, row in df_hr_filted.iterrows():
-                list_of_hour.append(
-                    dbc.Row(
-                        children=[
-                            dbc.Input(
-                                disabled=True,
-                                # options=[
-                                #     {'label': id_dice, 'value': id_dice},
-                                # ],
-                                value=f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
-                                      f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper(),
-                                # className='m-0 p-0',
-                            )
-                        ],
-                        className='m-0 p-0 pt-2',
-                    ),
-                    # dbc.Row(
-                    #     children=[
-                    #         f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
-                    #         f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper()
-                    #     ],
-                    #     class_name='pt-1'
-                    # )
-                )
-        else:
+            horario_lista = [
+                {
+                    'label': f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até '
+                             f'{row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}',
+                    'value': row["id"]
+                }
+                for i, row in df_horario.iterrows()
+            ]
             list_of_hour.append(
-                # html.Img(
-                #     src='../static/images/aluno/312.jpg',
-                #     alt='312',
-                #     className='perfil_avatar py-2 mx-auto text-center',
-                #     # width=10
-                #     style={'height': '150px', 'width': '150px'},
-                # ),
-                # dbc.Row(f'SEM HORARIO CADASTRADO'),
                 dbc.Row(
                     children=[
-                        dbc.Input(
-                            disabled=True,
-                            # options=[
-                            #     {'label': id_dice, 'value': id_dice},
-                            # ],
-                            value=f'SEM HORARIO CADASTRADO',
-                            # className='m-0 p-0',
+                        dbc.Checklist(
+                            id=f'imp-create-turma-horarios-{page_name}',
+                            options=horario_lista,
+                            className='m-0 p-0',
+                            value=df_hr['id'].to_list()
                         )
-                    ],
-                    className='m-0 p-0 pt-2',
-                ),
+                    ]
+                )
             )
+
+            # for x, row in df_hr_filted.iterrows():
+            #     list_of_hour.append(
+            #         dbc.Row(
+            #             children=[
+            #                 dbc.Input(
+            #                     # disabled=True,
+            #                     # options=[
+            #                     #     {'label': id_dice, 'value': id_dice},
+            #                     # ],
+            #                     value=f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até'
+            #                           f' {row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}'.upper(),
+            #                     # className='m-0 p-0',
+            #                 )
+            #             ],
+            #             className='m-0 p-0 pt-2',
+            #         ),
+            #     )
+        else:
+
+
+            horario_lista = [
+                {
+                    'label': f'{row["dia_semana"]} de {row["hora_inicio"].zfill(2)}:{row["min_inicio"].zfill(2)} até '
+                             f'{row["hora_fim"].zfill(2)}:{row["min_fim"].zfill(2)}',
+                    'value': row["id"]
+                }
+                for i, row in df_horario.iterrows()
+            ]
+
+            list_of_hour.append(
+                dbc.Row(
+                    children=[
+                        dbc.Checklist(
+                            id=f'imp-create-turma-horarios-{page_name}',
+                            options=horario_lista,
+                            className='m-0 p-0',
+                            # value=df_hr['id'].to_list()
+                        )
+                    ]
+                )
+            )
+
 
         alunos_cadastrados = df_alunos_filted['id'].to_list()
 
@@ -842,53 +859,6 @@ def editar_turma(data_drom_data_table, active_cell):
             style_header={'textAlign': 'center', 'fontWeight': 'bold'},
             style_as_list_view=True,
         )
-
-        # from collections import OrderedDict
-        #
-        # df = pd.DataFrame(OrderedDict([
-        #     ('climate', ['Sunny', 'Snowy', 'Sunny', 'Rainy']),
-        #     ('temperature', [13, 43, 50, 30]),
-        #     ('city', ['NYC', 'Montreal', 'Miami', 'NYC'])
-        # ]))
-        #
-        # a = [
-        #     {'label': i, 'value': i}
-        #     for i in df['climate'].unique()
-        # ]
-        #
-        # dt_func5 = html.Div([
-        #     dash_table.DataTable(
-        #         id='table-dropdown',
-        #         data=df.to_dict('records'),
-        #         columns=[
-        #             {'id': 'climate', 'name': 'climate', 'presentation': 'dropdown'},
-        #             {'id': 'temperature', 'name': 'temperature'},
-        #             {'id': 'city', 'name': 'city', 'presentation': 'dropdown'},
-        #         ],
-        #
-        #         editable=True,
-        #         dropdown={
-        #             'climate': {
-        #                 'options': [
-        #                     {'label': i, 'value': i}
-        #                     for i in df['climate'].unique()
-        #                 ]
-        #             },
-        #             'city': {
-        #                 'options': [
-        #                     {'label': i, 'value': i}
-        #                     for i in df['city'].unique()
-        #                 ]
-        #             }
-        #         },
-        #         style_table={
-        #             "width": "600px",
-        #             "overflowY": "hidden"
-        #         }
-        #
-        #     ),html.Div(id='table-dropdown-container')
-        # ],
-        # )
 
         row1 = dbc.Row(
             children=[
@@ -1124,14 +1094,24 @@ def editar_turma(data_drom_data_table, active_cell):
             class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2'
         )
 
-        row4_title_hora = dbc.Row(
-            children=[
-                dbc.Row('HORARIO', class_name=''),
-        ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-2 pb-1')
-
         row4_content_hora = dbc.Row(
-            children=list_of_hour,
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 pt-1 pb-1 pl-2'
+            children=[
+                dbc.Accordion(
+                    children=[
+                        dbc.AccordionItem(
+                            children=list_of_hour,
+                            className='m-0 p-0',
+                            # style={'background-color': '#ffffff'},
+                            title="HORARIO",
+                        ),
+                    ],
+                    className='m-0 p-0',
+                    start_collapsed=True,
+                    flush=True,
+                    # style={'background-color': '#ffffff'}
+                )
+            ],
+            className='m-0 p-1',
         )
 
         # row5 = dbc.Row(
@@ -1150,7 +1130,6 @@ def editar_turma(data_drom_data_table, active_cell):
                 row_id_turma,
                 row_professor,
                 row_coordenador,
-                row4_title_hora, # HORARIO
                 row4_content_hora, # HORARIO
                 row_nivel,
                 row_map,
@@ -1181,7 +1160,7 @@ def editar_turma(data_drom_data_table, active_cell):
     State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
     State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
     State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
-    # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+    State(component_id=f'imp-create-turma-horarios-{page_name}',  component_property='value'),
 
     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
     )
@@ -1192,19 +1171,30 @@ def salvar_turma(
         nivel,
         map,
         id_turma_dice,
+        horarios_turma,
         n_clicks
 ):
     # if n_clicks :
     if n_clicks or dt_aluno or dt_prof or nivel or map:
+
         id_turma_dice = int(id_turma_dice)
         dt_prof = int(dt_prof)
         dt_coord = int(dt_coord)
         df_aluno = pd.DataFrame(dt_aluno)
 
-        # profs_cadastrados = []
-        # verifica se possui prof para ser cadastrado
-        # if df_prof.empty == False:
-        #     profs_cadastrados = df_prof[df_prof['cadastrado'] == 'CAD']
+
+        df_turma_horario = pd.DataFrame()
+        ids_horarios = None
+        if horarios_turma:
+            # tabela relacionamento horario
+            df_turma_horario = pd.DataFrame(
+                data={
+                    'id_horario': horarios_turma
+                    # 'id_horario': list_horarios
+                }
+            )
+            df_turma_horario['id_turma'] = id_turma_dice
+
 
 
         alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
@@ -1240,26 +1230,23 @@ def salvar_turma(
                 }
             )
 
-        # append prof novos
-        # if len(profs_cadastrados) >= 1:
-        #     func_prof = dados.query_table(
-        #         table_name='funcionario',
-        #         filter_list=[
-        #             {'op': 'in', 'name': 'id', 'value': profs_cadastrados['id'].to_list()}
-        #         ],
-        #     )
-
-
-            # list_profs = []
-            # for x in func_prof['email_func']:
-            #     list_profs.append(x)
-
         df_turma['id_professor'] = dt_prof
         df_turma['id_coordenador'] = dt_coord
 
 
 
         try:
+
+            # delete horarios
+            dados.remove_from_table(
+                table_name='turma_horario',
+                filter_list=[
+                    {'op': 'eq', 'name': 'id_turma', 'value': id_turma_dice},
+                ]
+            )
+            if len(df_turma_horario) >= 1:
+                dados.insert_into_table(df=df_turma_horario, table_name='turma_horario')
+
             dados.update_table(
                 values=df_turma.to_dict(orient='records')[0],
                 table_name='turma',

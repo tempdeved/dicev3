@@ -298,8 +298,8 @@ side_bar = Sidebar().layout(
                 # boletim
                 dcc.Link(
                     style={'font-size': 13},
-                    children='--boletim aluno'.upper(),
-                    href='',
+                    children='boletim aluno'.upper(),
+                    href='/BoletimAluno',
                     className='justify-content-center text-middle text-center',
                 ),
                 dcc.Link(

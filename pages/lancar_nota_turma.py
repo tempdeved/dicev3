@@ -31,12 +31,13 @@ semestre = RadioItem(
             id_object=f"mes-ref-{page_name}",
             title='PERÍODO',
             options=[
-                {"label": "1° Sem", "value": 1},
-                {"label": "2° Sem", "value": 2},
+                {"label": "Mar/Abr", "value": 1},
+                {"label": "Mai/Jun", "value": 2},
+                {"label": "Ago/Set", "value": 3},
+                {"label": "Out/Nov", "value": 4},
             ],
             labelCheckedClassName="text-primary",
             inputCheckedClassName="border border-primary bg-primary",
-            # value=['id_submercado', 'tipo_energia'],
             value=1,
             inline=True,
             switch=True,
@@ -201,8 +202,8 @@ def buscar_turmas(btn):
     )
 
     df_turma.sort_values(
-        by=['id', 'status', 'semestre'],
-        ascending=[False, True, True],
+        by=['status', 'inicio', ],
+        ascending=[True, False, ],
         inplace=True
     )
     colulmn_type = {
@@ -528,8 +529,10 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
     # caputra mes ref STR
     meses_ref = {
-        1: "1° Sem.",
-        2: "2° Sem.",
+        1: "Mar/Abr",
+        2: "Mai/Jun",
+        3: "Ago/Set",
+        4: "Out/Nov",
     }
 
     month_ref = f'LANÇAR NOTA - {meses_ref[mes_ref]}'

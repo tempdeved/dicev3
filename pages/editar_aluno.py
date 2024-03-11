@@ -664,7 +664,7 @@ def editar_aluno(data_drom_data_table, active_cell):
                                     html.Img(
                                         id=f'img-user-{page_name}',
                                         src=foto_user,
-                                        alt=f'Aluno {df_user["nome"][0]}',
+                                        alt=f'ALUNO {df_user["nome"][0]}',
                                         className='perfil_avatar py-2 mx-auto text-center',
                                         # width=10
                                         style={'height': '400px', 'width': '400px'},

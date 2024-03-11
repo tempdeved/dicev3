@@ -283,8 +283,8 @@ relatorio_etiqueta_alunos:
 #        - fim_turma
 #        - map
 #        - idioma
-#        - nome_professor
-#        - nome_coordenador
+        - nome_professor
+        - nome_coordenador
 #        - escola
 #        - id_aluno
         - status_aluno
