@@ -268,22 +268,20 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
         id_turma_dice = int(df_turma['id_turma'].iloc[active_cell[0]])
 
         df_turma2  = dados.query_table(
-            table_name='turma',
+            table_name='turma_aluno',
             # field_list=[
             #     {'name': 'email'},
             # ]
             filter_list=[
-                {'op': 'eq', 'name': 'id', 'value': f'{turma_id}'},
+                {'op': 'eq', 'name': 'id_turma', 'value': f'{turma_id_dice}'},
             ]
         )
 
-        if len(df_turma2['id_aluno']) >= 1:
-            print('possui alunos')
-        else:
-            print('nao possui')
-            return 'não possui alunos cadastrados'
+        list_alunos = df_turma2['id_aluno'].to_list()
 
-        list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
+
+
+        # list_alunos = df_turma2['id_aluno'][0])['id_aluno']
 
         df_all_aluno  = dados.query_table(
             table_name='aluno',
@@ -552,16 +550,22 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             children=[
                 # dt_turma,
                 turma2,
+                dbc.Row(
+                    children=[
+                        html.Br() for idx, x in df_result2.iterrows()
+                    ]
+                )
+
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto header1'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0  header1'
         )
-        # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+        # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12  p-0 m-0')
 
     else:
 
         dt_func = dash_table.DataTable(id=f'data-table-edit-func-{page_name}',)
 
-        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto')
+        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 ')
 
 
     # caputra mes ref STR

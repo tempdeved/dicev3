@@ -280,13 +280,13 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             ]
         )
 
-        if len(df_turma2['id_aluno']) >= 1:
-            print('possui alunos')
-        else:
-            print('nao possui')
-            return 'não possui alunos cadastrados'
+        df_turma_aluno = dados.query_table(
+            table_name='turma_aluno',
+            filter_list=[
+                {'op': 'eq', 'name': 'id_turma', 'value': f'{turma_id_dice}'},
+            ]
+        )
 
-        list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
 
         df_all_aluno  = dados.query_table(
             table_name='aluno',
@@ -294,7 +294,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             #     {'name': 'descricao'},
             # ],
             filter_list=[
-                {'op': 'in', 'name': 'id', 'value': list_alunos},
+                {'op': 'in', 'name': 'id', 'value': df_turma_aluno['id_aluno'].to_list()},
             ]
         )
 

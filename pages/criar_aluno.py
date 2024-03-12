@@ -425,13 +425,13 @@ def create_aluno(
             turma_alunos = []
             turma_alunos.append(int(max))
             # anexar novo aluno com alunos antigos
-            if df_turma['id_aluno'][0]:
-                json_alunos = json.loads(df_turma['id_aluno'][0])
+            # if df_turma['id_aluno'][0]:
+            #     json_alunos = json.loads(df_turma['id_aluno'][0])
+            #
+            #     for x in json_alunos['id_aluno']:
+            #         turma_alunos.append(x)
 
-                for x in json_alunos['id_aluno']:
-                    turma_alunos.append(x)
-
-            df_turma['id_aluno'] = json.dumps({'id_aluno': turma_alunos})
+            # df_turma['id_aluno'] = json.dumps({'id_aluno': turma_alunos})
 
         df_turma_aluno = pd.DataFrame(
             data={

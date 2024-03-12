@@ -669,8 +669,8 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                 ]
             )
 
-            id_professor = json.loads(df_turmax['id_professor'][0])
-            id_coordenador = json.loads(df_turmax['id_coordenador'][0])
+            id_professor = df_turmax['id_professor'][0]
+            id_coordenador = df_turmax['id_coordenador'][0]
             status = df_turmax['status'].unique()[0]
             escola = df_turmax['escola'].unique()[0]
 

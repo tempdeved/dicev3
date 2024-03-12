@@ -168,11 +168,12 @@ def form_create_turma(datepicker):
     df_funcionario.rename(columns={'email_func': 'email'}, inplace=True)
 
     df_users = pd.merge(
-        left=df_user,
-        right=df_funcionario,
+        left=df_user.rename(columns={'id':'id_user'}),
+        right=df_funcionario.rename(columns={'id':'id_professor'}),
         on=['email'],
         how='left',
     )
+
 
     df_professor = df_users[df_users['tipo'].isin(['Gerente', 'Professor', 'Coordenador'])]
     df_coordenador = df_users[df_users['tipo'].isin(['Gerente', 'Professor', 'Coordenador'])]
@@ -188,8 +189,8 @@ def form_create_turma(datepicker):
 
     professor_lista = [
         {
-            'label': f'{row["id_professor"]} - {row["nome_completo"]} - {row["status"]} ',
-            'value': row["id_x"]
+            'label': f'{row["id_user"]} - {row["nome_completo"]} - {row["status"]} ',
+            'value': row["id_user"]
         }
         for i, row in df_professor.iterrows()
     ]
@@ -611,6 +612,30 @@ def create_turma(
                 }
             )
             df_turma_horario['id_turma'] = id_turma
+            """
+            valida horarios
+            """
+            df_aux_horarios = dados.query_table(
+                table_name='horario',
+                filter_list=[
+                    {'op': 'in', 'name': 'id', 'value': horarios_turma}
+                ]
+            )
+            df_aux_filted = pd.DataFrame(
+                df_aux_horarios[
+                    df_aux_horarios['dia_semana'].duplicated(keep=False)
+                ]
+            )
+
+            if not df_aux_filted.empty:
+                rr = dbc.Row(
+                    children=[
+                        html.P('UMA TURMA NÂO PODE POSSUIR DOIS HOÁRIOS NO MESMO DIA'),
+                        html.P('revise seus campos'.upper()),
+                        html.Pre(repr(df_aux_horarios)),
+                    ]
+                )
+                return rr
 
         df_new_turma= pd.DataFrame(
             data={
@@ -665,7 +690,7 @@ def create_turma(
             if len(df_turma_horario) >= 1:
                 dados.insert_into_table(df=df_turma_horario, table_name='turma_horario')
 
-            msg = f'{n_clicks} - Turma Criada'
+            msg = f'{n_clicks} - Turma Criada'.upper()
         except Exception as err:
             msg = f'Erro: {err}'
 

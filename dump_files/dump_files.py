@@ -5,7 +5,8 @@ from banco.dados import Dados
 import os
 import shutil
 
-config = Config().config
+# config = Config().config
+config = Config().config2
 dados = Dados(config['ambiente'])
 
 def dump_alunos():
@@ -349,7 +350,7 @@ def migrate_user():
 if __name__ == '__main__':
     print('INICIO')
     # dump_alunos()
-    # dum_horario()
-    dum_admin()
-    migrate_user()
+    dum_horario()
+    # dum_admin()
+    # migrate_user()
 

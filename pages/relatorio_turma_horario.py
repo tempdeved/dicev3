@@ -713,8 +713,15 @@ def capturar_alunos(
         # concat 'horario'
         df_merge_turma2['horario'] = df_merge_turma2['hora_inicio'].str.zfill(2) + ':' + df_merge_turma2['min_inicio'].str.zfill(2) + ' - ' + df_merge_turma2['hora_fim'].str.zfill(2) + ':' + df_merge_turma2['min_fim'].str.zfill(2)
 
+
+        # if len(df_merge_turma2['id_aluno']) >= 1:
+        #     print('possui alunos')
+        # else:
+        #     print('nao possui')
+        #     return 'não possui alunos cadastrados'
+
         df_pivot1 = pd.pivot(
-            data=df_merge_turma2,
+            data=df_merge_turma2[df_merge_turma2['id_turma'] == 1234],
             columns=['dia_semana',],
             index=['id_turma'],
         )

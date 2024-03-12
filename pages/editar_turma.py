@@ -1173,6 +1173,30 @@ def salvar_turma(
             )
             df_turma_horario['id_turma'] = id_turma_dice
 
+            df_aux_horarios = dados.query_table(
+                table_name='horario',
+                filter_list=[
+                    {'op': 'in', 'name':'id', 'value': horarios_turma}
+                ]
+            )
+            df_aux_filted = pd.DataFrame(
+                df_aux_horarios[
+                    df_aux_horarios['dia_semana'].duplicated(keep=False)
+                ]
+            )
+
+            if not df_aux_filted.empty:
+                rr = dbc.Row(
+                    children=[
+                        html.P('UMA TURMA NÂO PODE POSSUIR DOIS HOÁRIOS NO MESMO DIA'),
+                        html.P('revise seus campos'.upper()),
+                        html.Pre(repr(df_aux_horarios)),
+                    ]
+                )
+                return rr
+
+
+
 
 
         alunos_cadastrados = df_aluno[df_aluno['cadastrado'] == 'CAD']
@@ -1237,8 +1261,9 @@ def salvar_turma(
             )
             # inserir alunos na turma
             dados.insert_into_table(table_name='turma_aluno', df=df_turma_aluno,)
-            datetime.datetime.today()
-            return f'TURMA ATUALIZADA: {df_turma_aluno["id_aluno"].to_list()}'
+            dd = datetime.datetime.today()
+
+            return f'TURMA ATUALIZADA: {dd:%Y-%m-%d %H:%M:%S}'
 
         except Exception as err:
             return str(err)
