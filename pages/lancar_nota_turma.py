@@ -283,12 +283,6 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             ]
         )
 
-        if len(df_turma2['id_aluno']) >= 1:
-            print('possui alunos')
-        else:
-            print('nao possui')
-            return 'não possui alunos cadastrados'
-
         list_alunos = df_turma_aluno['id_aluno'].to_list()
 
         df_all_aluno  = dados.query_table(
