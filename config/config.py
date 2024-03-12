@@ -8,6 +8,7 @@ class Config(object):
     def __init__(self):
 
         database_config = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'database', 'dice.yaml'))
+        database_config2 = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'database', 'dice2.yaml'))
         cidades_brasil = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'brasil', 'cidades_brasil.yaml'))
         # layout_config = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'layout', 'layout.yaml'))
         secret = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'auth', '.secret'))
@@ -28,4 +29,9 @@ class Config(object):
             lancar_nota_turma,
         )
         self.config = OmegaConf.to_container(self.config)
+
+        self.config2 = OmegaConf.merge(
+            database_config2
+        )
+        self.config2 = OmegaConf.to_container(self.config2)
 

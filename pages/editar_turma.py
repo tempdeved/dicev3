@@ -549,8 +549,6 @@ def editar_turma(data_drom_data_table, active_cell):
                 'nome_completo': 'nome_coordenador',
             }, inplace=True
         )
-
-        # list_prof = json.loads(df_turma2['id_professor'][0])['email_user']
         #
         # df_prof_filted = df_prof[df_prof['email_func'].isin(
         #     list_prof
@@ -577,7 +575,7 @@ def editar_turma(data_drom_data_table, active_cell):
             id=f'data-table-edit-profs-{page_name}',
             options=[
                 {
-                    'label': f'{row["id_professor"]} - {row["nome_professor"]} ',
+                    'label': f'{row["id_professor"]} - {row["nome_professor"]} - {row["status"]} ',
                     'value': row["id_professor"]
                 }
                 for i, row in df_prof_filted.iterrows()
@@ -590,7 +588,7 @@ def editar_turma(data_drom_data_table, active_cell):
             id=f'data-table-edit-coord-{page_name}',
             options=[
                 {
-                    'label': f'{row["id_coordenador"]} - {row["nome_coordenador"]} ',
+                    'label': f'{row["id_coordenador"]} - {row["nome_coordenador"]} - {row["status"]} ',
                     'value': row["id_coordenador"]
                 }
                 for i, row in df_coord_filted.iterrows()
@@ -693,23 +691,6 @@ def editar_turma(data_drom_data_table, active_cell):
 
         df_coord_filted = pd.DataFrame(columns=['id', 'nome_completo'])
 
-        # coord_name = ''
-
-        # if df_turma2['id_coordenador'].isna()[0] == False:
-            # list_coord = json.loads(df_turma2['id_coordenador'][0])['email_user']
-            # # list_coord = df_turma2['id_coordenador'][0].split(',')[:-1]
-            # df_coord = dados.query_table(
-            #     table_name='funcionario',
-            #     filter_list=[
-            #         {'op': 'in', 'name': 'email_func', 'value': list_coord}
-            #     ]
-            # )
-
-            # df_coord_filted = df_coord[['id', 'nome_completo']]
-
-            # coord_name = df_coord_filted['nome_completo'].to_list()
-
-
 
         df_hr_filted = pd.DataFrame(
             columns=['dia_semana', 'hora_inicio', 'min_inicio', 'hora_fim', 'min_fim']
@@ -733,11 +714,8 @@ def editar_turma(data_drom_data_table, active_cell):
         )
 
         if df_turma_aluno.empty == False:
-            # json_alunos = json.loads(df_turma2['id_aluno'][0])
 
             list_alunos = df_turma_aluno['id_aluno'].to_list()
-            # list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
-            # list_alunos = df_turma2['id_aluno'][0].split(',')[:-1]
             df_alunos = dados.query_table(
                 table_name='aluno',
                 filter_list=[
@@ -1209,10 +1187,6 @@ def salvar_turma(
         if len(alunos_cadastrados) >=1 :
             # list_aluno = []
             list_aluno = alunos_cadastrados['id'].to_list()
-            # for x in alunos_cadastrados['id']:
-            #     list_aluno.append(x)
-
-            # df_turma['id_aluno'] = json.dumps({'id_aluno': list_aluno})
 
             # tabela relacionamento
             df_turma_aluno = pd.DataFrame(

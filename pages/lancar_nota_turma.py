@@ -290,7 +290,6 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
             return 'não possui alunos cadastrados'
 
         list_alunos = df_turma_aluno['id_aluno'].to_list()
-        # list_alunos = json.loads(df_turma2['id_aluno'][0])['id_aluno']
 
         df_all_aluno  = dados.query_table(
             table_name='aluno',

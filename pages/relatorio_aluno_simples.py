@@ -356,11 +356,6 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
 
         # rename id_horario
         df_horario.rename(columns={'id':'id_horario'}, inplace=True)
-        # import json
-        # list_hr = json.loads(df_turma['id_hr_turma'][0])['id_horario']
-        # df_turma_horario = pd.DataFrame(
-        #     json.dumps(df_turma['id_hr_turma'])
-        # )
 
         # rename aluno
         df_aluno.rename(

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     create_engine, Column, Integer, Float, VARCHAR, DATETIME, ForeignKey, Text, UniqueConstraint,
-    DATE, BOOLEAN, Numeric ,TEXT,ARRAY, INTEGER, JSON
+    DATE, BOOLEAN, Numeric ,TEXT,ARRAY, INTEGER
 )
 from sqlalchemy.orm import relationship, backref
 import sqlalchemy
@@ -206,10 +206,13 @@ class Turma(Base):
     id_turma = Column(Integer, unique=True)
     created_at = Column(DATE)
 
-    id_professor = Column(JSON)
-    id_coordenador = Column(JSON)
-    id_hr_turma = Column(JSON) # menu check box
-    id_aluno = Column(JSON)
+    # id_aluno = Column(Integer, index=True)
+    id_professor = Column(Integer, index=True)
+    id_coordenador = Column(Integer, index=True)
+
+    # id_professor = Column(JSON)
+    # id_coordenador = Column(JSON)
+    # id_aluno = Column(JSON)
 
     semestre = Column(VARCHAR(250))
     numero_turma = Column(VARCHAR(250))

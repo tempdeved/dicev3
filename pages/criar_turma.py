@@ -188,7 +188,7 @@ def form_create_turma(datepicker):
 
     professor_lista = [
         {
-            'label': f'{row["nome_completo"]} {row["status"]} ',
+            'label': f'{row["id_professor"]} - {row["nome_completo"]} - {row["status"]} ',
             'value': row["id_x"]
         }
         for i, row in df_professor.iterrows()
@@ -600,28 +600,9 @@ def create_turma(
 
         df_alunos = pd.DataFrame(alunos_data)
 
-        # ids_prod = None
-        # if preofessores_turma:
-        #     list_prof = []
-        #     for x in preofessores_turma:
-        #         list_prof.append(x)
-        #     ids_prod = json.dumps({'email_user': list_prof})
-        #
-        # ids_coord = None
-        # if coordenador_turma:
-        #     list_coordenador = []
-        #     for x in coordenador_turma:
-        #         list_coordenador.append(x)
-        #     ids_coord = json.dumps({'email_user': list_coordenador})
-
         df_turma_horario = pd.DataFrame()
         ids_horarios = None
         if horarios_turma:
-            # list_horarios = []
-            # for x in horarios_turma:
-            #     list_horarios.append(x)
-            # ids_horarios = json.dumps({'id_horario': list_horarios})
-
             # tabela relacionamento horario
             df_turma_horario = pd.DataFrame(
                 data={
