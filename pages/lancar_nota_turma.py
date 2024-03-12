@@ -575,8 +575,14 @@ def salvar_nota_turma(dt_notas, mes_ref, n_clicks):
                 ]
             )
             dados.insert_into_table(df=df_notas, table_name='historico_aluno')
+            meses_ref = {
+                1: "Mar/Abr",
+                2: "Mai/Jun",
+                3: "Ago/Set",
+                4: "Out/Nov",
+            }
 
-            return f'TURMA ATUALIZADA {mes_ref}'
+            return f'TURMA ATUALIZADA {meses_ref[mes_ref]}'
         except Exception as err:
             return str(err)
 

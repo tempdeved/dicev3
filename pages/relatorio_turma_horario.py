@@ -670,7 +670,7 @@ def capturar_alunos(
             ]
         )
         df_turma.rename(columns={'status': 'status_turma'}, inplace=True)
-        df_turma.drop(columns=['id_aluno'], inplace=True)
+        # df_turma.drop(columns=['id_aluno'], inplace=True)
 
         # merge alunos e turmas
         df_merge_aluno = pd.merge(
