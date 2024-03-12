@@ -256,21 +256,6 @@ class HistoricoAluno(Base):
     descricao = Column(TEXT)
 
 config = Config().config['ambiente']['aws']
-# config = {
-#     'string_engine': r'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}',
-#     'credentials': dict(
-#         user='dice3',
-#         password='D1c9-3#ngl&6sh1a',
-#         host='52.1.249.237',
-#         port='3306',
-#         database='dicev3',
-#         # user='root',
-#         # password='',
-#         # host='127.0.0.1',
-#         # database='dicev3',
-#         # port='3306',
-#     ),
-# }
 
 engine = create_engine(
     config["string_engine"].format(**config["credentials"]),

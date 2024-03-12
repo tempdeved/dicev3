@@ -2,39 +2,70 @@ ambiente:
   aws:
     string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
     credentials:
-     # Prod - Uso em Produção
-        user: 'dice3'
-        password: 'D1c9-3#ngl&6sh1a'
-        host: 127.0.0.1
-        port: 3306
-        database: dicev3
-
-#        user: 'dice3'
-#        password: 'D1c9-3#ngl&6sh1a'
-#        host: 54.226.251.240
-#        port: 3306
-#        database: dicev3
-
-#          user: 'root'
-#          password: ''
-#          host: 127.0.0.1
-#          port: 3306
-#          database: dicev3
-
-  nat:
-    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
-    credentials:
-
-#       NAT - Uso inteiro/Ambiente de Desenvolvimento
-      user: 'dice3'
-      password: 'D1c9-3#ngl&6sh1a'
-      host: 54.226.251.240
+      user: 'dicev4'
+      password: '8jo¨T&fvY'
+      host: 127.0.0.1
       port: 3306
-      database: dicev3
+      database: dicev4
 
 #      user: 'root'
 #      password: ''
 #      host: 127.0.0.1
 #      port: 3306
+#      database: dicev4
+
+#      Prod - Uso em Produção
+#        user: 'dice3'
+#        password: 'D1c9-3#ngl&6sh1a'
+#        host: 127.0.0.1
+#        port: 3306
+#        database: dicev3
+
+#        NAT
+#        user: 'dicev3'
+#        user: 'dicev4'
+#        password: 'D1c9-3#ngl&6sh1a'
+#        password: '8jo¨T&fvY'
+#        host: 54.85.171.7
+#        port: 3306
+#        database: dicev3
+#        database: dicev4
+
+
+
+#      user: 'dicev4'
+#      password: '8jo¨T&fvY'
+#      host: 54.85.171.7
+#      port: 3306
+#      database: dicev4
+
+  nat:
+    string_engine: 'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}'
+    credentials:
+      user: 'dicev4'
+      password: '8jo¨T&fvY'
+      host: 54.85.171.7
+      port: 3306
+
+#      database: dicev4
+#      user: 'root'
+#      password: ''
+#      host: 127.0.0.1
+#      port: 3306
+#      database: dicev4
+
+#       NAT - Uso inteiro/Ambiente de Desenvolvimento
+#      user: 'dice3'
+#      password: 'D1c9-3#ngl&6sh1a'
+#      host: 54.85.171.7
+#      port: 3306
 #      database: dicev3
+
+#      user: 'dicev4'
+#      password: '8jo¨T&fvY'
+#      host: 54.85.171.7
+#      port: 3306
+#      database: dicev4
+#
+
 

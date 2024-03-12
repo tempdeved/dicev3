@@ -212,6 +212,9 @@ def dum_horario():
 
 def dum_admin():
 
+    config2 = Config().config2
+    dados = Dados(config2['ambiente'])
+
     df_adm_user = pd.DataFrame(
         data={
             'email': ['ad'],
@@ -347,6 +350,6 @@ if __name__ == '__main__':
     print('INICIO')
     # dump_alunos()
     # dum_horario()
-    # dum_admin()
-    # migrate_user()
+    dum_admin()
+    migrate_user()
 
