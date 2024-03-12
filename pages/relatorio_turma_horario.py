@@ -721,7 +721,7 @@ def capturar_alunos(
         #     return 'não possui alunos cadastrados'
 
         df_pivot1 = pd.pivot(
-            data=df_merge_turma2[df_merge_turma2['id_turma'] == 1234],
+            data=df_merge_turma2,
             columns=['dia_semana',],
             index=['id_turma'],
         )
@@ -907,7 +907,7 @@ def capturar_alunos(
             ~df_turma_all['id_turma'].isin(df_result2['id_turma'].unique())
         ]
         df_turma_sem_hr2 = pd.merge(
-            left=df_turma_sem_hr.drop(columns=['id', 'id_aluno',]),
+            left=df_turma_sem_hr.drop(columns=['id',]),
             right=df_turma_aluno,
             how='left',
             on=['id_turma']
