@@ -46,9 +46,65 @@ class Sidebar(object):
                     id="offcanvas",
                     # title="Menu",
                     is_open=True,
+                    # placement='top',
                     scrollable=True,
                     backdrop=False,
                     close_button=False,
+                    class_name='bg-white d-block justify-content-center justify-content-middle text-center px-0 '
+                               'overflow-auto',
+                    # placement='top'
+
+                ),
+            ]
+        )
+        return layout
+
+class Sidebar2(object):
+    def __init__(self):
+        pass
+
+    def layout(self, side_bar_content: list = []):
+
+        layout = dbc.Row(
+            class_name='py-0 px-0 mx-0 my-0',
+            children=[
+
+                dbc.Row(
+                    id='',
+                    # class_name='px-0 mx-0 ',
+                    class_name='px-0 mx-0 pt-4 justify-content-center',
+                    # class_name='px-0 px-md-2 mx-0 py-2 justify-content-center',
+                    children=[
+                        dbc.Row(
+                            class_name='col-2 col-lg-1 px-0 mx-0 d-block '
+                                       'justify-content-center text-center',
+                            children=[
+                                # html.P('Menu', className='text-center px-0 mx-0 py-0 my-0'),
+
+                                dbc.Button(
+                                    title='Menu',
+                                    id='open-offcanvas',
+                                    color='primary',
+                                    outline=False,
+                                    n_clicks=0,
+                                    class_name='bi bi-three-dots fas fa-bi-three-dots-lg '
+                                               'justify-content-center text-center mx-0 px-0 '
+                                               'opacity-75 btn-sm text-align-center w-100 w-lg-50',
+                                ),
+                            ]
+                        ),
+                    ]
+                ),
+
+                dbc.Offcanvas(
+                    children=side_bar_content,
+                    id="offcanvas",
+                    # title="Menu",
+                    is_open=True,
+                    placement='top',
+                    scrollable=True,
+                    backdrop=False,
+                    close_button=True,
                     class_name='bg-white d-block justify-content-center justify-content-middle text-center px-0 '
                                'overflow-auto',
                     # placement='top'
