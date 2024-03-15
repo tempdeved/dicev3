@@ -150,128 +150,25 @@ def load_user(username):
 
 
 # Layout macro para multi pages
-side_bar = Sidebar2().layout(
-    side_bar_content=[
-
-        # Logo Group
-        # Logo().layout(),
-
-        # Grupo
-        ListGroup().layout2(
-            group_title='',
-            # group_title='Autenticação'.upper(),
-            group_elements=[
-                # Div para fazer login e encerrar sessão
-                # html.Div(id="user-status-header"),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='Login'.upper(),
-                    href='/login',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='Logout'.upper(),
-                    href='/logout',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='criar'.upper(),
-                    href='/CriarALuno',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-
-                # editar aluno e exportar aluno
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='editar'.upper(),
-                    href='/EditarAluno',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='criar '.upper(),
-                    href='/CriarTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='editar '.upper(),
-                    href='/EditarTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='lançar nota '.upper(),
-                    href='/LancarNotaTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='lançar remarks'.upper(),
-                    href='/Remarks',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='Fechar '.upper(),
-                    href='/FecharTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ), dcc.Link(
-                    style={'font-size': 13},
-                    children='Turmas'.upper(),
-                    href='/RelatorioTurmaHorario',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-
-                # alunos, telefones, etc
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='telefones p/ turma'.upper(),
-                    href='/RelatorioTelefoneTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-
-                # Etiquetas Alunos
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='Etiquetas'.upper(),
-                    href='/RelatorioEtiquetaAluno',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-
-                # boletim da turma
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='Nota p/ turma'.upper(),
-                    href='/RelatorioNotaTurma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='boletim aluno'.upper(),
-                    href='/BoletimAluno',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='diploma'.upper(),
-                    href='/Diploma',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-                dcc.Link(
-                    style={'font-size': 13},
-                    children='usuario'.upper(),
-                    href='/GerenciarUsuario',
-                    className='justify-content-center text-middle text-center pl-1',
-                ),
-            ]
-        ),
-
-    ]
-)
+# side_bar = Sidebar2().layout(
+#     side_bar_content=[
+#
+#         # Logo Group
+#         # Logo().layout(),
+#
+#         # Grupo
+#         ListGroup().layout2(
+#             group_title='',
+#             # group_title='Autenticação'.upper(),
+#             group_elements=[
+#                 # Div para fazer login e encerrar sessão
+#                 # html.Div(id="user-status-header"),
+#
+#             ]
+#         ),
+#
+#     ]
+# )
 
 
 app.layout = dbc.Row(
@@ -281,69 +178,144 @@ app.layout = dbc.Row(
     style={
         'background': 'Salmom',
     },
-
     children=[
+
+        dbc.Row(
+            children=[
+                dbc.Col(
+                    class_name='center-aligned-group-header col-lg-3 col-md-12 col-sm-12 pt-3',
+                    children=[
+                        Logo().layout(),
+                    ],
+                ),
+
+                dbc.Col(
+                    class_name='center-aligned-group-header col-lg-9 col-md-12 col-sm-12 pt-5 pb-3',
+                    children=[
+                        dbc.Nav(
+                            class_name='center-aligned-group-header',
+                            children=[
+                                # dbc.NavItem(dbc.NavLink("Home", active=True, href='/GerenciarUsuario')),
+                                dbc.DropdownMenu(
+                                    children=[
+                                        dbc.DropdownMenuItem("Criar", href='/CriarALuno', ),
+                                        dbc.DropdownMenuItem("Editar", href='/EditarAluno', ),
+                                    ],
+                                    label="Aluno",
+                                    nav=True,
+                                ),
+                                dbc.DropdownMenu(
+                                    children=[
+                                        dbc.DropdownMenuItem("Criar", href='/CriarTurma', ),
+                                        dbc.DropdownMenuItem("Editar", href='/EditarTurma', ),
+                                        dbc.DropdownMenuItem("Lancar Nota", href='/LancarNotaTurma', ),
+                                        dbc.DropdownMenuItem("Lancar Remarks", href='/Remarks', ),
+                                        dbc.DropdownMenuItem("Fechar Turma", href='/FecharTurma', ),
+                                    ],
+                                    label="Turma",
+                                    nav=True,
+                                ),
+                                dbc.DropdownMenu(
+                                    children=[
+                                        dbc.DropdownMenuItem("Turma p/ Horário", href='/RelatorioTurmaHorario', ),
+                                        dbc.DropdownMenuItem('Telefone Alunos', href='/RelatorioTelefoneTurma', ),
+                                        dbc.DropdownMenuItem("Etiqueta", href='/RelatorioEtiquetaAluno', ),
+                                        dbc.DropdownMenuItem("Nota Turma", href='/RelatorioNotaTurma', ),
+                                        dbc.DropdownMenuItem("Boletim Aluno", href='/BoletimAluno', ),
+                                        dbc.DropdownMenuItem("Diploma", href='/Diploma', ),
+                                    ],
+                                    label="Relatório",
+                                    nav=True,
+                                ),
+                                dbc.NavItem(dbc.NavLink("Gerenciar Usuário", active=True, href='/GerenciarUsuario')),
+                                dbc.NavItem(dbc.NavLink("Login", active=True, href='/login')),
+                                dbc.NavItem(dbc.NavLink("Logout", active=True, href='/logout')),
+
+                            ]
+                        ),
+                    ],
+                ),
+            ],
+        ),
+
+
+
+        dbc.Row(
+            id='main_area_app',
+            # class_name=' mx-5 px-0 my-0 py-0',
+            class_name='px-5 p-0',
+            children=[dash.page_container]
+        ),
 
         # dcc.Location(id="url"),
 
         # Seletores
-        dbc.Row(
-            id='',
-            class_name='mx-0 px-0',
-            children=[
-                dbc.Row(
-                    children=[
-                        dbc.Row(
-                            class_name='col-12',
-                            children=[
-                                dbc.Row(
-                                    side_bar,
-                                    class_name='justify-content-center'),
-                            ],
-                        ),
-                        dbc.Row(
-                            class_name='col-12',
-                            children=[
-                                dbc.Row(
-                                    id='main_area_app',
-                                    # class_name=' mx-5 px-0 my-0 py-0',
-                                    class_name='p-5 p-0',
-                                    children=[dash.page_container]
-                                ),
-                            ],
-                        ),
-                    ],
-                ),
-                # dbc.Row(side_bar, class_name='justify-content-center'),
-                # dbc.Row(
-                #     id='main_area_app',
-                #     # class_name=' mx-5 px-0 my-0 py-0',
-                #     class_name='p-5 p-0',
-                #     children=[dash.page_container]
-                # ),
-                # dcc.Store(id=f'out-tbl-preco-medio-prazo-historico-2')
-                dbc.Row(
-                    children=[
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                        html.Br(),
-                    ],
-                )
-            ],
-        ),
+        # dbc.Row(
+        #     id='',
+        #     class_name='mx-0 px-0',
+        #     children=[
+        #         dbc.Row(
+        #             children=[
+        #                 # dbc.Row(
+        #                 #     class_name='col-12',
+        #                 #     children=[
+        #                 #
+        #                 #         dbc.Col(
+        #                 #             children=[
+        #                 #                 dbc.Col(
+        #                 #                     children=[
+        #                 #                         dcc.Link(
+        #                 #                             style={'font-size': 13},
+        #                 #                             children='Login'.upper(),
+        #                 #                             href='/login',
+        #                 #                             className='justify-content-center text-middle text-center pl-1',
+        #                 #                         ),
+        #                 #                     ],
+        #                 #                 ),
+        #                 #                 dbc.Col(
+        #                 #                     children=[
+        #                 #                         dcc.Link(
+        #                 #                             style={'font-size': 13},
+        #                 #                             children='Logout'.upper(),
+        #                 #                             href='/logout',
+        #                 #                             className='justify-content-center text-middle text-center pl-1',
+        #                 #                         ),
+        #                 #                     ],
+        #                 #                 ),
+        #                 #             ],
+        #                 #         ),
+        #                 #         # dbc.Row(side_bar,class_name='justify-content-center'),
+        #                 #     ],
+        #                 # ),
+        #                 dbc.Row(
+        #                     class_name='col-12',
+        #                     children=[
+        #                     ],
+        #                 ),
+        #             ],
+        #         ),
+        #         dbc.Row(
+        #             children=[
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #                 html.Br(),
+        #             ],
+        #         )
+        #     ],
+        # ),
 
     ],
 )
