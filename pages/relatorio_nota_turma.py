@@ -247,7 +247,7 @@ clientside_callback(
 
 @callback(
     Output(component_id=f"out-download-turma-{page_name}", component_property="data"),
-    State(component_id=f'data-table-hist-aluno-{page_name}', component_property="data"),
+    State(component_id=f'data-table-hist-aluno-{page_name}', component_property="rowData"),
     # State(component_id=f'data-table-edit-user-{page_name}', component_property="data"),
     Input(component_id=f'btn-download-turma-{page_name}', component_property="n_clicks"),
     prevent_initial_call=True,
