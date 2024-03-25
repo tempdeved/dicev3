@@ -25,12 +25,12 @@ from utils.get_idade import CalculateAge
 from utils.create_excel import Turma_xlsx
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='RelatorioEtiquetaAlunoApagar'
+page_name='RelatorioTelefoneTurma'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config
 dados = Dados(config['ambiente'])
-cfg_relatorio_simples = config['relatorio_etiqueta_alunos']
+cfg_relatorio_simples = config['relatorio_telefone_turma']
 
 content_layout = dbc.Row(
     id=f'main-container-{page_name}',
@@ -181,7 +181,7 @@ content_layout = dbc.Row(
 
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Relatório Etiquetas"
+                                        title="Relatório Turma P/ Horário"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -485,41 +485,272 @@ def filter_columns(table_radio):
                 {'label': 'Ativa'.upper(), 'value': f'Ativa'.upper()},
                 {'label': 'Inativa'.upper(), 'value': f'Inativa'.upper()},
                 {'label': 'Em espera'.upper(), 'value': f'Em espera'.upper()},
-                {'label': 'Finalizadas'.upper(), 'value': f'Finalizadas'.upper()},
+                {'label': 'Finalizada'.upper(), 'value': f'Finalizada'.upper()},
             ],
             value='ATIVA',
         )
         row_status.load()
-        # row_status = dbc.Row(
-        #     children=[
-        #         dbc.Row('STATUS', className='m-0 p-0'),
-        #         dbc.Row(
-        #             children=[
-        #                 dbc.Select(
-        #                     id=f'inp-status-turma-{page_name}',
-        #                     options=[
-        #                         {'label': 'Ativa'.upper(), 'value': f'Ativa'.upper()},
-        #                         {'label': 'Inativa'.upper(), 'value': f'Inativa'.upper()},
-        #                         {'label': 'Em espera'.upper(), 'value': f'Em espera'.upper()},
-        #                         {'label': 'Finalizadas'.upper(), 'value': f'Finalizadas'.upper()},
-        #                     ],
-        #                     value='ATIVA',
-        #                 )
-        #             ],
-        #             className='m-0 p-0'
-        #         ),
-        #     ],
-        # className='m-0 pt-2'
-        # )
 
-    # row_check_box =  dbc.Row(
-    #         children=[
-    #             dbc.Row('COLUNAS'),
-    #             dbc.Row(check_box),
-    #         ],
-    #     className='m-0 pt-2'
-    #
-    # )
+        table_name = cfg_relatorio_simples['radio_itens'][table_radio]['table_name']
+        fixed_columns = cfg_relatorio_simples['radio_itens'][table_radio]['fixed_columns']
+        all_columns = cfg_relatorio_simples['radio_itens'][table_radio]['all_columns']
+        list_columns = [x for x in fixed_columns] + opt
+
+        weekday = [
+            'Segunda-feira'.upper(),
+            'Terça-feira'.upper(),
+            'Quarta-feira'.upper(),
+            'Quinta-feira'.upper(),
+            'Sexta-feira'.upper(),
+            ]
+
+        status_turma = 'ATIVA'
+        dt_inicio = date(now.year, 1, 1).strftime('%Y-%m-%d')
+        dt_fim = date(now.year, 12, 31).strftime('%Y-%m-%d')
+
+        # captura horarios
+        df_horario = dados.query_table(table_name='horario', )
+        df_horario.rename(columns={'id': 'id_horario'}, inplace=True)
+
+        # captura funcionarios
+        df_prof = dados.query_table(
+            table_name='funcionario',
+            filter_list=[
+                {'op': 'in', 'name': 'tipo', 'value': ['Gerente', 'Professor', 'Coordenador']},
+                # {'op': 'eq', 'name': 'tipo','value': 'Professor'},
+                # {'op': 'eq', 'name': 'tipo','value': 'Gerente'},
+            ]
+        )
+
+        # captura horarios de turmas
+        df_turma_horario = dados.query_table(table_name='turma_horario', )
+        df_turma_horario.drop(columns=['id'], inplace=True)
+
+        # captura turmas
+        df_turma_aluno = dados.query_table(table_name=table_name)
+        df_turma_aluno.drop(columns=['id'], inplace=True)
+
+        # captura alunos
+        df_aluno = dados.query_table(table_name='aluno', )
+
+        # rename aluno
+        df_aluno.rename(
+            columns={
+                'id': 'id_aluno',
+                'status': 'status_aluno',
+                'inicio': 'inicio_aluno',
+            },
+            inplace=True
+        )
+
+        # filtrar dia da semana
+        df_horario_filted = df_horario[df_horario['dia_semana'].isin(weekday)]
+        df_horario_filted.rename(columns={'id': 'id_horario'}, inplace=True)
+        list_week_ids = df_horario_filted['id_horario'].unique()
+
+        # captura turmas e seu dia da semana filtrado
+        df_merge_horarios = pd.merge(
+            left=df_turma_horario[df_turma_horario['id_horario'].isin(list_week_ids)],
+            right=df_horario_filted,
+            how='left',
+            on=['id_horario'],
+        )
+
+        list_turmas_ids = []
+        for x in df_merge_horarios['id_turma'].unique():
+            list_turmas_ids.append(int(x))
+
+        df_turma = dados.query_table(
+            table_name='turma',
+            filter_list=[
+                {'op': 'in', 'name': 'id_turma', 'value': list_turmas_ids},
+                {'op': 'eq', 'name': 'status', 'value': status_turma},
+                {'op': 'ge', 'name': 'inicio', 'value': dt_inicio},
+                {'op': 'le', 'name': 'fim', 'value': dt_fim},
+            ]
+        )
+        df_turma.rename(columns={'status': 'status_turma'}, inplace=True)
+        # df_turma.drop(columns=['id_aluno'], inplace=True)
+
+        # merge alunos e turmas
+        df_merge_aluno = pd.merge(
+            left=df_turma,
+            right=df_turma_aluno,
+            how='left',
+            on=['id_turma']
+        )
+
+        # merge alunos detalhes
+        df_merge_aluno2 = pd.merge(
+            left=df_merge_aluno,
+            right=df_aluno,
+            how='left',
+            on=['id_aluno']
+        )
+
+        df_merge_aluno3 = df_merge_aluno2
+
+        """
+        capturando Turmas e Horarios
+        """
+
+        # merge horarios
+        df_merge_turma = pd.merge(
+            left=df_turma,
+            right=df_turma_horario,
+            how='left',
+            on=['id_turma']
+        )
+
+        # merge detalhe horarios
+        df_merge_turma2 = pd.merge(
+            left=df_merge_turma,
+            right=df_horario,
+            how='left',
+            on=['id_horario']
+        )
+
+        # concat 'horario'
+        df_merge_turma2['horario'] = df_merge_turma2['hora_inicio'].str.zfill(2) + ':' + df_merge_turma2[
+            'min_inicio'].str.zfill(2) + ' - ' + df_merge_turma2['hora_fim'].str.zfill(2) + ':' + df_merge_turma2[
+                                         'min_fim'].str.zfill(2)
+
+        # if len(df_merge_turma2['id_aluno']) >= 1:
+        #     print('possui alunos')
+        # else:
+        #     print('nao possui')
+        #     return 'não possui alunos cadastrados'
+
+        df_pivot1 = pd.pivot(
+            data=df_merge_turma2,
+            columns=['dia_semana', ],
+            index=['id_turma'],
+        )
+
+        df_pivot2 = df_pivot1.reset_index(level=0)
+
+        """
+        MERGE Turma Aluno / Turma Horario
+        """
+
+        list_r_name = []
+
+        for x in df_pivot2.columns:
+            a = x[0] + '-' + x[1]
+            list_r_name.append(a)
+
+        # drop level to merge
+        df_pivot3 = df_pivot2.droplevel(level=1, axis=1)
+
+        # renomeando pela ordem das colunas
+        df_pivot4 = df_pivot3.set_axis(list_r_name, axis=1)
+        df_pivot4.rename(columns={'id_turma-': 'id_turma'}, inplace=True)
+
+        list_week_days = df_merge_turma2['dia_semana'].unique()
+        list_week_days1 = ['id_turma']
+
+        for x in list_week_days:
+            a = 'horario-' + x
+            list_week_days1.append(a)
+
+        df_merge_4 = pd.merge(
+            left=df_merge_aluno3,
+            right=df_pivot4[list_week_days1],
+            how='left',
+            on=['id_turma']
+        )
+
+        # convert date
+        df_merge_4['idade'] = df_merge_4['dat_nasc'].astype(str).apply(CalculateAge)
+
+        # remove id_turma to append horarios
+        list_week_days1.remove('id_turma')
+        list_columns = list_columns + list_week_days1
+
+        """
+        merge professor e coord
+        """
+
+        df_merge_4['id_professor'] = df_merge_4['id_professor'].astype(int)
+        df_merge_4['id_coordenador'] = df_merge_4['id_coordenador'].astype(int)
+
+        df_user = dados.query_table(
+            table_name='user',
+            field_list=[
+                {'name': 'email'},
+                {'name': 'status'},
+            ]
+        )
+        df_user['email_func'] = df_user['email']
+
+        df_prof['id_professor'] = df_prof['id']
+        df_prof['id_coordenador'] = df_prof['id']
+
+        df_turma3 = pd.merge(
+            left=df_prof[['email_func', 'id_professor', 'nome_completo']],
+            right=df_user,
+            how='left',
+            on=['email_func'],
+        )
+        df_turma3.rename(
+            columns={
+                # 'email_func': 'email_prof',
+                'nome_completo': 'nome_professor',
+            }, inplace=True
+        )
+        df_turma4 = pd.merge(
+            left=df_turma3,
+            right=df_prof[['email_func', 'id_coordenador', 'nome_completo']],
+            how='left',
+            on=['email_func'],
+        )
+        df_turma4.rename(
+            columns={
+                # 'email_func': 'email_coord',
+                'nome_completo': 'nome_coordenador',
+            }, inplace=True
+        )
+
+        """
+        merge result
+        """
+
+        # df_merge_4['id_professor']
+
+        df_result0 = pd.merge(
+            left=df_merge_4,
+            right=df_turma4[['id_professor', 'nome_professor', 'email_func']],
+            how='left',
+            on=['id_professor']
+        )
+        df_result0.rename(columns={'email_func': 'email_professor'}, inplace=True)
+
+        df_result1 = pd.merge(
+            left=df_result0,
+            right=df_turma4[['id_coordenador', 'nome_coordenador', 'email_func']],
+            how='left',
+            on=['id_coordenador']
+        )
+        df_result1.rename(columns={'email_func': 'email_coordenador'}, inplace=True)
+
+        # filter data columns
+        df_result2 = df_result1[['id_turma']].copy()
+
+        options = [
+            {'label': x, 'value': int(x)}
+            for x in df_result2['id_turma'].unique()
+        ]
+        row_turma_filted = DropDownMenu(
+            id_object=f'inp-turma--filted-load-{page_name}',
+            title='TURMA',
+            options=options,
+            value=df_result2['id_turma'].unique(),
+            multi=True,
+        )
+        row_turma_filted.load()
+
+
+
 
     result = dbc.Row(
         children=[
@@ -540,6 +771,7 @@ def filter_columns(table_radio):
                 ],
                 class_name='m-0 p-0',
             ),
+            row_turma_filted.layout,
             dia_semana.layout,
             check_box_columns.layout,
         ],
@@ -547,6 +779,39 @@ def filter_columns(table_radio):
     )
 
     return result
+
+
+@callback(
+    Output(component_id=f'inp-turma--filted-load-{page_name}', component_property='value'),
+    Input(component_id=f'dt-picker-turma-{page_name}', component_property='start_date'),
+    Input(component_id=f'dt-picker-turma-{page_name}', component_property='end_date'),
+    Input(component_id=f'inp-status-turma-{page_name}', component_property='value'),
+    prevent_initial_call=True,
+)
+def atualiza_lista_turma(
+        start_date,
+        endt_date,
+        status,
+):
+    print(start_date)
+    print(endt_date)
+    print(status)
+
+    print('')
+
+    df_turma = dados.query_table(
+        table_name='turma',
+        filter_list=[
+            {'op': 'eq', 'name': 'status', 'value': status},
+            {'op': 'ge', 'name': 'inicio', 'value': start_date},
+            {'op': 'le', 'name': 'fim', 'value': endt_date},
+        ]
+    )
+
+    turma_list = df_turma['id_turma'].to_list()
+
+    return turma_list
+
 
 @callback(
     Output(component_id=f'out-edit-funcionario-{page_name}', component_property='children'),
@@ -559,6 +824,7 @@ def filter_columns(table_radio):
     State(component_id=f'inp-dia-semana-{page_name}', component_property='value'),
     State(component_id=f"tabela-options-{page_name}", component_property='value'),
     State(component_id=f"check-columns-{page_name}", component_property='value'),
+    State(component_id=f'inp-turma--filted-load-{page_name}', component_property='value'),
     Input(component_id=f'btn-buscar-generico-{page_name}', component_property='n_clicks'),
 )
 def capturar_alunos(
@@ -566,7 +832,10 @@ def capturar_alunos(
         endt_date,
         status,
         dia_semana,
-        table_radio, check_box_columns, btn_buscar):
+        table_radio,
+        check_box_columns,
+        turma_filted,
+        btn_buscar):
 
 
     table_radio = int(table_radio)
@@ -603,9 +872,6 @@ def capturar_alunos(
         all_columns = cfg_relatorio_simples['radio_itens'][table_radio]['all_columns']
         list_columns = [x for x in fixed_columns] +  check_box_columns
 
-        # query
-        # horario = ['']
-        # periodo = []
         weekday = dia_semana
         status_turma = status
         dt_inicio = start_date
@@ -625,9 +891,13 @@ def capturar_alunos(
             ]
         )
 
-
         # captura horarios de turmas
-        df_turma_horario  = dados.query_table(table_name='turma_horario',)
+        df_turma_horario  = dados.query_table(
+            table_name='turma_horario',
+            filter_list=[
+                {'op': 'in', 'name': 'id_turma', 'value': turma_filted},
+            ]
+        )
         df_turma_horario.drop(columns=['id'], inplace=True)
 
         # captura turmas
@@ -692,12 +962,6 @@ def capturar_alunos(
             on=['id_aluno']
         )
 
-        # ff = [
-        #     'id_turma', 'status_turma', 'id_aluno', 'status_aluno', 'nome', 'dat_nasc', 'telefone1', 'responsavel_financeiro',
-        #     'tel_responsavel_financeiro'
-        # ]
-
-        # df_merge_aluno3 = df_merge_aluno2[ff]
         df_merge_aluno3 = df_merge_aluno2
 
         """
@@ -719,16 +983,16 @@ def capturar_alunos(
             how='left',
             on=['id_horario']
         )
-        # ff = [
-        #     'id_turma', 'status_turma', 'nivel', 'inicio', 'fim', 'dia_semana',
-        #     'hora_inicio', 'min_inicio', 'hora_fim', 'min_fim',
-        # ]
-
-        # df_merge_turma2 = df_merge_turma2[ff]
-        # df_merge_turma2 = df_merge_turma2
 
         # concat 'horario'
         df_merge_turma2['horario'] = df_merge_turma2['hora_inicio'].str.zfill(2) + ':' + df_merge_turma2['min_inicio'].str.zfill(2) + ' - ' + df_merge_turma2['hora_fim'].str.zfill(2) + ':' + df_merge_turma2['min_fim'].str.zfill(2)
+
+
+        # if len(df_merge_turma2['id_aluno']) >= 1:
+        #     print('possui alunos')
+        # else:
+        #     print('nao possui')
+        #     return 'não possui alunos cadastrados'
 
         df_pivot1 = pd.pivot(
             data=df_merge_turma2,
@@ -784,11 +1048,6 @@ def capturar_alunos(
 
         df_merge_4['id_professor'] = df_merge_4['id_professor'].astype(int)
         df_merge_4['id_coordenador'] = df_merge_4['id_coordenador'].astype(int)
-
-        # df_result = df_merge_4[list_columns]
-        # df_result = df_merge_4[list_columns]
-        # 'nome_professor', 'nome_coordenador', 'escola', 'descricao', 'nivel', 'map', 'idioma',
-        # 'inicio_aluno', 'n_irmaos', 'sexo',
 
         df_user = dados.query_table(
             table_name='user',
@@ -849,35 +1108,17 @@ def capturar_alunos(
         )
         df_result1.rename(columns={'email_func': 'email_coordenador'}, inplace=True)
 
-        # concatenando enderecos
-        for x in list_columns:
-            if '/' in x:
-                aux = x.split('/')
-                df_result1[x] = df_result1[aux[0]] + ' ' +  df_result1[aux[0]]
-
         # filter data columns
         df_result2 = df_result1[list_columns]
-        # df_result = df_result2.set_axis(list_columns, axis=1,)
 
     columns = [
         {
             "id": all_columns[i]['id'],
             "name": all_columns[i]['nome'].replace('_', ' ').upper(),
             "type": all_columns[i]['type'],
-            # "editable": True if filted_columns[i]['type'] == 1 else False,
-            # "presentation": 'dropdown' if i == 'cadastrado' else '',
         } for i in list_columns
     ]
 
-    # columns = [
-    #     {
-    #         "id": filted_columns[i]['id'],
-    #         "name": filted_columns[i]['nome'].replace('_', ' ').upper(),
-    #         "type": filted_columns[i]['type'],
-    #         # "editable": True if filted_columns[i]['type'] == 1 else False,
-    #         # "presentation": 'dropdown' if i == 'cadastrado' else '',
-    #     } for i in list_columns
-    # ]
 
     # DASH DATA TABLE
     dt = dash_table.DataTable(
@@ -922,6 +1163,113 @@ def capturar_alunos(
         # ]
 
     )
+
+    dt2 = dash_table.DataTable(
+        id=f'data-table-edit-user-sem-hr-{page_name}',
+    )
+
+    if len(df_result2['id_turma'].unique()) > 0:
+        df_turma_all = dados.query_table(
+            table_name='turma',
+            filter_list=[
+                {'op': 'eq', 'name': 'status', 'value': status_turma},
+                {'op': 'ge', 'name': 'inicio', 'value': dt_inicio},
+                {'op': 'le', 'name': 'fim', 'value': dt_fim},
+            ]
+        )
+        df_turma_sem_hr = df_turma_all[
+            ~df_turma_all['id_turma'].isin(df_result2['id_turma'].unique())
+        ]
+        df_turma_sem_hr2 = pd.merge(
+            left=df_turma_sem_hr.drop(columns=['id',]),
+            right=df_turma_aluno,
+            how='left',
+            on=['id_turma']
+        )
+        df_turma_sem_hr3 = pd.merge(
+            left=df_turma_sem_hr2,
+            right=df_aluno,
+            how='left',
+            on=['id_aluno']
+        )
+
+        df_turma_sem_hr3['id_professor'] = df_turma_sem_hr3['id_professor'].astype(int)
+        df_turma_sem_hr3['id_coordenador'] = df_turma_sem_hr3['id_coordenador'].astype(int)
+
+        # captura funcionarios
+        df_turma_sem_hr4 = pd.merge(
+            left=df_turma_sem_hr3,
+            right=df_prof[['id_professor', 'nome_completo', 'email_func']],
+            how='left',
+            on=['id_professor']
+        )
+
+        df_turma_sem_hr4.rename(
+            columns={
+                'nome_completo':'nome_professor',
+                'email_func':'email_professor',
+            }, inplace=True
+        )
+
+        df_turma_sem_hr5 = pd.merge(
+            left=df_turma_sem_hr4,
+            right=df_prof[['id_coordenador', 'nome_completo', 'email_func']],
+            how='left',
+            on=['id_coordenador']
+        )
+
+        df_turma_sem_hr5.rename(
+            columns={
+                'nome_completo':'nome_coordenador',
+                'email_func':'email_coordenador',
+            }, inplace=True
+        )
+        # convert date
+        df_turma_sem_hr5['idade'] = df_turma_sem_hr5['dat_nasc'].astype(str).apply(CalculateAge)
+
+        ll = [
+            'id_turma',
+            'nome_professor',
+            'nome_coordenador',
+            'escola',
+            'id_aluno',
+            'status_aluno',
+            'nome',
+            'dat_nasc',
+            'idade',
+            'telefone1',
+            'responsavel_financeiro',
+            'tel_responsavel_financeiro',
+        ]
+
+        columns2 = [
+            {
+                "id": all_columns[i]['id'],
+                "name": all_columns[i]['nome'].replace('_', ' ').upper(),
+                "type": all_columns[i]['type'],
+            } for i in ll
+        ]
+
+        dt2 = dash_table.DataTable(
+            id=f'data-table-edit-user-sem-hr-{page_name}',
+            data=df_turma_sem_hr5[ll].to_dict('records'),
+            columns=columns2,
+            editable=False,
+            page_action="native",
+            export_columns='all',
+            export_format='xlsx',
+            style_header={
+                'textAlign': 'left',
+                'fontWeight': 'bold'
+            },
+            style_as_list_view=True,
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': col},
+                    'textAlign': 'left'
+                } for col in [list_columns]
+            ],
+        )
 
     """
     loop para criar tabelas separadas por pag
@@ -1157,7 +1505,34 @@ def capturar_alunos(
         className='p-0 m-0',
     )
 
-    datatable1 = dbc.Row(dt, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    row_turma_sem_horario = dbc.Row(
+        children=[
+            dbc.Accordion(
+                children=[
+                    dbc.AccordionItem(
+                        children=dt2,
+                        className='m-0 p-0',
+                        # style={'background-color': '#ffffff'},
+                        title="TURMA SEM HORÁRIO",
+                    ),
+                ],
+                className='m-0 p-0',
+                start_collapsed=True,
+                flush=True,
+                # style={'background-color': '#ffffff'}
+            )
+        ],
+        className='m-0 pt-3',
+    )
+
+
+    datatable1 = dbc.Row(
+        children=[
+            dt,
+            row_turma_sem_horario,
+        ],
+        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+    )
 
     # return output_print
     return datatable1, output_print

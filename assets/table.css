@@ -98,10 +98,49 @@
 .center-aligned-group-header{
     justify-content: center;
 }
+/* width: 400px;
+  height: 500px; */
 
 .img-logo2 {
-  width: 400px;
-  height: 500px;
+  width: 189px;
+  height: 265px;
   object-fit: cover;
   border-radius: 20%;
 }
+
+.img-logo3 {
+  width: 450px;
+  /* height: 265px; */
+  /* object-fit: cover; */
+  /* border-radius: 20%; */
+}
+
+
+.headernota.ag-header-cell-label {
+    /*Necessary to allow for text to grow vertically*/
+    height: 100%;
+    padding: 0 !important;
+}
+
+.headernota .ag-header-group-cell {
+    font-size: 50px;
+}
+
+.headernota .ag-header-cell-label .ag-header-cell-text {
+    /*Force the width corresponding at how much width
+      we need once the text is laid out vertically*/
+    /* width: 100px; */
+    writing-mode: vertical-lr;
+    /* -ms-writing-mode: bt-lr; */
+    /* line-height: 2em; */
+    /* margin-top: 60px; */
+    color: tomato;
+    /* transform: rotate(270deg); */
+}
+
+/*
+.ag-header-group-cell-with-group{
+    color:tomato;
+    writing-mode: vertical-lr;
+}
+*/

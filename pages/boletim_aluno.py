@@ -1827,27 +1827,63 @@ def gerar_out_print(
 
         col4 = dbc.Row(
             children=[
+
                 dbc.Row(
-                    class_name='center-aligned-group-header pb-2 px-5',
                     children=[
-                        dbc.Col(
-                            class_name='col-8',
-                            children=[
-                                html.Img(
-                                    src="/static/images/logo/logo.webp",
-                                    alt='logo',
-                                    style={
-                                        'height': '240px',
-                                        # 'width': '540'
-                                    },
-                                ),
-                            ],
+                        html.Img(
+                            id=f'img-user-{page_name}',
+                            src="/static/images/logo/logo.webp",
+                            alt='logo',
+                            # style={
+                            #     'height': '450px',
+                            #     'width': '450px',
+                            # },
+                            className='img-logo3',
                         ),
                     ],
+                    class_name='px-0 justify-content-center pb-2 pt-2'
                 ),
+                # dbc.Row(
+                #     class_name='center-aligned-group-header pb-2 px-5',
+                #     children=[
+                #
+                #         # html.Img(
+                #         #     src="/static/images/logo/logo.webp",
+                #         #     alt='logo',
+                #         #     style={
+                #         #         'height': '190px',
+                #         #         # 'width': '540'
+                #         #     },
+                #         # ),
+                #         # dbc.Col(class_name='col-4',),
+                #         #
+                #         # dbc.Col(
+                #         #     class_name='col-4 px-5',
+                #         #     children=[
+                #         #         html.Img(
+                #         #             src="/static/images/logo/logo.webp",
+                #         #             alt='logo',
+                #         #             style={
+                #         #                 'height': '150px',
+                #         #                 # 'width': '540'
+                #         #             },
+                #         #         ),
+                #         #     ],
+                #         # ),
+                #         #
+                #         # dbc.Col(class_name='col-4 pr-', ),
+                #
+                #     ],
+                # ),
                 dbc.Row(
                     class_name='pt-1',
                     children=[
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
                         html.Br(),
                     ],
                 ),
@@ -1890,10 +1926,14 @@ def gerar_out_print(
                 dbc.Row(
                     class_name='pt-5',
                     children=[
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
+                        html.Br(),
                     ],
                 ),
                 dbc.Row(
-                    class_name='pt-4',
+                    class_name='pt-5',
                     children=[
                         ag_5,
                     ],

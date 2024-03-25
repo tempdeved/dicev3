@@ -6,6 +6,7 @@ import mysql.connector.errors
 import pandas as pd
 import sqlalchemy.exc
 import json
+import dash_ag_grid as dag
 
 from utils.create_excel import Turma_xlsx
 
@@ -32,15 +33,20 @@ dash.register_page(__name__, path=f'/{page_name}')
 config = Config().config
 dados = Dados(config['ambiente'])
 
-select_periodo = CheckList(
+select_periodo = RadioItem(
     id_object=f"mes-ref-{page_name}",
     title='PERÍODO',
     options=[
-        {"label": "1° Sem.", "value": 1, 'disabled': True },
-        {"label": "2° Sem.", "value": 2, 'disabled': True },
+        {"label": "Mar/Abr", "value": 1},
+        {"label": "Mai/Jun", "value": 2},
+        {"label": "Ago/Set", "value": 3},
+        {"label": "Out/Nov", "value": 4},
     ],
+    labelCheckedClassName="text-primary",
+    inputCheckedClassName="border border-primary bg-primary",
+    value=1,
     inline=True,
-    value=[1, 2,],
+    switch=True,
     # disabled=True,
 )
 select_periodo.load()
@@ -343,7 +349,7 @@ def buscar_turmas(btn):
 
     State(component_id=f'data-table-edit-user-{page_name}',  component_property='data'),
     Input(component_id=f'data-table-edit-user-{page_name}',  component_property='selected_rows'),
-    State(component_id=f"mes-ref-{page_name}",  component_property='value'),
+    Input(component_id=f"mes-ref-{page_name}",  component_property='value'),
     # prevent_initial_callbacks=True,
     )
 def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
@@ -444,13 +450,13 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
             list_columns = [x for x in hist_columns]
 
             df_result = pd.DataFrame(
-                data={
-                    'id_aluno': df_all_aluno['id_aluno'],
-                    'nome': df_all_aluno['nome'],
-                }
+                # data={
+                #     'id_aluno': df_all_aluno['id_aluno'],
+                #     'nome': df_all_aluno['nome'],
+                # }
             )
 
-            for int_month in mes_ref:
+            for int_month in [mes_ref]:
 
                 df_hist_turma  = dados.query_table(
                     table_name='historico_aluno',
@@ -476,32 +482,6 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                     )
                     df_merge['id_turma'] = id_turma_dice
 
-
-            # """
-            # fechamento de media anuale
-            # """
-            # df_merge_agg = df_merge.groupby(
-            #     by=[
-            #         pd.Grouper(key='id_turma', ),
-            #         pd.Grouper(key='id_aluno', ),
-            #         pd.Grouper(key='nome', ),
-            #     ],
-            # ).agg(
-            #     numero_aulas=pd.NamedAgg(column='numero_aulas', aggfunc='sum'),
-            #     numero_faltas=pd.NamedAgg(column='numero_faltas', aggfunc='sum'),
-            #     research=pd.NamedAgg(column='research', aggfunc='sum'),
-            #     organization=pd.NamedAgg(column='organization', aggfunc='sum'),
-            #     interest=pd.NamedAgg(column='interest', aggfunc='sum'),
-            #     group_activity=pd.NamedAgg(column='group_activity', aggfunc='sum'),
-            #     speaking=pd.NamedAgg(column='speaking', aggfunc='sum'),
-            #     frequencia_of=pd.NamedAgg(column='frequencia_of', aggfunc='sum'),
-            #     listening=pd.NamedAgg(column='listening', aggfunc='sum'),
-            #     readind_inter=pd.NamedAgg(column='readind_inter', aggfunc='sum'),
-            #     writing_process=pd.NamedAgg(column='writing_process', aggfunc='sum'),
-            #     # frequency=pd.NamedAgg(column='frequency', aggfunc='sum'),
-            # ).reset_index()
-
-            # calc frequencia
                     df_merge['frequency_pct'] = 1 - (df_merge['numero_faltas'] / df_merge['numero_aulas'])
                     df_merge['frequency'] = df_merge['frequency_pct'] * 100
                     df_merge['frequency_pct'] = df_merge['frequency_pct'] * 100
@@ -510,48 +490,54 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                         lambda x: f'{x} %',
                     )
 
-                    materias = [
-                        'research',
-                        'organization',
-                        'interest',
-                        'group_activity',
-                        'speaking',
-                        'frequencia_of',
-                        'listening',
-                        'readind_inter',
-                        'writing_process',
-                        'frequency'
-                    ]
+                    df_result = pd.concat(objs=[df_result,df_merge], ignore_index=True)
 
-                    notas = []
-                    for idx, row in df_merge.iterrows():
-                        # print(f'- {row["id_aluno"]}')
+                    """
+                    CALC MEDIA
+                    """
 
-                        aux = 0
-                        for mm in materias:
-                            # print(mm)
-                            # print(row[mm])
-
-                            aux = aux + row[mm]
-
-                        notas.append(
-                            round(
-                                (aux / len(materias)),
-                                2
-                            )
-                        )
-
-                    meses_ref = {
-                        1: "1° Sem.",
-                        2: "2° Sem.",
-                    }
-
-                    month_str = meses_ref[int_month]
-                    df_merge[f'media_{month_str}'] = notas
-
-                    df_result[f'freq_{month_str}'.upper()] = df_merge['frequency_pct']
-                    # df_result[f'freq_nt_{month_str}'.upper()] = df_merge['frequency']
-                    df_result[f'media_{month_str}'.upper()] = df_merge[f'media_{month_str}']
+                    # materias = [
+                    #     'research',
+                    #     'organization',
+                    #     'interest',
+                    #     'group_activity',
+                    #     'speaking',
+                    #     'frequencia_of',
+                    #     'listening',
+                    #     'readind_inter',
+                    #     'writing_process',
+                    #     'frequency'
+                    # ]
+                    #
+                    # notas = []
+                    # for idx, row in df_merge.iterrows():
+                    #     # print(f'- {row["id_aluno"]}')
+                    #
+                    #     aux = 0
+                    #     for mm in materias:
+                    #         # print(mm)
+                    #         # print(row[mm])
+                    #
+                    #         aux = aux + row[mm]
+                    #
+                    #     notas.append(
+                    #         round(
+                    #             (aux / len(materias)),
+                    #             2
+                    #         )
+                    #     )
+                    #
+                    # meses_ref = {
+                    #     1: "1° Sem.",
+                    #     2: "2° Sem.",
+                    # }
+                    #
+                    # month_str = meses_ref[int_month]
+                    # df_merge[f'media_{month_str}'] = notas
+                    #
+                    # df_result[f'freq_{month_str}'.upper()] = df_merge['frequency_pct']
+                    # # df_result[f'freq_nt_{month_str}'.upper()] = df_merge['frequency']
+                    # df_result[f'media_{month_str}'.upper()] = df_merge[f'media_{month_str}']
 
             """
             fim for
@@ -560,101 +546,242 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
             """
             ordenando tabela
             """
-            df_result2 = pd.DataFrame(
-                data={
-                    'id_turma': [turma_id_dice for x in range(0, len(df_result))],
-                    'id_aluno': df_result['id_aluno'],
-                    'nome': df_result['nome'],
-                }
-            )
+            # df_result2 = pd.DataFrame(
+            #     data={
+            #         'id_turma': [turma_id_dice for x in range(0, len(df_result))],
+            #         'id_aluno': df_result['id_aluno'],
+            #         'nome': df_result['nome'],
+            #     }
+            # )
 
-            for col in df_result.columns:
-                if 'FREQ' in col:
-                    df_result2[col] = df_result[col]
             # for col in df_result.columns:
-            #     if 'FREQ_NT' in col:
+            #     if 'FREQ' in col:
             #         df_result2[col] = df_result[col]
-            for col in df_result.columns:
-                if 'MEDIA' in col:
-                    df_result2[col] = df_result[col]
-
+            # for col in df_result.columns:
+            #     if 'MEDIA' in col:
+            #         df_result2[col] = df_result[col]
+            #
             df_result3 = pd.concat(
-                objs=[df_result3, df_result2],
+                objs=[df_result3, df_result],
                 ignore_index=True
             )
 
-        columns = [
-            {
-                "id": i,
-                "name": i.replace('_', ' ').upper(),
-                # "type": i,
-                # "editable": True if hist_columns[i]['editable'] == 1 else False,
-                # "presentation": 'dropdown' if i == 'cadastrado' else '',
-            } for i in df_result3.columns
-        ]
+        # columns = [
+        #     {
+        #         "id": i,
+        #         "name": i.replace('_', ' ').upper(),
+        #         # "type": i,
+        #         # "editable": True if hist_columns[i]['editable'] == 1 else False,
+        #         # "presentation": 'dropdown' if i == 'cadastrado' else '',
+        #     } for i in df_result3.columns
+        # ]
+        #
+        # df_result3['nome'] = df_result3['nome'].apply(
+        #     lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" ")) > 2 else f'{x.split(" ")[0]}'
+        # )
+        #
+        # dt_turma = dash_table.DataTable(
+        #     id=f'data-table-hist-aluno-{page_name}',
+        #     data=df_result3.to_dict('records'),
+        #     # data=df_merge[list_columns].to_dict('records'),
+        #     columns=columns,
+        #     # dropdown={
+        #     #     'cadastrado': {
+        #     #         'options': [
+        #     #             {'label': "CAD", 'value': "CAD"},
+        #     #             {'label': "NAO CAD", 'value': "NAO CAD"},
+        #     #         ]
+        #     #     }
+        #     # },
+        #     # style_cell={'textAlign': 'center'},
+        #     # page_size=30,
+        #     filter_action='native',
+        #     # sort_mode="multi",
+        #     # sort_action="native",
+        #     # page_action="native",
+        #     editable=False,
+        #     export_columns='all',
+        #     export_format='xlsx',
+        #     # editable=False,
+        #     style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+        #     style_as_list_view=True,
+        #     fixed_columns={'headers': True, 'data': 3},
+        #     style_table={'minWidth': '100%'},
+        #     style_cell={
+        #         # all three widths are needed
+        #         'textAlign': 'center',
+        #         # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+        #         'overflow': 'hidden',
+        #         'textOverflow': 'ellipsis',
+        #     },
+        #     style_cell_conditional=[
+        #         {'if': {'column_id': 'id_turma'}, 'width': '3%'},
+        #         {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
+        #         {'if': {'column_id': 'nome'}, 'width': '5%'},
+        #     ]
+        #
+        # )
 
         df_result3['nome'] = df_result3['nome'].apply(
             lambda x: f'{x.split(" ")[0]} {x.split(" ")[1]}' if len(x.split(" ")) > 2 else f'{x.split(" ")[0]}'
         )
 
-        dt_turma = dash_table.DataTable(
-            id=f'data-table-hist-aluno-{page_name}',
-            data=df_result3.to_dict('records'),
-            # data=df_merge[list_columns].to_dict('records'),
-            columns=columns,
-            # dropdown={
-            #     'cadastrado': {
-            #         'options': [
-            #             {'label': "CAD", 'value': "CAD"},
-            #             {'label': "NAO CAD", 'value': "NAO CAD"},
-            #         ]
-            #     }
-            # },
-            # style_cell={'textAlign': 'center'},
-            # page_size=30,
-            filter_action='native',
-            # sort_mode="multi",
-            # sort_action="native",
-            # page_action="native",
-            editable=False,
-            export_columns='all',
-            export_format='xlsx',
-            # editable=False,
-            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-            style_as_list_view=True,
-            fixed_columns={'headers': True, 'data': 3},
-            style_table={'minWidth': '100%'},
-            style_cell={
-                # all three widths are needed
-                'textAlign': 'center',
-                # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-            },
-            style_cell_conditional=[
-                {'if': {'column_id': 'id_turma'}, 'width': '3%'},
-                {'if': {'column_id': 'id_aluno'}, 'width': '3%'},
-                {'if': {'column_id': 'nome'}, 'width': '5%'},
-            ]
+        df_result4 = df_result3.pivot_table(
+            index=[
+                'id_turma',
+                'nome',
+            ],
+            # columns=[
+            #     # 'nome',
+            #     'mes_ref',
+            # ],
+            values=[
+                'numero_aulas',
+                'numero_faltas',
+                'research',
+                'organization',
+                'interest',
+                'group_activity',
+                'speaking',
+                'frequencia_of',
+                'listening',
+                'readind_inter',
+                'writing_process',
+                'frequency',
+                # 'frequency_pct',
+            ],
+        ).reset_index()
 
+        # rename_columns = []
+        # cols_view = []
+        #
+        # for x in df_result4.columns:
+        #     rename_columns.append(f'{x[0]}{x[1]}')
+        #     if x[0] == 'id_turma' or x[0] == 'nome' or x[1] == 1:
+        #         cols_view.append(f'{x[0]}{x[1]}')
+        #
+        # df_result5 = df_result4.droplevel(level=0, axis=1)
+        # df_result6 = df_result5.set_axis(rename_columns, axis=1)
+
+        # columnDefs = []
+        #
+        # cols_view.remove('id_turma')
+        # for x in cols_view:
+        #     print(x)
+        #
+        #     if x == 'id_turma':
+        #         columnDefs.append(
+        #             {
+        #                 "field": x,
+        #                 "headerName": x.upper(),
+        #                 # "children": children,
+        #                 # "children": x                                                                                    ' ').title(),
+        #                 'suppressSizeToFit': True,
+        #                 'editable': False,
+        #                 'width': 80,
+        #                 'minWidth': 80,
+        #             }
+        #         )
+        #     elif x == 'nome':
+        #         columnDefs.append(
+        #             {
+        #                 "field": x,
+        #                 "headerName": x.upper(),
+        #                 # "children": children,
+        #                 # "children": x                                                                                    ' ').title(),
+        #                 'suppressSizeToFit': True,
+        #                 'editable': False,
+        #                 'width': 165,
+        #                 'minWidth': 165,
+        #             }
+        #         )
+        #
+        #     else:
+        #         headerName = x[:-1].replace('_', ' ').upper()
+        #         children = []
+        #
+        #         for y in mes_ref:
+        #             print(y)
+        #             children.append(
+        #                 {
+        #                     "field": f"{x[:-1]}{y}",
+        #                     "headerName": y,
+        #                     # "children": children,
+        #                     # "children": x                                                                                    ' ').title(),
+        #                     # 'suppressSizeToFit': x,
+        #                     # 'editable': x,
+        #                     'width': 150,
+        #                     'minWidth': 150,
+        #                 }
+        #             )
+        #
+        #
+        #         aux = {
+        #             # "field": x,
+        #             "headerName": headerName,
+        #             "children": children,
+        #             # "children": x                                                                                    ' ').title(),
+        #             # 'suppressSizeToFit': True,
+        #             'editable': False,
+        #             'width': 200,
+        #             'minWidth': 200,
+        #             }
+        #
+        #         columnDefs.append(aux)
+
+        columnDefs = [
+            {
+                "field": x,
+                "headerName": config['lancar_nota_turma']['table_contraparte'][x]['headerName'].replace('_', ' ').title(),
+                'suppressSizeToFit': config['lancar_nota_turma']['table_contraparte'][x]['suppressSizeToFit'],
+                'editable': config['lancar_nota_turma']['table_contraparte'][x]['editable'],
+                # 'width': 80,
+                'width': config['lancar_nota_turma']['table_contraparte'][x]['width'],
+            }
+            for x in config['lancar_nota_turma']['table_contraparte']
+        ]
+
+        turma2 = dag.AgGrid(
+            id=f'data-table-hist-aluno-{page_name}',
+            columnDefs=columnDefs,
+            rowData=df_result4.to_dict('records'),
+            dashGridOptions={
+                # 'groupHeaderHeight': 120,
+                'headerHeight': 150,
+                # 'floatingFiltersHeight': 100,
+                # "animateRows": True,
+                # "wrapHeaderText": True,
+                # "autoHeaderHeight": True,
+                # "domLayout": "print"
+            },
+            # defaultColDef={"editable": True, "filter": True, "floatingFilter": True},
+            columnSize="sizeToFit",
+            # columnSize="sizeToFit",
         )
+
+        columns = [
+            {
+                "name": i.replace('_', ' ').upper().title(),
+                "id": i,
+            } for i in config['lancar_nota_turma']['table_contraparte']
+        ]
 
         """
         loop para criar tabelas separadas por pag
         """
 
         list_tables_print = []
-        for turma_id in df_result3['id_turma'].unique():
+        for turma_id in df_result4['id_turma'].unique():
 
             # list_columns2 = list_columns.copy()
 
             # filtrar turma por id
-            df_result_x = df_result3[df_result3['id_turma'] == turma_id]
+            df_result_x = df_result4[df_result4['id_turma'] == turma_id]
 
             # stt = df_result_x['status_turma'].unique()[0]
             # removendo
             id_tumma_dice_x = int(df_result_x['id_turma'].unique()[0])
-            df_result_x.drop(columns=['id_turma'], inplace=True)
+            # df_result_x.drop(columns=['id_turma'], inplace=True)
 
             df_turmax = dados.query_table(
                 table_name='turma',
@@ -680,50 +807,6 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
             nome_prof = df_prof[df_prof['id'] == id_professor]['nome_completo'].unique()[0]
             nome_coord = df_prof[df_prof['id'] == id_coordenador]['nome_completo'].unique()[0]
 
-            # df_hr_x = dados.query_table(
-            #     table_name='turma_horario',
-            #     filter_list=[
-            #         {'op': 'eq', 'name': 'id_turma', 'value': id_tumma_dice_x},
-            #     ]
-            # )
-            # df_hr_xx = dados.query_table(
-            #     table_name='horario',
-            #     filter_list=[
-            #         {'op': 'in', 'name': 'id', 'value': df_hr_x['id_horario'].to_list()},
-            #     ]
-            # )
-
-            # df_turma.rename(columns={'status': 'status_turma'}, inplace=True)
-            # df_turma.drop(columns=['id_aluno'], inplace=True)
-
-
-
-            # if 'id_turma' in list_columns2:
-            #     list_columns2.remove('id_turma')
-            #     df_result_x.drop(columns=['id_turma'], inplace=True)
-            #
-            # if 'status_turma' in list_columns2:
-            #     list_columns2.remove('id_turma')
-            #     df_result_x.drop(columns=['status_turma'], inplace=True)
-            #
-            # nome_professor = ''
-            # if 'nome_professor' in list_columns2:
-            #     list_columns2.remove('nome_professor')
-            #     nome_professor = df_result_x['nome_professor'].unique()[0]
-            #     df_result_x.drop(columns=['nome_professor'], inplace=True)
-
-            # nome_coordenador = ''
-            # if 'nome_coordenador' in list_columns2:
-            #     list_columns2.remove('nome_coordenador')
-            #     nome_coordenador = df_result_x['nome_coordenador'].unique()[0]
-            #     df_result_x.drop(columns=['nome_coordenador'], inplace=True)
-            #
-            # escola = ''
-            # if 'escola' in list_columns2:
-            #     list_columns2.remove('escola')
-            #     escola = df_result_x['escola'].unique()[0]
-            #     df_result_x.drop(columns=['escola'], inplace=True)
-
             escola_info = dbc.Row(
                 class_name='pt-2',
                 children=[
@@ -744,67 +827,6 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                     ),
                 ]
             )
-
-            # linhas horarios
-            # rows_horarios = list()
-            # for week in list_week_days:
-            #
-            #     # captura hora da turma
-            #     hr_turma = str(df_result_x[f'horario-{week}'].unique()[0])
-            #
-            #     # validando se coluna está vazia
-            #     if hr_turma != 'nan':
-            #         """
-            #         adiciona horario na linha quando col não for vazia
-            #         """
-            #         # rows_horarios.append(
-            #         #     f"{week} {df_result_x[f'horario-{week}'].unique()[0]}".upper()
-            #         # )
-            #
-            #         rows_horarios.append(
-            #             dbc.Row(
-            #                 children=[
-            #                     dbc.Col(
-            #                         class_name='col-4',
-            #                         children=[
-            #                             f"{week} ".upper()
-            #                         ]
-            #                     ),
-            #                     dbc.Col(
-            #                         class_name='col-4',
-            #                         children=[
-            #                             f"{df_result_x[f'horario-{week}'].unique()[0]}".upper()
-            #                         ]
-            #                     ),
-            #                     dbc.Col(
-            #                         class_name='col-10',
-            #                     ),
-            #                     # f"{week} {df_result_x[f'horario-{week}'].unique()[0]}".upper()
-            #                     # f"{week} {df_result_x[f'horario-{week}'].unique()[0]}".upper()
-            #                 ],
-            #                 # class_name='m-0 p-0'
-            #             )
-            #         )
-            #         rows_horarios.append(html.Br())
-            #     # else:
-            #
-            #     # apagando coluna
-            #     df_result_x.drop(columns=[f'horario-{week}'], inplace=True)
-            #
-            #     # removendo col da lista
-            #     list_columns2.remove(f'horario-{week}')
-
-            # criar colunas
-
-            # columns = [
-            #     {
-            #         "id": all_columns[i]['id'],
-            #         "name": all_columns[i]['nome'].replace('_', ' ').upper(),
-            #         "type": all_columns[i]['type'],
-            #         # "editable": True if filted_columns[i]['type'] == 1 else False,
-            #         # "presentation": 'dropdown' if i == 'cadastrado' else '',
-            #     } for i in list_columns2
-            # ]
 
             list_tables_print.append(
                 dbc.Row(
@@ -871,47 +893,56 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                                 )
                             ],
                         ),
+                        dbc.Row(
+                            class_name='py-2',
+                            children=[
+                                # dag.AgGrid(
+                                #     id=f'data-table-hist-aluno-{id_tumma_dice_x}-{page_name}',
+                                #     columnDefs=columnDefs,
+                                #     rowData=df_result_x.to_dict('records'),
+                                #     dashGridOptions={
+                                #       # 'groupHeaderHeight': 120,
+                                #       'headerHeight': 150,
+                                #       # 'floatingFiltersHeight': 100,
+                                #       # "animateRows": True,
+                                #       # "wrapHeaderText": True,
+                                #       # "autoHeaderHeight": True,
+                                #       "domLayout": "print"
+                                #     },
+                                #     # columnSize="sizeToFit",
+                                #     style={
+                                #         "height": "",
+                                #         "width": "",
+                                #     }
+                                # ),
+                                dash_table.DataTable(
+                                    id=f'data-table-hist-aluno-{id_tumma_dice_x}-{page_name}',
+                                    data=df_result_x.to_dict('records'),
+                                    columns=columns,
 
-                        dash_table.DataTable(
-                            id=f'data-table-hist-aluno-{id_tumma_dice_x}-{page_name}',
-                            data=df_result_x.to_dict('records'),
-                            # data=df_merge[list_columns].to_dict('records'),
-                            columns=columns,
-                            # dropdown={
-                            #     'cadastrado': {
-                            #         'options': [
-                            #             {'label': "CAD", 'value': "CAD"},
-                            #             {'label': "NAO CAD", 'value': "NAO CAD"},
-                            #         ]
-                            #     }
-                            # },
-                            # style_cell={'textAlign': 'center'},
-                            # page_size=30,
-                            # filter_action='native',
-                            # sort_mode="multi",
-                            # sort_action="native",
-                            page_action="native",
-                            # export_columns='all',
-                            # export_format='xlsx',
-                            editable=False,
-                            style_header={'textAlign': 'center', 'fontWeight': 'bold'},
-                            style_as_list_view=True,
-                            fixed_columns={'headers': True, 'data': 3},
-                            style_table={'minWidth': '100%'},
-                            style_cell={
-                                # all three widths are needed
-                                'textAlign': 'center',
-                                # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                                'overflow': 'hidden',
-                                'textOverflow': 'ellipsis',
-                            },
-
+                                    page_action="native",
+                                    editable=False,
+                                    style_header={'textAlign': 'center', 'fontWeight': 'bold'},
+                                    style_as_list_view=True,
+                                    style_table={'minWidth': '100%'},
+                                    style_cell={
+                                        # all three widths are needed
+                                        'textAlign': 'center',
+                                        # 'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+                                        'overflow': 'hidden',
+                                        'textOverflow': 'ellipsis',
+                                    },
+                                ),
+                            ],
                         ),
+
+
 
                         html.P('')
 
                     ],
-                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+                    class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
+                    # class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
                 )
             )
 
@@ -925,9 +956,10 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
 
         datatable1 = dbc.Row(
             children=[
-                dt_turma,
+                # dt_turma,
+                turma2,
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto'
+            class_name='col-lg-12 col-md-12 col-sm-12 py-2 m-0 header1'
         )
         # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
@@ -935,7 +967,7 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
 
         dt_func = dash_table.DataTable(id=f'data-table-edit-func-{page_name}',)
 
-        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto')
+        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 py-2 m-0 overflow-auto headernota')
 
         output_print = ''
 
@@ -953,41 +985,41 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
 
 # id=f'out-alert-edited-fuc-{page_name}'
 
-@callback(
-    Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
-    # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
-    State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
-    # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
-    # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
-    # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
-    # State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
-    # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
-    # State(component_id=f"mes-ref-{page_name}",  component_property='value'),
-
-    Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
-    )
-def salvar_nota_turma(dt_notas, n_clicks):
-    # if n_clicks :
-    if n_clicks:
-
-        df_notas = pd.DataFrame(dt_notas)
-        id_turma = int(df_notas['id_turma'].unique()[0])
-
-        try:
-            # removendo notas para inserir novas notas
-            dados.update_table(
-                values={
-                    'id_turma': id_turma,
-                    'status': f'finalizada'.upper()
-                },
-                table_name='turma',
-                pk_value=id_turma,
-                pk_name='id_turma'
-            )
-
-            return f'TURMA FINALIZADA'
-        except Exception as err:
-            return str(err)
-
-    else:
-        return "SELECIONE UMA TURMA"
+# @callback(
+#     Output(component_id=f'out-alert-edited-fuc-{page_name}', component_property='children'),
+#     # State(component_id=f'data-table-edit-func-1-{page_name}',  component_property='data'),
+#     State(component_id=f'data-table-hist-aluno-{page_name}',  component_property='data'),
+#     # State(component_id=f'data-table-edit-profs-{page_name}',  component_property='data'),
+#     # State(component_id=f'data-table-edit-func-3-{page_name}',  component_property='data'),
+#     # State(component_id=f'inp-create-nivel-turma-{page_name}',  component_property='value'),
+#     # State(component_id=f'inp-create-map-turma-{page_name}',  component_property='value'),
+#     # State(component_id=f'id-turma-dice-{page_name}',  component_property='value'),
+#     # State(component_id=f"mes-ref-{page_name}",  component_property='value'),
+#
+#     Input(component_id=f'btn-salvar-func-edited-{page_name}',  component_property='n_clicks'),
+#     )
+# def salvar_nota_turma(dt_notas, n_clicks):
+#     # if n_clicks :
+#     if n_clicks:
+#
+#         df_notas = pd.DataFrame(dt_notas)
+#         id_turma = int(df_notas['id_turma'].unique()[0])
+#
+#         try:
+#             # removendo notas para inserir novas notas
+#             dados.update_table(
+#                 values={
+#                     'id_turma': id_turma,
+#                     'status': f'finalizada'.upper()
+#                 },
+#                 table_name='turma',
+#                 pk_value=id_turma,
+#                 pk_name='id_turma'
+#             )
+#
+#             return f'TURMA FINALIZADA'
+#         except Exception as err:
+#             return str(err)
+#
+#     else:
+#         return "SELECIONE UMA TURMA"

@@ -503,9 +503,10 @@ def filter_columns(table_radio):
             'Quinta-feira'.upper(),
             'Sexta-feira'.upper(),
             ]
+
         status_turma = 'ATIVA'
-        dt_inicio = '2024-01-01'
-        dt_fim = '2024-12-01'
+        dt_inicio = date(now.year, 1, 1).strftime('%Y-%m-%d')
+        dt_fim = date(now.year, 12, 31).strftime('%Y-%m-%d')
 
         # captura horarios
         df_horario = dados.query_table(table_name='horario', )
@@ -770,14 +771,47 @@ def filter_columns(table_radio):
                 ],
                 class_name='m-0 p-0',
             ),
+            row_turma_filted.layout,
             dia_semana.layout,
             check_box_columns.layout,
-            row_turma_filted.layout,
         ],
         className='m-0 pt-2'
     )
 
     return result
+
+
+@callback(
+    Output(component_id=f'inp-turma--filted-load-{page_name}', component_property='value'),
+    Input(component_id=f'dt-picker-turma-{page_name}', component_property='start_date'),
+    Input(component_id=f'dt-picker-turma-{page_name}', component_property='end_date'),
+    Input(component_id=f'inp-status-turma-{page_name}', component_property='value'),
+    prevent_initial_call=True,
+)
+def atualiza_lista_turma(
+        start_date,
+        endt_date,
+        status,
+):
+    print(start_date)
+    print(endt_date)
+    print(status)
+
+    print('')
+
+    df_turma = dados.query_table(
+        table_name='turma',
+        filter_list=[
+            {'op': 'eq', 'name': 'status', 'value': status},
+            {'op': 'ge', 'name': 'inicio', 'value': start_date},
+            {'op': 'le', 'name': 'fim', 'value': endt_date},
+        ]
+    )
+
+    turma_list = df_turma['id_turma'].to_list()
+
+    return turma_list
+
 
 @callback(
     Output(component_id=f'out-edit-funcionario-{page_name}', component_property='children'),

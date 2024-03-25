@@ -25,7 +25,7 @@ from utils.get_idade import CalculateAge
 from utils.create_excel import Turma_xlsx
 
 # page_name = __name__[6:].replace('.', '_')
-page_name='RelatorioTelefoneTurma'
+page_name='RelatorioTelefoneTurmaApagar'
 dash.register_page(__name__, path=f'/{page_name}')
 
 config = Config().config

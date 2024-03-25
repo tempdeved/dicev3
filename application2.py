@@ -183,14 +183,14 @@ app.layout = dbc.Row(
         dbc.Row(
             children=[
                 dbc.Col(
-                    class_name='center-aligned-group-header col-lg-3 col-md-12 col-sm-12 pt-3',
+                    class_name='center-aligned-group-header col-sm-12 col-md-12 col-lg-3 pt-3',
                     children=[
                         Logo().layout(),
                     ],
                 ),
 
                 dbc.Col(
-                    class_name='center-aligned-group-header col-lg-9 col-md-12 col-sm-12 pt-5 pb-3',
+                    class_name='center-aligned-group-header col-sm-12 col-md-12 col-lg-9 pt-5 pb-3',
                     children=[
                         dbc.Nav(
                             class_name='center-aligned-group-header',
@@ -208,7 +208,7 @@ app.layout = dbc.Row(
                                     children=[
                                         dbc.DropdownMenuItem("Criar", href='/CriarTurma', ),
                                         dbc.DropdownMenuItem("Editar", href='/EditarTurma', ),
-                                        dbc.DropdownMenuItem("Lancar Nota", href='/LancarNotaTurma', ),
+                                        dbc.DropdownMenuItem("Lançar Nota", href='/LancarNotaTurma', ),
                                         dbc.DropdownMenuItem("Lancar Remarks", href='/Remarks', ),
                                         dbc.DropdownMenuItem("Fechar Turma", href='/FecharTurma', ),
                                     ],

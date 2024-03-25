@@ -5,8 +5,8 @@ from banco.dados import Dados
 import os
 import shutil
 
-# config = Config().config
-config = Config().config2
+config = Config().config
+# config = Config().config2
 dados = Dados(config['ambiente'])
 
 def dump_alunos():
@@ -213,7 +213,7 @@ def dum_horario():
 
 def dum_admin():
 
-    config2 = Config().config2
+    config2 = Config().config
     dados = Dados(config2['ambiente'])
 
     df_adm_user = pd.DataFrame(
@@ -252,10 +252,10 @@ def migrate_user():
     :return:
     """
 
-    config = Config().config
+    config = Config().config2
     dados = Dados(config['ambiente'])
 
-    config2 = Config().config2
+    config2 = Config().config
     dados2 = Dados(config2['ambiente'])
 
 
@@ -349,8 +349,8 @@ def migrate_user():
 
 if __name__ == '__main__':
     print('INICIO')
-    # dump_alunos()
+    dump_alunos()
     dum_horario()
-    # dum_admin()
+    dum_admin()
     # migrate_user()
 
