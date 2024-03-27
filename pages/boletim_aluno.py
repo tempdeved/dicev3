@@ -423,7 +423,7 @@ def buscar_turmas(btn):
         style_as_list_view=True,
 
     )
-    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc')
 
     return datatable1
 

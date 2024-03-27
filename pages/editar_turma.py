@@ -424,7 +424,7 @@ def buscar_turmas(btn):
     )
     datatable1 = dbc.Row(
         dt_user,
-        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc'
     )
 
     return datatable1
@@ -1054,7 +1054,7 @@ def editar_turma(data_drom_data_table, active_cell):
                             children=[
                                 dbc.Row(
                                     dt_func5,
-                                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+                                    class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc'
                                 ),
                             ],
 
@@ -1115,7 +1115,7 @@ def editar_turma(data_drom_data_table, active_cell):
                 row_coord,
 
                 row_aluno,
-            ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
+            ], class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 dbc'
         )
     else:
 

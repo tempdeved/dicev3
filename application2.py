@@ -105,8 +105,8 @@ app = Dash(
     suppress_callback_exceptions=True,
     external_scripts=['https://cdn.plot.ly/plotly-locale-pt-br-latest.js'],
 )
-os.environ['DADOS_VENV'] = f'{dados}'
-os.environ['DADOS_VENV_HEX'] = f'{id(dados)}'
+# os.environ['DADOS_VENV'] = f'{dados}'
+# os.environ['DADOS_VENV_HEX'] = f'{id(dados)}'
 
 # Updating the Flask Server configuration with Secret Key to encrypt the user session cookie
 # server.config.update(SECRET_KEY='')
@@ -209,7 +209,7 @@ app.layout = dbc.Row(
                                         dbc.DropdownMenuItem("Criar", href='/CriarTurma', ),
                                         dbc.DropdownMenuItem("Editar", href='/EditarTurma', ),
                                         dbc.DropdownMenuItem("Lançar Nota", href='/LancarNotaTurma', ),
-                                        dbc.DropdownMenuItem("Lancar Remarks", href='/Remarks', ),
+                                        dbc.DropdownMenuItem("Lançar Remarks", href='/Remarks', ),
                                         dbc.DropdownMenuItem("Fechar Turma", href='/FecharTurma', ),
                                     ],
                                     label="Turma",

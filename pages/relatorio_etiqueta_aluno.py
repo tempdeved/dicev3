@@ -1157,7 +1157,7 @@ def capturar_alunos(
         className='p-0 m-0',
     )
 
-    datatable1 = dbc.Row(dt, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto dbc p-0 m-0')
 
     # return output_print
     return datatable1, output_print

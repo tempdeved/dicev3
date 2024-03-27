@@ -10,7 +10,7 @@ class Config(object):
         database_config = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'database', 'dice.yaml'))
         database_config2 = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'database', 'dice2.yaml'))
         cidades_brasil = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'brasil', 'cidades_brasil.yaml'))
-        # layout_config = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'layout', 'layout.yaml'))
+        home_config = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'layout', 'home.yaml'))
         secret = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'auth', '.secret'))
         pages = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'pages', 'relatorio_simples.yaml'))
         relatorio_etiqueta_alunos = OmegaConf.load(file_=os.path.join(os.path.dirname(__file__), 'pages', 'relatorio_etiqueta_alunos.yaml'))
@@ -27,6 +27,7 @@ class Config(object):
             relatorio_telefone_turma,
             relatorio_turma_horario,
             lancar_nota_turma,
+            home_config,
         )
         self.config = OmegaConf.to_container(self.config)
 

@@ -50,6 +50,42 @@ layout:
     CQ5: CQ5
     tipo_operacao: TIPO
 
+  fig_aluno:
+    uirevision: bt_aplicar
+    xaxis_rangeslider_visible: False
+    hovermode: x unified
+#    height: 600
+    template: plotly_white
+#    separators: ',.'
+#    showlegend: True
+    margin:
+      l: 20
+      r: 25
+      t: 5
+      b: 0
+
+    yaxis:
+      side: right
+      tickmode: auto
+
+    yaxis2:
+      side: right
+      tickmode: auto
+
+#    yaxis2:
+#      side: right
+#      overlaying: y
+#      tickmode: linear
+
+    showlegend: True
+
+    legend:
+      orientation: h
+      yanchor: bottom
+      xanchor: right
+      x: 1
+      y: -0.25
+
   fig_format:
     hovermode: x unified
     height: 600

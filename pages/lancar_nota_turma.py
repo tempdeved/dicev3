@@ -62,6 +62,7 @@ content_layout = dbc.Row(
 
                                             dbc.Row(
                                                 id=f'out-edit-funcionario-{page_name}',
+                                                class_name='dbc',
                                                 children=[
                                                     dash_table.DataTable(
                                                         id=f'data-table-edit-user-{page_name}',
@@ -244,7 +245,7 @@ def buscar_turmas(btn):
         style_as_list_view=True,
 
     )
-    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc')
 
     return datatable1
 
@@ -509,7 +510,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
                 # html.Br('a'),
                 # html.Br('a'),
             ],
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto header1'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto dbc dbc-ag-grid header1'
         )
         # datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
 
@@ -517,7 +518,7 @@ def editar_turma(data_drom_data_table, active_cell, mes_ref):
 
         dt_func = dash_table.DataTable(id=f'data-table-edit-func-{page_name}',)
 
-        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 overflow-auto')
+        datatable1 = dbc.Row(dt_func, class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 dbc dbc-ag-grid overflow-auto')
 
 
     # caputra mes ref STR

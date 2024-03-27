@@ -337,7 +337,7 @@ def buscar_turmas(btn):
         style_as_list_view=True,
 
     )
-    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto dbc p-0 m-0')
 
     return datatable1
 
@@ -894,7 +894,7 @@ def editar_turma(data_drom_data_table, list_active_cell, mes_ref):
                             ],
                         ),
                         dbc.Row(
-                            class_name='py-2',
+                            class_name='py-2 dbc',
                             children=[
                                 # dag.AgGrid(
                                 #     id=f'data-table-hist-aluno-{id_tumma_dice_x}-{page_name}',

@@ -270,7 +270,7 @@ content_layout = dbc.Row(
                                             ),
                                         ],
                                         style={'background-color': '#ffffff'},
-                                        title="Editar ALuno"
+                                        title="Editar Aluno"
                                     )
                                 ], start_collapsed=False, flush=True, style={'background-color': '#ffffff'}
                             ),
@@ -431,7 +431,7 @@ def capturar_alunos(main_contianer):
         style_as_list_view=True,
 
     )
-    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt_user, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc')
 
     return datatable1
 
@@ -952,10 +952,8 @@ def editar_aluno(data_drom_data_table, active_cell):
 
         datatable1 = dbc.Row(
             children=campos,
-            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0'
+            class_name='col-lg-12 col-md-12 col-sm-12 p-0 m-0 dbc'
         )
-
-        datatable1
 
     else:
 

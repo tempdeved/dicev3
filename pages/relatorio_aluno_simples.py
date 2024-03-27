@@ -456,6 +456,6 @@ def capturar_alunos(table_radio, check_box_columns, btn_buscar):
         # ]
 
     )
-    datatable1 = dbc.Row(dt, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0')
+    datatable1 = dbc.Row(dt, class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto dbc p-0 m-0')
 
     return datatable1

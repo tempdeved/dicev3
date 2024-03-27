@@ -1531,7 +1531,7 @@ def capturar_alunos(
             dt,
             row_turma_sem_horario,
         ],
-        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0'
+        class_name='col-lg-12 col-md-12 col-sm-12 overflow-auto p-0 m-0 dbc'
     )
 
     # return output_print
