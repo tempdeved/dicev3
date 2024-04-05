@@ -17,8 +17,12 @@ class Input(Component):
             children=[
                 dbc.CardHeader(
                     children=html.P(
-                        f'{self.title}'.upper(),
+                        f'{self.title}',
                         className='p-2 m-2',
+                        style={
+                            'font-weight': 'bold',
+                            'font-size': '14px'
+                        }
                     ),
                     class_name='py-0 my-0 justify-content-top text-center'
                 ),

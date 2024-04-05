@@ -21,7 +21,7 @@ class DatePicker(Component):
                         f'{self.title}',
                         className='p-2 m-2',
                         style={
-                            # 'font-weight': 'bold',
+                            'font-weight': 'bold',
                             'font-size': '14px'
                         }
                     ),
@@ -54,7 +54,14 @@ class DatePickerRange(Component):
             # class_name='shadow-lg border mx-0 my-1 px-0 py-1 text-middle text-center',
             children=[
                 dbc.CardHeader(
-                    children=html.P(f'{self.title}'),
+                    children=html.P(
+                        f'{self.title}',
+                        className='p-2 m-2',
+                        style={
+                            'font-weight': 'bold',
+                            'font-size': '14px'
+                        }
+                    ),
                     class_name='py-0 my-0 justify-content-top text-center'
                 ),
                 dbc.CardBody(

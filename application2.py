@@ -209,6 +209,7 @@ app.layout = dbc.Row(
                                         dbc.DropdownMenuItem("Criar", href='/CriarTurma', ),
                                         dbc.DropdownMenuItem("Editar", href='/EditarTurma', ),
                                         dbc.DropdownMenuItem("Lançar Nota", href='/LancarNotaTurma', ),
+                                        dbc.DropdownMenuItem("Avaliação Aluno", href='/StudentEvaluation', ),
                                         dbc.DropdownMenuItem("Lançar Remarks", href='/Remarks', ),
                                         dbc.DropdownMenuItem("Fechar Turma", href='/FecharTurma', ),
                                     ],
